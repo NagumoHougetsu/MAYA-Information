@@ -116,7 +116,7 @@ float4 PS_HILIGHT(VS_TO_PS In) : SV_Target{
     float N;
     float3 lightDir = normalize(gLight0Dir);
     N = dot(-gLight0Dir, In.Normal.xyz);
-    N = pow(N, gHilightIntensity);
+    N = pow(N * 0.5 + 0.5, gHilightIntensity) * 2.0f - 1.0f;
     color = lerp(gShadowColor, gBaseColor, N);
     return float4(color, 1.0f);
 }
