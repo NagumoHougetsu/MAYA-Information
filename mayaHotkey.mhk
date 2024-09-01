@@ -1,0 +1,169 @@
+//Maya Preference 2025 (Release 1)
+//
+//
+
+//
+// The runtime commands referenced by the hotkeys
+//
+runTimeCommand
+	-label ""
+	-annotation ""
+	-longAnnotation ""
+	-category "Custom Scripts"
+	-image ""
+	-tags ""
+	-keywords ""
+	-plugin ""
+	-helpUrl ""
+	-hotkeyCtx ""
+	-commandLanguage "mel"
+	-command ("string $current_panel = `getPanel -withFocus`;\nmodelEditor -e -dl flat $current_panel;")
+	noLight;
+
+runTimeCommand
+	-label ""
+	-annotation ""
+	-longAnnotation ""
+	-category "Custom Scripts"
+	-image ""
+	-tags ""
+	-keywords ""
+	-plugin ""
+	-helpUrl ""
+	-hotkeyCtx ""
+	-commandLanguage "mel"
+	-command ("$panel = `getPanel -withFocus`;\nif(`getPanel -typeOf $panel` == \"modelPanel\"){\n    modelEditor -e -xray (!`modelEditor -q -xray $panel`) $panel;\n}")
+	xRay;
+
+runTimeCommand
+	-label ""
+	-annotation ""
+	-longAnnotation ""
+	-category "Custom Scripts"
+	-image ""
+	-tags ""
+	-keywords ""
+	-plugin ""
+	-helpUrl ""
+	-hotkeyCtx ""
+	-commandLanguage "mel"
+	-command ("waitCursor -state on;\nstring $fileTextures[] = `ls -tex`;\nint $count=0;\nsource AEfileTemplate.mel;\nfor ($node in $fileTextures){\n    if (`attributeQuery -node $node -ex fileTextureName`){\n        AEfileTextureReloadCmd ($node+\".fileTextureName\");\n        $count = ++$count;\n    }\n}\nwaitCursor -state off;")
+	textureReload;
+
+//
+// The name commands referenced by the hotkeys
+//
+nameCommand
+	-annotation "noLightNameCommand"
+	-sourceType "mel"
+	-command ("noLight")
+	noLightNameCommand;
+
+nameCommand
+	-annotation "xRayNameCommand"
+	-sourceType "mel"
+	-command ("xRay")
+	xRayNameCommand;
+
+nameCommand
+	-annotation "ExportSelectionNameCommand"
+	-sourceType "mel"
+	-command ("ExportSelection")
+	ExportSelectionNameCommand;
+
+nameCommand
+	-annotation "SetProjectNameCommand"
+	-sourceType "mel"
+	-command ("SetProject")
+	SetProjectNameCommand;
+
+nameCommand
+	-annotation "BakeNonDefHistoryNameCommand"
+	-sourceType "mel"
+	-command ("BakeNonDefHistory")
+	BakeNonDefHistoryNameCommand;
+
+nameCommand
+	-annotation "ToggleVertexNormalDisplayNameCommand"
+	-sourceType "mel"
+	-command ("ToggleVertexNormalDisplay")
+	ToggleVertexNormalDisplayNameCommand;
+
+nameCommand
+	-annotation "ToggleTextureBorderEdgesNameCommand"
+	-sourceType "mel"
+	-command ("ToggleTextureBorderEdges")
+	ToggleTextureBorderEdgesNameCommand;
+
+nameCommand
+	-annotation "TextureViewWindowNameCommand"
+	-sourceType "mel"
+	-command ("TextureViewWindow")
+	TextureViewWindowNameCommand;
+
+nameCommand
+	-annotation "HypershadeWindowNameCommand"
+	-sourceType "mel"
+	-command ("HypershadeWindow")
+	HypershadeWindowNameCommand;
+
+nameCommand
+	-annotation "CopyVertexWeightsOptionsNameCommand"
+	-sourceType "mel"
+	-command ("CopyVertexWeightsOptions")
+	CopyVertexWeightsOptionsNameCommand;
+
+nameCommand
+	-annotation "PasteVertexWeightsNameCommand"
+	-sourceType "mel"
+	-command ("PasteVertexWeights")
+	PasteVertexWeightsNameCommand;
+
+nameCommand
+	-annotation "textureReloadNameCommand"
+	-sourceType "mel"
+	-command ("textureReload")
+	textureReloadNameCommand;
+
+//
+// The user hotkeys
+//
+//
+// The hotkey set
+//
+hotkeySet -source "Maya_Default" -current mayaHotkey_kitamura;
+//
+// The hotkey contexts and hotkeys
+//
+hotkey -keyShortcut "9" -name ("textureReloadNameCommand");
+hotkey -keyShortcut "0" -name ("xRayNameCommand");
+hotkey -keyShortcut "t" -alt -name ("TextureViewWindowNameCommand");
+hotkey -keyShortcut "8" -name ("noLightNameCommand");
+hotkey -keyShortcut "t" -name ("ToggleTextureBorderEdgesNameCommand");
+hotkey -keyShortcut "r" -ctl -sht -name ("HypershadeWindowNameCommand");
+hotkey -keyShortcut "v" -ctl -name ("PasteVertexWeightsNameCommand");
+hotkey -keyShortcut "n" -name ("ToggleVertexNormalDisplayNameCommand");
+hotkey -keyShortcut "c" -ctl -name ("CopyVertexWeightsOptionsNameCommand");
+hotkey -keyShortcut "e" -ctl -name ("ExportSelectionNameCommand");
+hotkey -keyShortcut "s" -alt -name ("SetProjectNameCommand");
+hotkey -keyShortcut "h" -alt -name ("BakeNonDefHistoryNameCommand");
+hotkey -keyShortcut "n" -releaseName ("");
+hotkeyCtx -type "Editor" -addClient "polyTexturePlacementPanel";
+hotkeyCtx -type "Editor" -addClient "shapePanel";
+hotkeyCtx -type "Editor" -addClient "outlinerPanel";
+hotkeyCtx -type "Editor" -addClient "posePanel";
+hotkeyCtx -type "Editor" -addClient "dopeSheetPanel";
+hotkeyCtx -type "Editor" -addClient "hyperGraphPanel";
+hotkeyCtx -type "Editor" -addClient "hyperShadePanel";
+hotkeyCtx -type "Editor" -addClient "timeEditorPanel";
+hotkeyCtx -type "Editor" -addClient "profilerPanel";
+hotkeyCtx -type "Editor" -addClient "nodeEditorPanel";
+hotkeyCtx -type "Editor" -addClient "graphEditor";
+hotkeyCtx -type "Tool" -addClient "texSculptCacheContext";
+hotkeyCtx -type "Tool" -addClient "SymmetrizeUVBrush";
+hotkeyCtx -type "Tool" -addClient "polyCutUV";
+hotkeyCtx -type "Tool" -addClient "xgmIGBrush";
+hotkeyCtx -type "Tool" -addClient "Unfold3DBrush";
+hotkeyCtx -type "Tool" -addClient "sculptMeshCache";
+hotkeyCtx -type "Tool" -addClient "texCutContext";
+hotkeyCtx -type "Tool" -addClient "bpDraw";
