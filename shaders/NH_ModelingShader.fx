@@ -28,7 +28,7 @@ float gHilightIntensity <
     int UIOrder = 300;
     string UIName = "Hilight Normal Intensity";
     float UIMin = 1.0f;
-    float UIMax = 50.0f;
+    float UIMax = 10.0f;
 > = 1.0f;
 //トゥーンモード
 
@@ -116,7 +116,7 @@ float4 PS_HILIGHT(VS_TO_PS In) : SV_Target{
     float N;
     float3 lightDir = normalize(gLight0Dir);
     N = dot(-gLight0Dir, In.Normal.xyz);
-    N = pow(N * 0.5 + 0.5, gHilightIntensity);
+    N = pow(N, gHilightIntensity);
     color = lerp(gShadowColor, gBaseColor, N);
     return float4(color, 1.0f);
 }
@@ -131,7 +131,6 @@ float4 PS_TOON(VS_TO_PS In) : SV_Target{
     color = lerp(gShadowColor, gBaseColor, N);
     return float4(color, 1.0f);
 }
-
 
 float4 PS_OUTLINE(VS_TO_PS In) : SV_Target{
     return float4(gOutlineColor, 1.0f);
