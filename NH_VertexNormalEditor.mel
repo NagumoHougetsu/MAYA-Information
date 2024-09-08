@@ -1,0 +1,1505 @@
+//頂点法線を編集するMEL
+global string $NHVEditWin;
+global string $sourceGrp = "NH_Source_GRP";
+//global int $digit = 2;//数値が大きいほど危機が弱くなる
+global string $selectedSelSet;
+global string $txf1;
+global string $txf2;
+global string $txf3;
+global float $tempAttr[];
+global string $optMenu1;
+global string $optMenu2;
+global string $optMenu3;
+global string $optMenu4;
+global string $optMenu5;
+global string $optMenu6;
+global string $optMenu7;
+global string $txScr1;
+global string $txScr2;
+global string $txScr3;
+global string $fsG1;
+global string $fsG2;
+global string $fsG3;
+global string $isG1;
+global string $lBtn1[10];
+global string $scrL1;
+global string $shelB1;
+
+global proc NH_VertexNormalEditor(){
+	global string $NHVEditWin;
+	global string $targetName;
+	global string $txf1;
+	global string $txf2;
+	global string $txf3;
+	global string $optMenu1;
+	global string $optMenu2;
+	global string $optMenu3;
+	global string $optMenu4;
+	global string $optMenu5;
+	global string $optMenu6;
+	global string $optMenu7;
+	global string $txScr1;
+	global string $txScr2;
+	global string $txScr3;
+	global string $fsG1;
+	global string $fsG2;
+	global string $fsG3;
+	global string $isG1;
+	global string $lBtn1[];
+	global string $scrL1;
+	global string $shelB1;
+	string $path = GetScriptPath("NH_VtxEditor");
+	//重複起動排除
+	int $windowPos[];
+	if(`window -ex $NHVEditWin`==true){
+		$windowPos = `window -q -tlc $NHVEditWin`;
+		deleteUI $NHVEditWin;
+	}
+	//ウィンドウ作成
+	$NHVEditWin = `window -t "【NHツール】頂点法線編集ツール" -ret -tlc $windowPos[0] $windowPos[1]`;
+	//コントロール定義
+	
+	rowLayout -nc 2 -rat 1 top 0 -rat 2 top 0 -p $NHVEditWin;
+		rowLayout -nc 3 -rat 1 top 0 -rat 2 top 0 -rat 3 top 0;
+			columnLayout;
+			 	frameLayout -l "ソースメッシュ" -w 180 -h 200;
+			 		columnLayout;
+				 		$scrL1 = `scrollLayout -hst 16 -vst 16 -w 180 -h 150 -bgc 0.18 0.18 0.18`;
+				 			$lBtn1[0] = `layerButton -p $scrL1`;UpdateSourceList();			 		
+				    	setParent..;
+				    	rowLayout -nc 4;
+					    	button -l "更新" -w 42 -c "UpdateSourceList()" -ann "ソースメッシュリストを更新します";
+					    	button -l "選択" -w 42 -c "SelectSourceList()" -ann "選択したレイヤーのソースメッシュを選択します";
+					    	button -l "追加" -w 42 -c "AddSourceList()" -ann "選択しているメッシュをソースメッシュリストに追加します\n追加されたメッシュは「Source」ノードの中に移動されます";
+					    	button -l "除去" -w 42 -c "DeleteLayer()" -ann "選択したレイヤーを削除します\n対象メッシュは「Source」ノードの外に移動されます";
+					    setParent..;
+				    setParent..;
+			    setParent..;
+			    frameLayout -l "クイック選択セット" -w 180 -h 200 -ann "頂点選択をセットとして管理します\nアウトライナ上に表示されている「クイック選択セット」がここに表示されます\n※アウトライナ上で編集しても問題ありませんが「更新」しないと反映されません";
+			    	columnLayout;
+			    		$txScr2 = `textScrollList -h 120 -nr 12 -ams 1 -dkc "DeleteSelList()" -sc "SingleClickSetList()" -dcc "DoubleClickSelList()"`; UpdateSelList();
+				    	rowLayout -nc 4;
+				    		button -l "更新" -w 42 -c "UpdateSelList()" -ann "選択セットリストを更新します";
+				    		button -l "選択" -w 42 -c "SelectSetList()" -ann "選択した項目の選択セットに含まれる頂点を選択します\n※複数選択可能";
+				    		button -l "作成" -w 42 -c "CreateSetList()" -ann "選択している頂点を含む選択セットを新規作成します";
+				    		button -l "削除" -w 42 -c "DeleteSelList()" -ann "選択した項目をシーン内から削除します\nリスト内で「Deleteキー」などでも削除できます\n複数同時削除可能";
+				    	setParent..;
+				    	rowLayout -nc 4;
+				    		button -l "複製" -w 42 -c "DuplicateSetList()" -ann "選択セットを複製します";
+				    		button -l "合成" -w 42 -c "MergeSetList()" -ann "選択した選択セットをマージします\n複製された選択セットが新たに作成されます";
+				    		button -l "追加" -w 42 -c "AddSetList()" -ann "選択した選択セットに選択された頂点を追加します";
+				    		button -l "除去" -w 42 -c "RemoveSetList()" -ann "選択した選択セットから選択された頂点を除去します";
+				    	setParent..;
+				    setParent..;
+			    setParent..;
+			setParent..;
+			columnLayout;
+				rowLayout -nc 3 -rat 1 top 0 -rat 2 top 0 -rat 3 top 0;
+					frameLayout -l "頂点法線データ管理";
+				    	columnLayout;
+				    		$txScr1 = `textScrollList -w 125 -nr 12 -ams 0 -dcc "InportNormal()" -ann "プロジェクト内の「nvnDate」フォルダ内のファイルがここに表示されます\nシーン内になくても保存したデータを読み込めば頂点法線の転写ができます"`;UpdateNvnDate();
+				    		rowLayout -nc 3;
+					    		button -l "保存" -c "ExportNormal()" -ann "選択されたメッシュの頂点情報を「nvnDate」フォルダー内に保存します" -w 40;
+					    		button -l "読込" -c "InportNormal()" -ann "選択した頂点法線データをメッシュに適用します\n※頂点選択可能" -w 40;
+					    		button -l "削除" -c "DeleteNormal()" -ann "選択した頂点法線データをフォルダ内から削除します\n復元不能" -w 40;
+					    	setParent..;
+					    	$txf3 = `textField -w 125 -ec "ExportNormal()" -ann "ここに任意の文字列を入力して「保存」ボタンを押すと,\n「nvnDate」フォルダ内に同名の頂点法線ファイルが作成されます\n※拡張子は入力不要です"`;
+					    	$optMenu7 = `optionMenu -l "転写方式" -ann "形状が近似している場合は「最近接」が適しています/n形状が大きく違う場合は「法線」を選んでください\n頂点法線の転写では「頂点番号」や「UV空間」方式は使用できません" -w 125`;
+					    				menuItem -l "最近接";
+										menuItem -l "法線";		    		
+			    		setParent..;
+				    setParent..;
+					columnLayout;
+						frameLayout -l "平均化";
+							columnLayout;
+								rowLayout -nc 2 -rat 1 top 0 -rat 2 top 0;
+									shelfButton -annotation "選択した頂点を、元々の頂点法線の平均値に統一します"
+					    				-image1 ($path + "NH_icon_01.png") -c "SetAverageNormal()";
+				    				shelfButton -annotation "選択した頂点を、元々の頂点法線の平均値に近づけます"
+				    					-image1 ($path + "NH_icon_02.png") -c "SmoothAverageNormal()";
+					    		setParent..;
+					    		$optMenu3 = `optionMenu -l "スムース強度" -w 130 -ann "頂点法線平均化の効き具合を調整できます\n数値が大きいほど効きが強いです"`;
+				    				menuItem -l "0.1";
+									menuItem -l "0.01";
+									menuItem -l "0.001";
+								text -l "";
+								text -l "";
+							setParent..;
+						setParent..;
+						frameLayout -l "Null平均化";
+							columnLayout;
+				    			rowLayout -nc 2 -rat 1 top 0 -rat 2 top 0;
+					    			shelfButton -annotation "選択した頂点を、重心座標から目標座標に向かう値に統一します"
+										-image1 ($path + "NH_icon_03.png") -c "SetDirectedNormal()";
+									shelfButton -annotation "選択した頂点を、重心座標から目標座標に向かう値に近づけます"
+										-image1 ($path + "NH_icon_04.png") -c "SmoothDirectionNormal()";
+								setParent..;
+								$optMenu4 = `optionMenu -l "スムース強度" -w 130 -ann "頂点法線Null平均化の効き具合を調整できます\n数値が大きいほど効きが強いです"`;
+					    				menuItem -l "0.1";
+										menuItem -l "0.01";
+										menuItem -l "0.001";
+								rowLayout -nc 2;					
+									button -l "選択" -c "SetTarget1()" -w 40
+										 -ann "「アウトライナ」や「ソースメッシュリスト」でメッシュを選択して実行してください\nNull平均化のソースとして設定します\n※メッシュを選択した場合ピボット座標を基準にします";
+									$txf1 = `textField -w 90`;
+								setParent..;
+							setParent..;
+						setParent..;
+					setParent..;
+					columnLayout;
+						rowLayout -nc 2 -rat 1 top 0 -rat 2 top 0;
+							frameLayout -l "Source平均化";
+								columnLayout;
+									rowLayout -nc 2;
+										shelfButton -annotation "選択した頂点を、ソースの法線に一致させる"
+						    				-image1 ($path + "NH_icon_05.png") -c "BakeSourceNormal()";
+						    			shelfButton -annotation "選択した頂点を、ソースの法線に近づけます"
+						    				-image1 ($path + "NH_icon_06.png") -c "SmoothBakeNormal()";
+						    		setParent..;
+						    		$optMenu5 = `optionMenu -l "スムース強度" -w 130 -ann "ソース平均化の効き具合を調整できます\n数値が大きいほど効きが強いです"`;
+					    				menuItem -l "1";
+										menuItem -l "0.1";
+										menuItem -l "0.01";
+						    		rowLayout -nc 2;					
+										button -l "選択" -c "SetTarget2()" -w 40
+											-ann "「アウトライナ」や「ソースメッシュリスト」でメッシュを選択して実行してください\nNull平均化のソースとして設定します\n";
+										$txf2 = `textField -w 90`;
+									setParent..;
+									$optMenu6 = `optionMenu -l "転写方式" -w 130 -ann "形状が近似している場合は「最近接」が適しています/n形状が大きく違う場合は「法線」を選んでください"`;
+					    				menuItem -l "最近接";
+										menuItem -l "法線";
+								setParent..;
+							setParent..;
+							frameLayout -l "選択表示切替";
+								columnLayout;
+									$shelB1 = `shelfButton -annotation "アクティブなビューの選択項目のハイライト表示の有無を切り替えます"
+						    			-image1 ($path + "NH_icon_15.png") -c "ToggleHilight()"`;
+						    	setParent..;
+						    setParent..;
+						setParent..;
+						frameLayout -l "ソースメッシュ自動生成";	
+							columnLayout;
+								rowLayout -nc 2 -rat 1 top 0 -rat 2 top 0;
+									shelfButton -annotation "選択した頂点に合わせたソースメッシュを自動生成します"
+					    				-image1 ($path + "NH_icon_14.png") -c "CreateTemplate()";
+					    			columnLayout;
+							    		$fsG1 = `floatSliderGrp -l "サイズ" -f 1 -min 1.00 -max 2.00 -v 1.50 -pre 2 -cw3 30 40 60 -cl3 "left" "right" "right" -ann "生成されるメッシュのサイズを変更します"`;
+							    		$fsG3 = `floatSliderGrp -l "曲率" -f 1 -min 1.00 -max 2.00 -v 1.50 -pre 2 -cw3 30 40 60 -cl3 "left" "right" "right" -ann "生成されるメッシュの曲率を変更します\n数値が小さいほど曲率は大きくなります"`;
+							    		$fsG2 = `floatSliderGrp -l "距離" -f 1 -min -0.50 -max 0.50 -v -0.25 -pre 2 -cw3 30 40 60 -cl3 "left" "right" "right" -ann "生成されるメッシュの位置を調整します\n数値が小さいほどターゲットの近くに作成します"`;
+							    		$isG1 = `intSliderGrp -l "分割" -f 1 -min 0 -max 4 -v 2 -cw3 30 40 60 -cl3 "left" "right" "right" -ann "生成されるメッシュの分割数を変更します\n数値が大きいほどポリゴン数が大きくなります"`;
+					    			setParent..;
+					    		setParent..;
+					    	setParent..;
+						setParent..;
+					setParent..;
+				setParent..;																																				
+				rowLayout -nc 2 -rat 1 top 0 -rat 2 top 0;
+					frameLayout -l "一般機能";
+						rowLayout -nc 5 -rat 1 top 0
+							-rat 2 top 0 -rat 3 top 0 -rat 4 top 0 -rat 5 top 0;
+							shelfButton -annotation "頂点法線の表示を切り替えます"
+				    				-image1 ($path + "NH_icon_07.png") -c "ToggleDisplayNormal()";
+				    		columnLayout;
+								shelfButton -annotation "頂点法線のサイズを最適化します"
+					    				-image1 ($path + "NH_icon_08.png") -c "AdjustDisplaySize()";
+					    		$optMenu1 = `optionMenu`;
+									menuItem -l "通常";
+									menuItem -l "1/2";
+									menuItem -l "二倍";
+							setParent..;
+							shelfButton -annotation "選択頂点の頂点法線のロックを解除します"
+			    				-image1 ($path + "NH_icon_09.png") -c "UnlockNormal()";
+				    		shelfButton -annotation "選択頂点の頂点法線をスムースします"
+			    				-image1 ($path + "NH_icon_10.png") -c "SmoothNormal()";
+							columnLayout;
+								shelfButton -annotation "オブジェクトの頂点法線を左右反転します"
+					    				-image1 ($path + "NH_icon_11.png") -c "SymmetryNormal()";
+					    		$optMenu2 = `optionMenu`;
+									menuItem -l "-X";
+									menuItem -l "+X";
+							setParent..;
+						setParent..;
+					setParent..;
+					frameLayout -l "ToonShader";
+						rowLayout -nc 2 -rat 1 top 0 -rat 2 top 0;
+							shelfButton -annotation "調整用にToonシェーダーを一時的に作成して適用します"
+			    				-image1 ($path + "NH_icon_12.png") -c "MakeToonMat()";
+			    			shelfButton -annotation "調整用のToonシェーダーを削除します"
+			    				-image1 ($path + "NH_icon_13.png") -c "DeleteToonMat()";
+						setParent..;
+					setParent..;
+			    setParent..;  	
+			setParent..;
+		setParent..;
+	setParent..;
+
+	showWindow $NHVEditWin;
+	$windouPos = `window -q -tlc $NHVEditWin`;	
+}
+/*選択項目のハイライト表示を切り替える*/
+global proc ToggleHilight(){
+	global string $shelB1;
+	string $path = GetScriptPath("NH_VtxEditor");
+	//現在アクティブなビューを調べる
+	string $active = `getPanel -wf`;
+	//選択項目のハイライト表示の状態に応じてトグル
+	int $state = `modelEditor -q -sel $active`;
+	if($state==1){
+		modelEditor -e -sel 0 $active;
+		shelfButton -e -image1 ($path + "NH_icon_16.png") $shelB1;
+	}else if($state==0){
+		modelEditor -e -sel 1 $active;
+		shelfButton -e -image1 ($path + "NH_icon_15.png") $shelB1;
+	}
+}
+
+/*簡易ソースを自動生成する*/
+global proc CreateTemplate(){
+	global string $fsG1;
+	global string $fsG2;
+	global string $fsG3;
+	global string $isG1;
+	global string $sourceGrp;
+	//各パラメーターを取得する
+	float $size = `floatSliderGrp -q -v $fsG1`;
+	float $distance = `floatSliderGrp -q -v $fsG2`;
+	int $division = `intSliderGrp -q -v $isG1`;
+	float $curve = `floatSliderGrp -q -v $fsG3`;
+	//選択頂点をリスト化する
+	string $vtxNameOri[] = `ls -sl -fl`;
+	string $vtxNameOri[] = `polyListComponentConversion -tv $vtxNameOri`;
+	$vtxNameOri = `filterExpand -sm 31 $vtxNameOri`;
+	string $vtxName[];
+	//オブジェクトを複製してフリーズし再取得
+	string $objName[];
+	tokenize $vtxNameOri[0] "." $objName;
+	string $dupObjName[] = `duplicate $objName[0]`;
+	makeIdentity -apply true -t 1 -r 1 -s 1 -n 0 -pn 1 $dupObjName[0];
+	for($i=0;$i<size($vtxNameOri);$i++){
+		string $temp1[];
+		tokenize $vtxNameOri[$i] "." $temp1;
+		$vtxName[$i] = ($dupObjName[0] + "." + $temp1[1]);
+	}
+	CenterPivot $dupObjName[0];
+	select -r $vtxName;
+	//選択頂点の頂点座標リストを作成する
+	vector $vtxPos[];
+	for($i=0;$i<size($vtxName);$i++){
+		float $temp1[] = `pointPosition $vtxName[$i]`;
+		$vtxPos[$i] = <<$temp1[0], $temp1[1], $temp1[2]>>;
+	}
+	//重心座標を作成する
+	vector $averagePos;
+	for($i=0;$i<size($vtxPos);$i++){
+		vector $vec1 = $vtxPos[$i];
+		float $x2 = $averagePos.x + $vec1.x;
+		float $y2 = $averagePos.y + $vec1.y;
+		float $z2 = $averagePos.z + $vec1.z;
+		$averagePos = <<$x2, $y2, $z2>>;
+	}
+	float $x3 = $averagePos.x / size($vtxPos);
+	float $y3 = $averagePos.y / size($vtxPos);
+	float $z3 = $averagePos.z / size($vtxPos);
+	$averagePos = <<$x3, $y3, $z3>>;
+	//オブジェクトの中心を調べる
+	vector $centerPos;
+	float $temp[] = `objectCenter $dupObjName[0]`;
+	$centerPos = <<$temp[0], $temp[1], $temp[2]>>;
+	//バウンディングボックスを取得しスケール値を得る
+	float $bound[] = `polyEvaluate -bc`;
+	float $lenth[];
+	$lenth[0] = abs( $bound[1] - $bound[0]);
+	$lenth[1] = abs( $bound[3] - $bound[2]);
+	$lenth[2] = abs( $bound[5] - $bound[4]);
+	for($i=0;$i<size($lenth);$i++){
+		for($j=$i;$j<size($lenth);$j++){
+			if($lenth[$i]<$lenth[$j]){
+				float $temp = $lenth[$i];
+				$lenth[$i] = $lenth[$j];
+				$lenth[$j] = $temp;
+			}
+		}
+	}
+	//ここで複製を削除
+	delete $dupObjName[0];
+	//テンプレを作成する
+	string $meshName[] = `polyCube  -w 1 -h 1 -d 1 -sx 1 -sy 1 -sz 1 -ax 0 1 0 -cuv 4 -ch 1`;
+	polySmooth -dv 2 -kb 0 $meshName[0];
+	delete -ch $meshName[0];
+	if(`objExists $sourceGrp`==0){
+		createNode "locator" -n $sourceGrp ;
+	}
+	parent $meshName[0] $sourceGrp;
+	//テンプレの頂点番号リストを作る
+	string $sVtxName[] = `polyListComponentConversion -tv $meshName[0]`;
+	$sVtxName = `filterExpand -sm 31 $sVtxName`;
+	//取得した情報
+	float $posX = $averagePos.x;
+	float $posY = $averagePos.y;
+	float $posZ = $averagePos.z;
+	float $minS = $lenth[2] * $curve;
+	float $maxS = $lenth[0] * $size;
+	float $cPosX = $centerPos.x;
+	float $cPosY = $centerPos.y;
+	float $cPosZ = $centerPos.z;
+	//テンプレの-Z半分を削除する
+	string $deleteVtx[];
+	int $cnt = 0;
+	for($i=0;$i<size($sVtxName);$i++){
+		float $temp1[] = `pointPosition $sVtxName[$i]`;
+		if($temp1[1]<0){
+			$deleteVtx[$cnt] = $sVtxName[$i];
+			$cnt++;
+		}
+	}
+	select -r $deleteVtx;
+	//GrowPolygonSelectionRegion;
+	ConvertSelectionToFaces;
+	delete;
+	xform -t 0 $distance 0 $meshName[0];
+	makeIdentity -apply true -t 1 -r 1 -s 1 -n 0 -pn 1 $meshName[0];
+	makeIdentity -apply false -t 1 -r 1 -s 1 -n 0 -pn 1 $meshName[0];
+	CenterPivot $meshName[0];
+	
+	//テンプレをモデルの重心に
+	xform -t 0 $cPosY $cPosZ $meshName[0];
+	//エイム用スフィア作成
+	string $sphereName[] = `polySphere -r 1 -sx 8 -sy 8 -ax 0 1 0 -cuv 2 -ch 1`;
+	xform -t $posX $posY $posZ $sphereName[0];
+	//球体に法線コンストレイン
+	aimConstraint -offset 0 0 0 -weight 1 -aimVector 0 1 0 -upVector 0 1 0 -worldUpType "vector" -worldUpVector 0 1 0 $sphereName[0] $meshName[0];
+	delete -ch $sphereName[0];
+	delete -ch $meshName[0];
+	delete $sphereName[0];
+	xform -t $posX $posY $posZ $meshName[0];
+	xform -s $maxS $minS $maxS $meshName[0];
+	
+	polySmooth -dv $division -kb 0 $meshName[0];
+	delete -ch $meshName[0];
+	select -r $vtxNameOri;
+	UpdateSourceList();
+}
+
+/*選択頂点から選択セットを新規作成*/
+global proc CreateSetList(){
+	global string $txScr2;
+	global string $selectedSelSet;
+	//選択された頂点をリスト化
+	string $vtxName[] = `ls -sl -fl`;
+	//プロンプトで新規作成名を入力
+	string $prpId = `promptDialog -tx "Set" -t "選択セット新規作成" -m "名前を入力してください"
+		-b "変更" -b "キャンセル" -db "変更" -cb "キャンセル" -ds "キャンセル"`;
+	string $name = `promptDialog -q -t $prpId`;
+	select -r $vtxName;
+	sets -name $name -text "gCharacterSet";
+	UpdateSelList();
+	textScrollList -e -da $txScr2;
+	textScrollList -e -si $name $txScr2;
+	$selectedSelSet = $name;
+}
+
+/*選択セットDelete時挙動*/
+global proc DeleteSelList(){
+	global string $txScr2;
+	global string $selectedSelSet;
+	int $selNum = `textScrollList -q -nsi $txScr2`;
+	if($selNum==1){
+		string $selected[] = `textScrollList -q -selectItem $txScr2`;
+		delete $selected[0];
+		UpdateSelList();		
+	}else{
+		UpdateSelList();	
+	}
+	$selectedSelSet = "";
+}
+
+/*選択セットから頂点を除去する*/
+global proc RemoveSetList(){
+	global string $txScr2;
+	//選択された選択セットを調べる
+	string $selected[] = `textScrollList -q -si $txScr2`;
+	//選択された頂点をリスト化
+	string $vtxName[] = `ls -sl -fl`;
+	$vtxName =`polyListComponentConversion -tv $vtxName`;
+	$vtxName = `filterExpand -sm 31 $vtxName`;
+	//セット内の頂点をリスト化
+	select -r -ne $selected;
+	pickWalk -d down;
+	string $sVtxName[] = `ls -sl -fl`;
+	$sVtxName = `polyListComponentConversion -tv $sVtxName`;
+	$sVtxName = `filterExpand -sm 31 $sVtxName`;
+	//セット内の頂点から引き算したをリスト作成
+	string $newVtx[] = stringArrayRemove($vtxName, $sVtxName);
+	//一旦選択セットを削除して同名で作り直す
+	delete $selected;
+	select -r $newVtx;
+	sets -name $selected[0] -text "gCharacterSet";
+	select -r $newVtx;
+}
+
+/*選択セットに頂点を追加する*/
+global proc AddSetList(){
+	global string $txScr2;
+	//選択された選択セットを調べる
+	string $selected[] = `textScrollList -q -si $txScr2`;
+	//選択された頂点をリスト化
+	string $vtxName[] = `ls -sl -fl`;
+	$vtxName =`polyListComponentConversion -tv $vtxName`;
+	$vtxName = `filterExpand -sm 31 $vtxName`;
+	//セット内の頂点をリスト化
+	select -r -ne $selected;
+	pickWalk -d down;
+	string $sVtxName[] = `ls -sl -fl`;
+	$sVtxName =`polyListComponentConversion -tv $sVtxName`;
+	$sVtxName = `filterExpand -sm 31 $sVtxName`;
+	//合成された頂点リストを作成
+	string $newVtx[] = stringArrayCatenate($vtxName, $sVtxName);
+	//一旦選択セットを削除して同名で作り直す
+	delete $selected;
+	select -r $newVtx;
+	sets -name $selected[0] -text "gCharacterSet";
+	select -r $newVtx;
+}
+
+/*複数選択された選択セットをマージする*/
+global proc MergeSetList(){
+	global string $txScr2;
+	global string $selectedSelSet;
+	//選択された選択セットを調べる
+	string $selected[] = `textScrollList -q -si $txScr2`;
+	//一旦複製して削除しつつ名前を取得
+	string $dupName[] = `duplicate $selected[0]`;
+	delete $dupName[0];
+	//選択セットを複製する
+	select -r -ne $selected;
+	pickWalk -d down;
+	sets -name $dupName[0] -text "gCharacterSet";
+	UpdateSelList();
+	textScrollList -e -da $txScr2;
+	textScrollList -e -si $dupName[0] $txScr2;
+	$selectedSelSet = $dupName[0];
+}
+
+/*選択セットレイヤにある項目を複製する*/
+global proc DuplicateSetList(){
+	global string $txScr2;
+	global string $selectedSelSet;
+	//選択された選択セットを調べる
+	string $selected[] = `textScrollList -q -si $txScr2`;
+	//一旦複製して削除しつつ名前を取得
+	string $dupName[] = `duplicate $selected[0]`;
+	delete $dupName[0];
+	//選択セットを新規作成する
+	select -r -ne $selected[0];
+	pickWalk -d down;
+	sets -name $dupName[0] -text "gCharacterSet";
+	UpdateSelList();
+	textScrollList -e -si $dupName[0] $txScr2;
+	$selectedSelSet = $dupName[0];
+}
+
+/*選択セットリストの頂点を選択する*/
+global proc SelectSetList(){
+	global string $txScr2;
+	string $selected[] = `textScrollList -q -si $txScr2`;
+	select -r -ne $selected;
+	pickWalk -d down;
+}
+
+/*選択頂点セットリストのシングルクリック時の挙動*/
+global proc SingleClickSetList(){
+	global string $txScr2;
+	global string $selectedSelSet;
+	string $selected[] = `textScrollList -q -si $txScr2`;
+	//現在選択されているすべて
+	if($selectedSelSet==$selected[0]){//既に表示されている項目をもう一回押すとき（非選択にする）
+		textScrollList -e -da $txScr2;
+		$selectedSelSet = "";
+	}else{//選択されていない項目を初めて押す（選択にする）
+		$selectedSelSet = $selected[0];
+	}
+}
+
+/*選択セットリストダブルクリック時の挙動*/
+global proc DoubleClickSelList(){
+	global string $txScr2;
+	global string $selectedSelSet;
+	string $origine[] = `textScrollList -q -selectItem $txScr2`;
+	//プロンプトを表示
+	string $prpId = `promptDialog -t "選択セット名変更" -tx $origine[0] -m "変更したい名前を入力してください"
+		-b "変更" -b "キャンセル" -db "変更" -cb "キャンセル" -ds "キャンセル"`;
+	string $name = `promptDialog -q -t $prpId`;
+	//リネーム処理
+	if($prpId!="キャンセル"){
+		rename $origine[0] $name;
+		global string $txScr2;
+		UpdateSelList();
+	}
+	$selectedSelSet = $name;
+}
+/*選択セットリストから項目を削除する*/
+global proc DeleteSelList(){
+	global string $selectedSelSet;
+	global string $txScr2;
+	string $selected[] = `textScrollList -q -si $txScr2`;
+	delete $selected;
+	UpdateSelList();
+	$selectedSelSet = "";
+}
+
+/*クイック選択セットリスト更新*/
+global proc UpdateSelList(){
+	global string $txScr2;
+	global string $selectedSelSet;
+	string $st = "modelPanel*";
+	//一旦全削除
+	textScrollList -edit -ra $txScr2;
+	//選択セットをリスト化
+	string $list[] = `lsType("objectSet")`;
+	for($i=0;$i<size($list);$i++){
+		if(`gmatch $list[$i] $st`==1){
+			stringArrayRemoveAtIndex($i, $list);
+			$i--;
+		}
+	}
+	for($i=2;$i<size($list)-1;$i++){
+		textScrollList -edit -append $list[$i] $txScr2;
+	}
+	$selectedSelSet = "";
+}
+/*ソースリストで選択中のメッシュを選択する*/
+global proc SelectSourceList(){
+	global string $lBtn1[];
+	int $id;
+	for($i=0;$i<10;$i++){
+		if(`layerButton -q -s $lBtn1[$i]`==1){
+			$id = $i;
+		}
+	}
+	string $obj = `layerButton -q -l $lBtn1[$id]`;
+	select -r $obj;
+}
+
+/*選択オブジェクトをSourceリストに追加する*/
+global proc AddSourceList(){
+	global string $lBtn1[];
+	global string $sourceGrp;
+	//対象モデルを取得
+	string $mesh[] = `ls -sl -fl`;
+	//メッシュをSource以下に格納
+	parent $mesh $sourceGrp;
+	UpdateSourceList();
+	//追加されたレイヤを選択する
+	for($i=0;$i<10;$i++){
+		if(`layerButton -q -l $lBtn1[$i]`==$mesh[0]){
+			layerButton -e -s 1 $lBtn1[$i];
+		}else{
+			layerButton -e -s 0 $lBtn1[$i];
+		}
+	}
+}
+/*レイヤーを削除する*/
+global proc DeleteLayer(){
+	global string $lBtn1[];
+	global string $sourceGrp;
+	string $tarUI;
+	string $tarMesh;	
+	//ソースモデルをリスト化
+	string $list[] = `listRelatives -c -typ "transform" $sourceGrp`;
+	//選択されているレイヤを調べる
+	for($i=0;$i<10;$i++){
+		int $num = `layerButton -q -s $lBtn1[$i]`;
+		if($num==1){
+			$tarUI = $lBtn1[$i];
+			$tarMesh = $list[$i];
+		}
+	}
+	//レイヤとメッシュを削除する
+	parent -w $tarMesh;
+	UpdateSourceList();
+}
+
+/*ソースリストをダブルクリックしたときの挙動*/
+global proc LayerDoubleClick(int $id){
+	global string $lBtn1[];
+	global string $sourceGrp;
+	//ソースモデルをリスト化
+	string $list[] = `listRelatives -c -typ "transform" $sourceGrp`;
+	string $prpId = `promptDialog -t "メッシュ名変更" -tx $list[$id] -m "変更したい名前を入力してください"
+		-b "変更" -b "キャンセル" -db "変更" -cb "キャンセル" -ds "キャンセル"`;
+	string $name = `promptDialog -q -t $prpId`;
+	//メッシュ名を変更
+	if($prpId!="キャンセル"){
+		rename $list[$id] $name;
+		//レイヤ名を変更
+		layerButton -e -l $name $lBtn1[$id];
+		UpdateSourceList();
+	}
+}
+/*Sourceメッシュリスト更新（10コ）*/
+global proc UpdateSourceList(){
+	global string $lBtn1[];
+	global string $scrL1;
+	global string $sourceGrp;
+	//ソースGRPがあるかどうかチェック
+	if(`objExists $sourceGrp`==0){
+		string $name = `createNode "locator"`;
+		$name = `substitute "Shape" $name ""`;
+		rename $name $sourceGrp;		
+	}
+	//ソースモデルをリスト化
+	string $list[] = `listRelatives -c -typ "transform" $sourceGrp`;
+	//ソース内のオブジェクトの状態を確認
+	int $stateType[];
+	int $stateVis[];
+	int $exist[];
+	//モデルの状態を調べる
+	for($i=0;$i<size($list);$i++){
+		//まず描画オーバーライドをオンにする
+		if($list[$i]==""){
+			$exist[$i] = 0;
+			$i++;
+		}else{
+			setAttr ($list[$i] + ".overrideEnabled") 1;
+			$stateType[$i] = `getAttr ($list[$i] + ".overrideDisplayType")`;
+			$stateVis[$i] = `getAttr ($list[$i] + ".visibility")`;
+			$exist[$i] = 1;
+		}
+	}
+	//一旦UI削除
+	for($i=0;$i<10;$i++){
+		if(`layerButton -q -ex $lBtn1[$i]`==1){
+			deleteUI -ctl $lBtn1[$i];
+		}
+	}
+	//ロケータかどうかチェック
+	string $type[];
+	for($i=0;$i<size($list);$i++){
+		string $temp1[] = `listRelatives -c -s $list[$i]`;
+		$type[$i] = `objectType $temp1[0]`;
+		print "チェック";
+		print $type[$i];
+	}
+	//UIを作成
+	for($i=0;$i<10;$i++){
+		if($exist[$i]==1){
+			//一旦作成する
+			$lBtn1[$i] = `layerButton -w 180 -bgc 0.18 0.18 0.18 -l $list[$i] -p $scrL1  -ann "頂点法線を焼き付けるソースメッシュのリストです\nアウトライナ上の「NH_Source_GRP」ノード内のメッシュがここに自動表示されます\n※アウトライナ上で編集しても問題ありませんが「更新」しないと反映されません"`;
+			//レイヤの可視性設定
+			if($stateVis[$i]==0){
+				layerButton -e -lv 0 $lBtn1[$i];
+			}else if($stateVis[$i]==1){
+				layerButton -e -lv 1 $lBtn1[$i];
+			}
+			//レイヤカラーをロケーターかどうかで変える
+			if($type[$i]=="locator"){
+				layerButton -e -cl 1 0 1 $lBtn1[$i];
+			}else if($type[$i]=="mesh"){
+				layerButton -e -cl 0.5 0.5 0.5 $lBtn1[$i];
+			}
+			//レイヤの状態設定
+			if($stateType[$i]=="normal"){
+				layerButton -e -ls "template" $lBtn1[$i];
+			}else if($stateType[$i]=="template"){
+				layerButton -e -ls "reference" $lBtn1[$i];
+			}else if($stateType[$i]=="reference"){
+				layerButton -e -ls "normal" $lBtn1[$i];
+			}
+		}else if($exist[$i]==0){
+			$lBtn1[$i] = `layerButton -vis 0 -p $scrL1`;
+		}
+	}
+	//コマンドの設定
+	layerButton -e -c "LayerClick(0)" -vc "LayerVisClick(0)" -tc "LayerTypeClick(0)" -dcc "LayerDoubleClick(0)" $lBtn1[0];		
+	layerButton -e -c "LayerClick(1)" -vc "LayerVisClick(1)" -tc "LayerTypeClick(1)" -dcc "LayerDoubleClick(1)" $lBtn1[1];
+	layerButton -e -c "LayerClick(2)" -vc "LayerVisClick(2)" -tc "LayerTypeClick(2)" -dcc "LayerDoubleClick(2)" $lBtn1[2];
+	layerButton -e -c "LayerClick(3)" -vc "LayerVisClick(3)" -tc "LayerTypeClick(3)" -dcc "LayerDoubleClick(3)" $lBtn1[3];
+	layerButton -e -c "LayerClick(4)" -vc "LayerVisClick(4)" -tc "LayerTypeClick(4)" -dcc "LayerDoubleClick(4)" $lBtn1[4];
+	layerButton -e -c "LayerClick(5)" -vc "LayerVisClick(5)" -tc "LayerTypeClick(5)" -dcc "LayerDoubleClick(5)" $lBtn1[5];
+	layerButton -e -c "LayerClick(6)" -vc "LayerVisClick(6)" -tc "LayerTypeClick(6)" -dcc "LayerDoubleClick(6)" $lBtn1[6];
+	layerButton -e -c "LayerClick(7)" -vc "LayerVisClick(7)" -tc "LayerTypeClick(7)" -dcc "LayerDoubleClick(7)" $lBtn1[7];
+	layerButton -e -c "LayerClick(8)" -vc "LayerVisClick(8)" -tc "LayerTypeClick(8)" -dcc "LayerDoubleClick(8)" $lBtn1[8];
+	layerButton -e -c "LayerClick(9)" -vc "LayerVisClick(9)" -tc "LayerTypeClick(9)" -dcc "LayerDoubleClick(9)" $lBtn1[9];		
+}
+/*レイヤをクリックしたときの挙動*/
+global proc LayerClick(int $id){
+	global string $lBtn1[];
+	int $state = `layerButton -q -s $lBtn1[$id]`;
+	if($state==0){//クリックしたレイヤーが選択表示じゃない場合
+		for($i=0;$i<size($lBtn1);$i++){
+			if($i==$id){
+				layerButton -edit -s 1 $lBtn1[$i];
+			}else{
+				layerButton -edit -s 0 $lBtn1[$i];	
+			}
+		}
+		
+	}else if($state==1){
+		layerButton -edit -s 0 $lBtn1[$id];	
+	}
+}
+/*ソースレイヤーリストの表示ボタン押したときの挙動*/
+global proc LayerVisClick(int $id){
+	global string $lBtn1[];
+	global string $sourceGrp;
+	//ソースモデルをリスト化
+	string $list[] = `listRelatives -c -typ "transform" $sourceGrp`;
+	//現在の可視性状態確認
+	int $state = `layerButton -q -lv $lBtn1[$id]`;
+	//レイヤ可視性・オブジェクト可視性をトグル
+	if($state==0){
+		layerButton -edit -lv 1 $lBtn1[$id];
+		setAttr ($list[$id] + ".visibility") 1;
+	}else if($state==1){
+		layerButton -edit -lv 0 $lBtn1[$id];
+		setAttr ($list[$id] + ".visibility") 0;
+	}
+}
+/*ソースレイヤーリストのタイプボタン押したときの挙動*/
+global proc LayerTypeClick(int $id){
+	global string $lBtn1[];
+	global string $sourceGrp;
+	//ソースモデルをリスト化
+	string $list[] = `listRelatives -c -typ "transform" $sourceGrp`;
+	//現在のタイプを確認
+	string $state = `layerButton -q -ls $lBtn1[$id]`;
+	//レイヤタイプ・オブジェクトタイプをトグル
+	if($state=="normal"){
+		layerButton -edit -ls "template" $lBtn1[$id];
+		setAttr ($list[$id] + ".overrideDisplayType") 1;
+	}else if($state=="template"){
+		layerButton -edit -ls "reference" $lBtn1[$id];
+		setAttr ($list[$id] + ".overrideDisplayType") 2;
+	}else if($state=="reference"){
+		layerButton -edit -ls "normal" $lBtn1[$id];
+		setAttr ($list[$id] + ".overrideDisplayType") 0;
+	}
+}
+
+
+
+/*頂点法線データを削除する*/
+global proc DeleteNormal(){
+	global string $txScr1;
+	//選択されたファイル名を調べる
+	string $file[] = `textScrollList -q -selectItem $txScr1`;
+	//プロジェクトパスを取得
+		string $project = `workspace -q -rd`;
+	//パスを作成する
+	string $path = $project + "\\" + "nvnDate" + "\\" + $file[0];
+	sysFile -del $path;
+	confirmDialog -t "削除完了" -message "頂点法線ファイルを削除しました"
+		 -button "OK" -defaultButton "OK" -cancelButton "OK" -dismissString "OK";
+	//ウィンドウを更新する
+	UpdateNvnDate();
+}
+
+/*頂点法線データを読み込む*/
+global proc InportNormal(){
+	//スクロールリストで選択されているファイル名を知ら??ヴェル
+	global string $txScr1;
+	global string $optMenu7;
+	string $file[] = `textScrollList -q -selectItem $txScr1`;
+	//転写方式を調べる
+	string $mode = `optionMenu -q -v $optMenu7`;
+	//選択しているオブジェクト名を調べる
+	string $objName[] = `ls -sl -fl`;
+	//プロジェクトパスを取得
+	string $project = `workspace -q -rd`;
+	string $path = $project + "nvnDate\\" + $file[0];string $allMesh[] = `lsType("mesh")`;
+	string $source[];
+	string $allMesh[] = `lsType("mesh")`;
+	int $cnt = 0;
+	for($i=0;$i<size($allMesh);$i++){
+		int $check = `gmatch $allMesh[$i] "NH_temp*"`;
+		if($check==1){
+			$source[$cnt] = $allMesh[$i];
+			$cnt++;
+		}
+	}
+	if(`size($source)`!=0){
+		confirmDialog -t "エラー" -message "既に「NH_temp」というネームスペースを持つメッシュが存在しています"
+		 -button "中止" -defaultButton "中止" -cancelButton "中止" -dismissString "中止";
+	}else if(`size($objName)`==0){
+		confirmDialog -t "エラー" -message "転送先のオブジェクト（頂点）が選択されていません"
+		 -button "中止" -defaultButton "中止" -cancelButton "中止" -dismissString "中止";
+	}else{
+		//インポートする
+		file -import -type "OBJ"  -ignoreVersion -ra true -mergeNamespacesOnClash false
+			-namespace "NH_temp" -options "mo=1" -pr $path;
+		//ソースとなるオブジェクト名を取得する
+		clear $allMesh;
+		$allMesh = `lsType("mesh")`;
+		$cnt = 0;
+		for($i=0;$i<size($allMesh);$i++){
+			int $check = `gmatch $allMesh[$i] "NH_temp*"`;
+			if($check==1){
+				$source[$cnt] = $allMesh[$i];
+				$cnt++;
+			}
+		}
+		$source[0] = `substitute "Shape" $source[0] ""`;
+		print "対象メッシュ\n";
+		print $source[0];
+		//頂点法線を焼き付ける
+		if($mode=="最近接"){
+			transferAttributes -nml 1 -sm 3 $source[0] $objName;
+		}else if($mode=="法線"){
+			transferAttributes -nml 1 -sm 0 $source[0] $objName;
+		}
+		delete -ch $source;
+		delete -ch $objName[0];
+		delete $source[0];
+		confirmDialog -t "読込成功" -message "頂点法線を転送しました"
+			-button "OK" -defaultButton "OK" -cancelButton "OK" -dismissString "OK";
+	}
+}
+
+/*頂点法線データ管理ディスプレイ更新*/
+global proc UpdateNvnDate(){
+	global string $txScr1;
+	//一旦全削除
+	textScrollList -edit -ra $txScr1;
+	//ファイルをリスト化する
+	string $list[] = CheckFolder();
+	for($i=0;$i<size($list)+1;$i++){
+		textScrollList -edit -append $list[$i] $txScr1;
+	}
+}
+
+/*ウィンドウ表示前に「nvnDate」フォルダの中身を検索する*/
+global proc string[] CheckFolder(){
+	string $project = `workspace -q -rd`;
+	string $path = $project + "nvnDate" + "\\";
+	string $fileList[] = `getFileList -fld $path`;
+	return $fileList;
+}
+/*ウィンドウ起動時に自動で「nvnDate」フォルダを作成する*/
+global proc MakeFolder(){
+	//プロジェクトパスを取得
+	string $project = `workspace -q -rd`;
+	int $check = `filetest -d ($project + "nvnDate" + "\\")`;
+	if($check==0){
+		sysFile -md ($project + "nvnDate" + "\\");
+	}
+}
+
+/*法線情報を出力（内部的にはOBJ形式）*/
+global proc ExportNormal(){
+	global string $txf3;
+	//オブジェクト名取得
+	string $objName[] = `ls -sl -fl`;
+	//プロジェクトパスを取得
+	string $project = `workspace -q -rd`;
+	string $dir = $project + "\\" + "nvnDate" + "\\";
+	//フォルダを作成する（拡張子はnvn、フォルダ名は「nvnDate」）
+	int $check1 = `filetest -d ($project + "nvnDate" + "\\")`;
+	if($check1==0){
+		sysFile -md ($project + "nvnDate" + "\\");
+	}
+	//出力パスを作成する
+	string $inputName = `textField -q -tx $txf3`;
+	string $path = $dir + $inputName;
+	//出力
+	file -force -options "groups=0;ptgroups=0;materials=0;smoothing=1;normals=1"
+		-typ "OBJexport" -pr -es $path;
+	confirmDialog -t "保存完了" -message "頂点法線情報を保存しました"
+		 -button "OK" -defaultButton "OK" -cancelButton "OK" -dismissString "OK";
+	UpdateNvnDate();
+}
+
+
+/*スクリプトパスを取得する*/
+global proc string GetScriptPath(string $mel){    
+    string $whatIs=`whatIs $mel`;
+    // 不明の場合停止
+    if("Unknown"==$whatIs) error -n "Unknown";
+    
+    // 不要部分の削除
+    string $path;
+    $path=`substitute "Script found in: " $whatIs ""`;
+    $path=`substitute "Mel procedure found in: " $path ""`;
+    
+    $path=dirname($path);
+    string $iconPath[] = {$path,"NH_icons/"};
+    $iconPath[0] = stringArrayToString($iconPath,"/");
+    return $iconPath[0];
+}
+/*トゥーンシェーダーを削除する*/
+global proc DeleteToonMat(){
+	int $check1 = `objExists NH_toon`;
+	if($check1==1){
+		delete NH_toon;
+		delete NH_toonSG;
+	}	
+}
+
+/*トゥーンシェーダーを一時的に適用*/
+global proc MakeToonMat(){
+	//シーン内にあるLambertマテリアルをリスト化
+	string $curMatName[] = `lsType "lambert"`;
+	int $num = size($curMatName)-1;
+	string $temp[] = `lsType "phong"`;
+	stringArrayRemoveAtIndex($num, $curMatName);
+	$curMatName = stringArrayCatenate($curMatName, $temp);
+	$temp = `lsType "phongE"`;
+	$num = size($curMatName)-1;
+	stringArrayRemoveAtIndex($num, $curMatName);
+	$curMatName = stringArrayCatenate($curMatName, $temp);
+	$temp = `lsType "blinn"`;
+	$num = size($curMatName)-1;
+	stringArrayRemoveAtIndex($num, $curMatName);
+	$curMatName = stringArrayCatenate($curMatName, $temp);
+	$num = size($curMatName);
+	int $check = `objExists NH_toon`;
+	if($num>=3 && $check==0){//シーン内にLambert1意外にマテリアルがちゃんとある場合
+		//rampシェーダーを作成する
+		shadingNode -asShader rampShader -n NH_toon;
+		sets -r 1 -nss true -em -n NH_toonSG;
+		connectAttr -f NH_toon.outColor NH_toonSG.surfaceShader;
+		//トゥーンの調整
+		setAttr "NH_toon.colorInput" 1;
+		setAttr "NH_toon.color[0].color_Interp" 0;
+		setAttr "NH_toon.color[0].color_Color" -type double3 0 0 0 ;
+		setAttr "NH_toon.color[0].color_Position" 0;
+		setAttr "NH_toon.color[1].color_Color" -type double3 0.21 0.21 0.21 ;
+		setAttr "NH_toon.color[1].color_Position" 0.5;
+		setAttr "NH_toon.specularColor[0].specularColor_Color" -type double3 0 0 0 ;
+		//rampシェーダーを全マテリアルのambientにコネクトする
+		for($i=1;$i<size($curMatName)-1;$i++){
+			connectAttr -f NH_toon.outColor ($curMatName[$i] + ".ambientColor");
+		}
+		confirmDialog -t "シェーダー新規作成" -message "トゥーンシェーダーを新規作成してコネクトしました"
+		 -button "OK" -defaultButton "OK" -cancelButton "OK" -dismissString "OK";
+	}else{//シーン内にマテリアルがないとき、すでに存在しているとき
+		confirmDialog -title "警告" -message "シーン内にマテリアルが存在しないか、\n既にシェーダーが存在しているため\nため中止します"
+		    -button "閉じる" -defaultButton "閉じる"
+		    -cancelButton "閉じる" -dismissString "閉じる";
+	}
+	
+}
+/*頂点法線を左右反転する*/
+global proc SymmetryNormal(){
+	global string $optMenu2;
+	string $mode = `optionMenu -q -v $optMenu2`;
+	string $temp[] = GetVtxList();
+	string $vtxName[] = `polyListComponentConversion -tv $temp`;
+	$vtxName = `filterExpand -sm 31 $vtxName`;
+	string $objName[];
+	tokenize $vtxName[0] "." $objName;
+	string $target[];
+	int $cnt = 0;
+	if($mode=="-X"){//X座標が0以下の頂点のみに絞る
+		for($i=0;$i<size($vtxName);$i++){
+			float $pos[] = `pointPosition $vtxName[$i]`;
+			if($pos[0]<=0){
+				$target[$cnt] = $vtxName[$i];
+				$cnt++;
+			}
+		}
+	}else if($mode=="+X"){
+		for($i=0;$i<size($vtxName);$i++){
+			float $pos[] = `pointPosition $vtxName[$i]`;
+			if($pos[0]>=0){
+				$target[$cnt] = $vtxName[$i];
+				$cnt++;
+			}
+		}
+	}
+	duplicate -n NH_temp $objName[0]; 
+	makeIdentity -apply true -t 1 -r 1 -s 1 -n 0 -pn 1 NH_temp;
+	setAttr NH_temp.sx -1;
+	makeIdentity -apply true -t 1 -r 1 -s 1 -n 0 -pn 1 NH_temp;
+	select -r NH_temp;
+	select -add $target;
+	transferAttributes -pos 0 -nml 1 -uvs 0 -col 0 -spa 0 -sm 0 -fuv 0 -clb 1;
+	delete -ch $objName[0];
+	delete -ch NH_temp;
+	delete NH_temp;
+	select -r $temp;
+	delete -ch `polyListComponentConversion`;
+}
+
+/*頂点法線をターゲットに向かってスムースする、連続押下で平均化される*/
+global proc SmoothBakeNormal(){
+	//global int $digit;
+	global string $txf2;
+	global string $optMenu5;
+	global string $optMenu6;
+	global float $tempAttr[];
+	global string $intSG1;
+	//スムース強度を調べる
+	float $digit = `optionMenu -q -v $optMenu5`;	
+	//選択されたオブジェクトを調べる
+	string $target = `textField -q -tx $txf2`;
+	//選択された転写方式を調べる
+	string $mode = `optionMenu -q -v $optMenu6`;
+	//選択頂点をリスト化
+	string $vtxName[] = GetVtxList();
+	$vtxName = `polyListComponentConversion -tv $vtxName`;
+	$vtxName = `filterExpand -sm 31 $vtxName`;
+	//選択頂点が含まれるメッシュ名を取得
+	string $objName[];
+	tokenize $vtxName[0] "." $objName;
+	//ターゲットモデルの複製
+	string $objName2[] = `duplicate $objName[0]`;
+	//複製したモデルにおける該当頂点リストを取得
+	string $vtxName2[];
+	for($i=0;$i<size($vtxName);$i++){
+		string $temp[];
+		tokenize $vtxName[$i] "." $temp;
+		$vtxName2[$i] = ($objName2[0] + "." + $temp[1]);
+	}
+	//もともと設定されていた頂点法線を取得
+	vector $preNor[];
+	for($i=0;$i<size($vtxName);$i++){
+		float $temp1[] = `polyNormalPerVertex -q -xyz $vtxName[$i]`;
+		$preNor[$i] = <<$temp1[0], $temp1[1], $temp1[2]>>;
+	}
+	//複製したモデル同士で転写
+	string $sourceName[] = `duplicate $target`;
+	makeIdentity -apply true -t 1 -r 1 -s 1 -n 0 -pn 1 $sourceName[0];
+	if($mode == "最近接"){		
+		transferAttributes -nml 1 -sm 3 $sourceName[0] $objName2[0];
+	}else if($mode == "法線"){
+		transferAttributes -nml 1 -sm 0 $sourceName[0] $objName2[0];
+	}
+	//ベイクした後の頂点法線を取得	
+	vector $postNor[];
+	for($i=0;$i<size($vtxName2);$i++){
+		float $tempNor[] = `polyNormalPerVertex -q -xyz $vtxName2[$i]`;
+		$postNor[$i] = <<$tempNor[0], $tempNor[1], $tempNor[2]>>;
+	}
+	//頂点法線の前後を計算した法線を取得する
+	vector $targetNor[];
+	for($i=0;$i<size($vtxName);$i++){
+		//頂点法線を合成する
+		vector $vec1 = $preNor[$i];
+		vector $vec2 = $postNor[$i];
+		float $x1 = $vec1.x + ($vec2.x * $digit);
+		float $y1 = $vec1.y + ($vec2.y * $digit);
+		float $z1 = $vec1.z + ($vec2.z * $digit);
+		$targetNor[$i] = <<$x1, $y1, $z1>>;
+		$targetNor[$i] = `unit $targetNor[$i]`;
+		//頂点法線を適用する
+		vector $vec3 = $targetNor[$i];
+		float $x2 = $vec3.x;
+		float $y2 = $vec3.y;
+		float $z2 = $vec3.z;
+		polyNormalPerVertex -ufn 0 $vtxName[$i];
+		polyNormalPerVertex -xyz $x2 $y2 $z2 $vtxName[$i];	
+	}
+	//ヒストリの削除（でフォーマ以外）	
+	select -r $vtxName;
+	delete -ch `polyListComponentConversion`;
+	select -r $vtxName;
+	delete -ch `polyListComponentConversion`;
+	delete -ch $sourceName[0];
+	delete $sourceName[0];
+	delete -ch $objName2[0];
+	delete $objName2[0];
+}
+/*頂点法線をターゲットにベイク*/
+global proc BakeSourceNormal(){
+	global string $txf2;
+	global string $optMenu5;
+	global string $optMenu6;
+	global float $tempAttr[];
+	global string $txScr3;
+	//選択された転写方式を調べる
+	string $mode = `optionMenu -q -v $optMenu6`;
+	//選択頂点をリスト化
+	string $vtxName[] = GetVtxList();
+	$vtxName = `polyListComponentConversion -tv $vtxName`;
+	$vtxName = `filterExpand -sm 31 $vtxName`;
+	//選択頂点が含まれるメッシュ名を取得
+	string $objName[];
+	tokenize $vtxName[0] "." $objName;
+	//ターゲットモデルの複製
+	string $objName2[] = `duplicate $objName[0]`;
+	//複製したモデルにおける該当頂点リストを取得
+	string $vtxName2[];
+	for($i=0;$i<size($vtxName);$i++){
+		string $temp[];
+		tokenize $vtxName[$i] "." $temp;
+		$vtxName2[$i] = ($objName2[0] + "." + $temp[1]);
+	}
+	//選択されたソースオブジェクト名を調べる
+	string $tx = `textField -q -tx $txf2`;
+	string $target;
+	if($tx!=""){
+		$target = $tx;
+	}else if($tx==""){
+		string $temp[] = `textScrollList -q -selectItem $txScr3`;
+		$target = $temp[0];
+	}
+	//ソースモデルを複製してフリーズ
+	string $sourceName[] = `duplicate $target`;
+	makeIdentity -apply true -t 1 -r 1 -s 1 -n 0 -pn 1 $sourceName[0];
+	//複製した者同士で転写
+	if($mode == "最近接"){		
+		transferAttributes -nml 1 -sm 3 $sourceName[0] $objName2[0];
+	}else if($mode == "法線"){
+		transferAttributes -nml 1 -sm 0 $sourceName[0] $objName2[0];
+	}
+	//複製の頂点法線を取得する
+	vector $targetNor[];
+	for($i=0;$i<size($vtxName2);$i++){
+		float $temp1[] = `polyNormalPerVertex -q -xyz $vtxName2[$i]`;
+		$targetNor[$i] = <<$temp1[0], $temp1[1], $temp1[2]>>;
+	}
+	//元のターゲットモデルに頂点法線を流し込む
+	for($i=0;$i<size($vtxName);$i++){
+		vector $vec1 = $targetNor[$i];
+		float $x1 = $vec1.x;
+		float $y1 = $vec1.y;
+		float $z1 = $vec1.z;
+		polyNormalPerVertex -xyz $x1 $y1 $z1 $vtxName[$i];
+	}
+	
+	//ヒストリの削除（でフォーマ以外）、一時モデルを削除
+	select -r $vtxName;
+	delete -ch `polyListComponentConversion`;
+	delete -ch $sourceName[0];
+	delete $sourceName[0];
+	delete -ch $objName2[0];
+	delete $objName2[0];
+	//再選択
+	select -r $vtxName;
+}
+/*ターゲットを設定して表示を更新（Sourceターゲットあり）*/
+global proc SetTarget2(){
+	global string $txf2;
+	global string $lBtn1[];
+	//リストの選択状態を調べる
+	int $id;
+	int $cnt = 0;
+	for($i=0;$i<size($lBtn1);$i++){
+		int $num = `layerButton -q -s $lBtn1[$i]`;
+		if($num==1){
+			$id = $i;
+			$cnt++;
+		}
+	}
+	if($cnt==0){//リスト選択がない場合
+		string $obj[] = `ls -sl -fl`;
+		textField -e -tx $obj[0] $txf2;
+	}else if($cnt!=0){//リストで選択があれば
+		string $selected = `layerButton -q -l $lBtn1[$id]`;
+		textField -e -tx $selected $txf2;
+	}
+}
+
+/*頂点法線の選択頂点だけのロック解除*/
+global proc UnlockNormal(){
+	string $vtxName[] = GetVtxList();
+	$vtxName = `polyListComponentConversion -tv $vtxName`;
+	$vtxName = `filterExpand -sm 31 $vtxName`;
+	for($i=0;$i<size($vtxName);$i++){
+		polyNormalPerVertex -ufn 0 $vtxName[$i];
+	}
+}
+
+/*選択頂点を単純にスムースする*/
+global proc SmoothNormal(){
+	//選択頂点をリスト化
+	string $vtxName[] = GetVtxList();
+	$vtxName = `polyListComponentConversion -tv $vtxName`;
+	$vtxName = `filterExpand -sm 31 $vtxName`;
+	//各頂点のターゲット法線を算出
+	for($i=0;$i<size($vtxName);$i++){
+		//各頂点の周辺頂点をリスト化する
+		string $aroundVtx[];
+		select -r $vtxName[$i];
+		GrowPolygonSelectionRegion;
+		$aroundVtx = `ls -sl -fl`;
+		//各頂点の周辺頂点の頂点法線を正規化する
+		vector $arVtxNor[];
+		for($j=0;$j<size($aroundVtx);$j++){
+			float $tempNor[] = `polyNormalPerVertex -q -xyz $aroundVtx[$j]`;
+			for($k=0;$k<size($tempNor);$k++){
+				vector $vec1 = $arVtxNor[$j];
+				float $x1 = $vec1.x + ($tempNor[$k] * 0.0001); $k++;
+				float $y1 = $vec1.y + ($tempNor[$k] * 0.0001); $k++;
+				float $z1 = $vec1.z + ($tempNor[$k] * 0.0001);
+				$arVtxNor[$j] = <<$x1, $y1, $z1>>;
+			}
+		}
+		//各頂点の周辺の頂点法線の平均を求める
+		vector $targetNor;
+		for($j=0;$j<size($arVtxNor);$j++){
+			vector $vec3 = $targetNor;
+			vector $vec4 = $arVtxNor[$j];			
+			float $x2 = $vec3.x + ($vec4.x * 0.0001);
+			float $y2 = $vec3.y + ($vec4.y * 0.0001);
+			float $z2 = $vec3.z + ($vec4.z * 0.0001);
+			$targetNor = <<$x2, $y2, $z2>>;		
+		}
+		$targetNor = `unit $targetNor`;
+		float $x3 = $targetNor.x;
+		float $y3 = $targetNor.y;
+		float $z3 = $targetNor.z;
+		polyNormalPerVertex -xyz $x3 $y3 $z3 $vtxName[$i];
+	}
+	//ヒストリを削除する
+	select -r $vtxName;
+	delete -ch `polyListComponentConversion`;
+}
+
+/*頂点法線の表示切替*/
+global proc ToggleDisplayNormal(){
+	string $obj[] = `ls -sl -fl`;
+	int $pt[] = `polyOptions -q -dn $obj[0]`;
+	if($pt[0]==0){
+		polyOptions -dn 1 -pt $obj[0];
+	}else{
+		polyOptions -dn 0 $obj[0];
+	}
+}
+
+/*頂点法線表示サイズの最適化*/
+global proc AdjustDisplaySize(){
+	global string $optMenu1;
+	string $mode = `optionMenu -q -v $optMenu1`;
+	string $obj[] = `ls -sl -fl`;
+	float $bound[] = `polyEvaluate -b $obj[0]`;
+	float $disX = abs ($bound[1] - $bound[0]);
+	float $disY = abs ($bound[3] - $bound[2]);
+	float $disZ = abs ($bound[5] - $bound[4]);
+	float $size = ($disX + $disY + $disZ)/3;
+	$size = $size/20;
+	if($mode=="1/2"){//半分
+		$size = $size/2;
+		polyOptions -sn $size -dn 1 -pt $obj[0];
+	}else if($mode=="通常"){//通常
+		polyOptions -sn $size -dn 1 -pt $obj[0];
+	}else if($mode=="二倍"){//二倍
+		$size = $size*2;
+		polyOptions -sn $size -dn 1 -pt $obj[0];
+	}
+	
+}
+
+/*頂点法線をターゲットに向かってスムースする、連続押下で平均化される*/
+global proc SmoothDirectionNormal(){
+	global string $optMenu4;
+	//スムース強度を調べる
+	float $digit = `optionMenu -q -v $optMenu4`;
+	//選択頂点の重心からターゲットオブジェクトへ向かうベクトルを求める
+	vector $avVec = GetDirection();
+	//選択頂点をリスト化
+	string $vtxName[] = `ls -sl -fl`;
+	$vtxName = `polyListComponentConversion -tv $vtxName`;
+	$vtxName = `filterExpand -sm 31 $vtxName`;
+	//各頂点の目標頂点法線を取得する
+	vector $targetNor[];
+	for($i=0;$i<size($vtxName);$i++){
+		//各頂点法線を正規化する
+		float $tempNor[] = `polyNormalPerVertex -q -xyz $vtxName[$i]`;
+		vector $vtxNor;
+		for($j=0;$j<size($tempNor);$j++){
+			float $x1 = $vtxNor.x + $tempNor[$j]; $j++;
+			float $y1 = $vtxNor.y + $tempNor[$j]; $j++;
+			float $z1 = $vtxNor.z + $tempNor[$j];
+			$vtxNor = <<$x1, $y1, $z1>>;	
+		}
+		$vtxNor = `unit $vtxNor`;
+		//頂点法線と目標法線を合成する
+		float $x2 = $vtxNor.x + ($avVec.x * $digit);
+		float $y2 = $vtxNor.y + ($avVec.y * $digit);
+		float $z2 = $vtxNor.z + ($avVec.z * $digit);
+		
+		$targetNor[$i] = <<$x2, $y2, $z2>>;
+		$targetNor[$i] = `unit $targetNor[$i]`;
+		//各頂点に補正頂点法線を適用
+		vector $vec1 = $targetNor[$i];
+		float $x3 = $vec1.x;
+		float $y3 = $vec1.y;
+		float $z3 = $vec1.z;
+		polyNormalPerVertex -xyz $x3 $y3 $z3 $vtxName[$i];	
+	}
+	//ヒストリを削除
+	select -r $vtxName;
+	delete -ch `polyListComponentConversion`;
+}
+
+/*ターゲットオブジェクト方向に一律頂点法線設定*/
+global proc SetDirectedNormal(){
+	vector $target = GetDirection();
+	float $x = $target.x; float $y = $target.y; float $z = $target.z; 
+	string $vtxName[] = GetVtxList();
+	for($i=0;$i<size($vtxName);$i++){
+		polyNormalPerVertex -xyz $x $y $z $vtxName[$i];
+	}
+}
+
+/*頂点群平均座標からターゲットオブジェクトに向かうベクトルを取得*/
+global proc vector GetDirection(){
+	global string $txf1;
+	global string $txScr3;
+	//選択頂点をリスト化
+	string $vtxName[] = GetVtxList();
+	$vtxName = `polyListComponentConversion -tv $vtxName`;
+	$vtxName = `filterExpand -sm 31 $vtxName`;
+	//選択頂点群の重心座標を求める
+	float $vtxPos[];
+	for($i=0;$i<size($vtxName);$i++){
+		float $temp[] = `pointPosition -w $vtxName[$i]`;
+		$vtxPos[0] += $temp[0];
+		$vtxPos[1] += $temp[1];
+		$vtxPos[2] += $temp[2];
+	}
+	$vtxPos[0] = $vtxPos[0]/size($vtxName);
+	$vtxPos[1] = $vtxPos[1]/size($vtxName);
+	$vtxPos[2] = $vtxPos[2]/size($vtxName);
+	//ターゲットのオブジェクト名を調べる
+	string $tx = `textField -q -tx $txf1`;
+	string $target;
+	if($tx!=""){
+		$target = `textField -q -tx $txf1`;
+	}else if($tx==""){
+		string $temp[] = `textScrollList -q -selectItem $txScr3`;
+		$target = $temp[0];
+	}
+	float $tPos[] = `objectCenter $target`;
+	//上記に座標をつなぐベクトルを算出する
+	float $x = $tPos[0] - $vtxPos[0];
+	float $y = $tPos[1] - $vtxPos[1];
+	float $z = $tPos[2] - $vtxPos[2];
+	vector $dirVec = <<$x, $y, $z>>;
+	$dirVec = `unit $dirVec`;
+	return $dirVec;	
+}
+
+/*ターゲットを設定して表示を更新（Nullターゲットあり）*/
+global proc SetTarget1(){
+	global string $txf1;
+	global string $lBtn1[];
+	//リストの選択状態を調べる
+	int $id;
+	int $cnt = 0;
+	for($i=0;$i<size($lBtn1);$i++){
+		int $num = `layerButton -q -s $lBtn1[$i]`;
+		if($num==1){
+			$id = $i;
+			$cnt++;
+		}
+	}
+	if($cnt==0){//リスト選択がない場合
+		string $obj[] = `ls -sl -fl`;
+		textField -e -tx $obj[0] $txf1;
+	}else if($cnt!=0){//リストで選択があれば
+		string $selected = `layerButton -q -l $lBtn1[$id]`;
+		textField -e -tx $selected $txf1;
+	}
+}
+
+/*頂点法線をスムースする、連続押下で平均化される*/
+global proc SmoothAverageNormal(){
+	global string $optMenu3;
+	//スムース強度を調べる
+	float $digit = `optionMenu -q -v $optMenu3`;
+	//選択頂点の平均法線ベクトルを調べる
+	vector $avVec = GetAverageNormal();
+	//選択頂点をリスト化
+	string $vtxName[] = GetVtxList();
+	$vtxName = `polyListComponentConversion -tv $vtxName`;
+	$vtxName = `filterExpand -sm 31 $vtxName`;
+	//ターゲットとなる頂点法線と平均法線を合成した各頂点法線を算出する
+	vector $targetNor[];
+	for($i=0;$i<size($vtxName);$i++){
+		//各頂点の頂点法線を正規化する
+		float $tempNor[] = `polyNormalPerVertex -q -xyz $vtxName[$i]`;
+		vector $vtxNor[];
+		for($j=0;$j<size($tempNor);$j++){
+			vector $vec1 = $vtxNor[$j];
+			float $x1 = $vec1.x + ($tempNor[$j] * $digit); $j++;
+			float $y1 = $vec1.y + ($tempNor[$j] * $digit); $j++;
+			float $z1 = $vec1.z + ($tempNor[$j] * $digit);
+			$vtxNor[$i] = <<$x1, $y1, $z1>>;		
+		}
+		$vtxNor[$i] = `unit $vtxNor[$i]`;
+		//各頂点法線と平均法線ベクトルを合成する
+		vector $vec2 = $vtxNor[$i];
+		float $x2 = $vec2.x + ($avVec.x * $digit);
+		float $y2 = $vec2.y + ($avVec.y * $digit);
+		float $z2 = $vec2.z + ($avVec.z * $digit);
+		$targetNor[$i] = <<$x2, $y2, $z2>>;
+		$targetNor[$i] = `unit $targetNor[$i]`;
+		$vec2 = $targetNor[$i];
+		float $x4 = $vec2.x;
+		float $y4 = $vec2.y;
+		float $z4 = $vec2.z;
+		polyNormalPerVertex -xyz $x4 $y4 $z4 $vtxName[$i];	
+	}
+	delete -ch `polyListComponentConversion`;
+}
+/*選択頂点をリストかシーンどちらかから取得する*/
+global proc string[] GetVtxList(){
+	global string $txScr2;
+	string $selected[] = `ls -sl -fl`;
+	$selected = `polyListComponentConversion -tv $selected`;
+	$selected = `filterExpand -sm 31 $selected`;
+	string $return[];
+	string $set[] = `textScrollList -q  -selectItem $txScr2`;
+	if(`size($set)`==0){
+		$return = $selected;
+	}else{
+		select -r -ne $set[0];
+		$return = `ls -sl -fl`;
+		$return = `polyListComponentConversion -tv $selected`;
+		$return = `filterExpand -sm 31 $selected`;
+	}
+	return $return;
+}
+
+/*平均頂点法線ベクトルを一律適用する*/
+global proc SetAverageNormal(){
+	//選択頂点群の平均法線ベクトルを取得する
+	vector $vec = GetAverageNormal();
+	float $x = $vec.x;
+	float $y = $vec.y;
+	float $z = $vec.z;
+	//選択頂点をリスト化する
+	string $vtxName[] = GetVtxList();
+	$vtxName = `polyListComponentConversion -tv $vtxName`;
+	$vtxName = `filterExpand -sm 31 $vtxName`;
+	//平均法線を適用する
+	for($i=0;$i<size($vtxName);$i++){
+		polyNormalPerVertex -xyz $x $y $z;
+	}
+	delete -ch `polyListComponentConversion`;
+}
+
+/*選択頂点の平均頂点法線ベクトルを取得する*/
+global proc vector GetAverageNormal(){
+	//選択頂点番号を取得する
+	string $vtxName[] = `ls -sl -fl`;
+	$vtxName = `polyListComponentConversion -tv $vtxName`;
+	$vtxName = `filterExpand -sm 31 $vtxName`;
+	//全頂点の頂点法線を取得して正規化する
+	vector $vtxNor[];;
+	for($i=0;$i<size($vtxName);$i++){
+		float $temp[] = `polyNormalPerVertex -q -xyz`;
+		for($j=0;$j<size($temp);$j++){
+			vector $vec1 = $vtxNor[$i];
+			float $x1 = $vec1.x + $temp[$j]; $j++;
+			float $y1 = $vec1.y + $temp[$j]; $j++;
+			float $z1 = $vec1.z + $temp[$j];
+			$vtxNor[$i] = <<$x1, $y1, $z1>>;
+		}
+		$vtxNor[$i] = `unit $vtxNor[$i]`;			
+	}
+	//選択頂点群の平均法線ベクトルを取得する
+	vector $aveNor;
+	for($i=0;$i<size($vtxNor);$i++){
+		vector $vec2 = $vtxNor[$i];
+		float $x1 = $aveNor.x + $vec2.x;
+		float $y1 = $aveNor.y + $vec2.y;
+		float $z1 = $aveNor.z + $vec2.z;
+		$aveNor = <<$x1, $y1, $z1>>;
+	}
+	$aveNor = `unit $aveNor`;
+	return $aveNor;
+}
+
