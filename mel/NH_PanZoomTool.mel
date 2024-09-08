@@ -1,0 +1,292 @@
+//ウィンドウ
+global string $NH_PZ_Win;//ウィンドウ名
+global string $locName = "NH_Img";
+//コントロール
+global string $PZ_txf1;//現在のカメラ表示テクストフィールド
+global string $PZ_txt1;//カメラ位置固定表示テキスト
+global string $PZ_pnl1;//パネルレイアウト名
+global string $PZ_opm1;//オプションメニュー
+global string $PZ_clm1;//オプションメニュー直上Columnレイアウト
+global string $PZ_fsb1;//上下移動フロートスライダーバー
+global string $PZ_fsb2;//左右移動フロートスライダーバー
+global string $PZ_fsb3;//ズームフロートスライダーバー
+global string $PZ_ftf1;//移動量フロートテキストフィールド
+global string $PZ_ftf2;//拡縮量フロートテキストフィールド
+global string $PZ_fls1;//アルファゲインフロートスライダー
+global string $PZ_fls2;//深度フロートスライダー
+global string $PZ_clm2;//イメージプレーン以下表示格納Columnレイアウト
+global string $PZ_txt2;//イメプレ状態テキスト
+global string $PZ_rcl;
+//取得情報
+global string $cmr[];//IMGロケータ直下のカメラリスト
+global string $c_st[];//カメラのアトリビュートロック状態
+global string $i_st[];//カメラのIMG接続状況
+
+global proc NH_PanZoomTool(){
+	//ウィンドウ
+	global string $NH_PZ_Win;//ウィンドウ名
+	//コントロール
+	global string $PZ_txf1;//現在のカメラ表示テクストフィールド
+	global string $PZ_txt1;//カメラ位置固定表示テキスト
+	global string $PZ_pnl1;//パネルレイアウト名
+	global string $PZ_opm1;//オプションメニュー
+	global string $PZ_clm1;//オプションメニュー直上Columnレイアウト
+	global string $PZ_fsb1;//上下移動フロートスライダーバー
+	global string $PZ_fsb2;//左右移動フロートスライダーバー
+	global string $PZ_fsb3;//ズームフロートスライダーバー
+    global string $PZ_ftf1;//移動量フロートテキストフィールド    
+    global string $PZ_ftf2;//拡縮量フロートテキストフィールド
+	global string $PZ_fls1;//アルファゲインフロートスライダー
+	global string $PZ_fls2;//深度フロートスライダー
+	global string $PZ_clm2;//イメージプレーン以下表示格納Columnレイアウト
+	global string $PZ_txt2;//イメプレ状態テキスト
+	global string $PZ_rcl;
+	//取得情報
+	global string $cmr[];//IMGロケータ直下のカメラリスト
+	global string $c_st[];//カメラのアトリビュートロック状態
+	global string $i_st[];//カメラのIMG接続状況
+	//情報取得
+	if(`window -q -ex $NH_PZ_Win`)deleteUI $NH_PZ_Win;
+	$NH_PZ_Win = `window -t "NHパンズームツール"`;
+	//事前に「NH_Img」を取得
+	CheckImg();
+	//事前取得
+	GetCamera();//カメラ検索
+	//レイアウト定義
+	paneLayout -p $NH_PZ_Win;
+		$PZ_pnl1 = `modelPanel`;
+		rowLayout -nc 2 -w 300 -h 150;
+		    frameLayout -l "操作パネル" -w 300;	
+        		rowLayout -nc 3;
+        			columnLayout -w 25;
+        				text -l "＋";
+        				$PZ_fsb3 = `floatScrollBar -hr 0 -w 20 -h 145`;
+        				text -l "－";
+        			setParent..;
+        			columnLayout -w 25;
+        				text -l "↑";
+        				$PZ_fsb1 = `floatScrollBar -hr 0 -w 20 -h 145`;
+        				text -l "↓";
+        			setParent..;
+        			columnLayout -w 350;
+        				rowLayout -nc 3 -h 25;
+        					$PZ_clm1 = `columnLayout`;
+	        					$PZ_opm1 = `optionMenu -l "カメラ切替" -cc "SetCamera(\"#1\");SetCameraState(\"#1\");SetIMGDisplay(\"#1\")" -p $PZ_clm1`;
+	        					    for($i=0;$i<size($cmr);$i++){
+	        					        menuItem -l $cmr[$i];
+	        					    }
+	        				setParent..;
+        					button -l "更新" -c "UpdateOptionMenu()" -w 50 -h 20;
+        				setParent..;
+        				rowLayout -nc 5;
+        					text -l "移動量" -w 45 -al "left";
+        					$PZ_ftf1 = `floatField -w 60`;
+        					text -l "" -w 10;
+        					text -l "拡縮量" -w 45 -al "left";
+        					$PZ_ftff2 = `floatField -w 60`;
+        				setParent..;
+        				rowLayout -nc 4 -h 25;
+        					text -l "カメラ位置固定" -w 80 -al "left";
+        					button -l "切替" -c "ToggleCameraState()" -w 50 -h 20;
+        					text -l "状態" -w 45;
+        					$PZ_txt1 = `text -w 40 -h 20`;
+        				setParent..;
+        				rowLayout -nc 3 -h 25;
+        					text -l "イメージプレーン接続" -w 125 -al "left";
+							$PZ_txt2 = `text -w 75 -h 20`;
+						setParent..;
+						$PZ_clm2 = `columnLayout`;
+	        				rowLayout -nc 3 -h 25;
+	        					text -l "表示方法" -w 50 -al "left";
+	        					$PZ_rcl = `radioCollection`;
+	        					radioButton -l "このカメラのみ" -w 85;
+	        					radioButton -l "全てのカメラ" -w 85;
+	        				setParent..;
+	        				rowLayout -nc 4 -h 25;
+	        					text -l "アルファゲイン" -w 65 -al "left";
+	        					$PZ_fls1 = `floatSlider -w 85`;
+	        					button -l "OFF" -c "" -w 35 -h 20;
+	        					button -l "ON" -c "" -w 35 -h 20;
+	        				setParent..;
+	        				rowLayout -nc 4 -h 25;
+	        					text -l "深度" -w 65 -al "left";
+	        					$PZ_fls2 = `floatSlider -w 85`;
+	        					button -l "手前" -c "" -w 35 -h 20;
+	        					button -l "奥" -c "" -w 35 -h 20;
+	        				setParent..;
+	        			setParent..;
+        				rowLayout -nc 3;
+        					text -l "←";
+        					$PZ_fsb2 = `floatScrollBar -hr 1 -w 200 -h 20`;
+        					text -l "→";
+        				setParent..;
+        			setParent..;
+        		setParent..;
+        		columnLayout;
+        		setParent..;
+            setParent..;
+		setParent..;
+	setParent..;
+	//初期コントロール反映
+	SetCameraState($cmr[0]);
+	SetIMGDisplay($cmr[0]);
+	//ウィンドウ表示
+	showWindow $NH_PZ_Win;		
+}
+//事前に「NH_img」の存在を調べる
+global proc CheckImg(){
+	global string $locName;
+	if(`objExists $locName`==0){
+		createNode "locator" -n $locName;
+	}
+}
+//シーン内のイメージプレーンの接続状態を調べる
+global proc CheckIMGDisplay(){
+	global string $cmr[];//IMGロケータ直下のカメラリスト
+	global string $i_st[];//カメラのIMG接続状況
+	for($i=0;$i<size($cmr);$i++){
+		string $tmp1[] = `listRelatives $cmr[$i]`;
+		string $tmp2[] = `listConnections ($tmp1[0] + ".message")`;
+		if(size($tmp2)!=0){
+				$i_st[$i] = "接続";
+		}else{
+			$i_st[$i] = "未接続";
+		}
+	}
+}
+
+//イメージプレーン接続状態をテキストにセットする
+global proc SetIMGDisplay(string $n_cmr){
+	global string $PZ_txt2;//イメプレ状態テキスト
+	global string $cmr[];//IMGロケータ直下のカメラリスト
+	global string $i_st[];//カメラのIMG接続状況
+	
+	CheckIMGDisplay();
+	for($i=0;$i<size($cmr);$i++){
+		if($cmr[$i] == $n_cmr){
+			if($i_st[$i]=="未接続"){
+				text -edit -l "未接続" -bgc 1 0 0 -w 75 -h 20 $PZ_txt2;
+			}else if($i_st[$i]=="接続"){
+				text -edit -l "接続" -bgc 0 0 1 -w 75 -h 20 $PZ_txt2;
+			}	
+		}
+	}
+}
+
+//カメラのトランスフォームのロック切替関数
+global proc ToggleCameraState(){
+	global string $PZ_txt1;//カメラ位置固定表示テキスト
+	global string $PZ_opm1;//オプションメニュー
+	
+	string $st1 = `text -q -l $PZ_txt1`;
+	string $st2 = `optionMenu -q -v $PZ_opm1`;
+	if($st1=="ロック中"){
+		setAttr -l 0 ($st2 + ".tx");
+		setAttr -l 0 ($st2 + ".ty");
+		setAttr -l 0 ($st2 + ".tz");
+		setAttr -l 0 ($st2 + ".rx");
+		setAttr -l 0 ($st2 + ".ry");
+		setAttr -l 0 ($st2 + ".rz");
+		CheckCameraState();
+		SetCameraState($st2);
+	}else if($st1=="解除"){
+		setAttr -l 1 ($st2 + ".tx");
+		setAttr -l 1 ($st2 + ".ty");
+		setAttr -l 1 ($st2 + ".tz");
+		setAttr -l 1 ($st2 + ".rx");
+		setAttr -l 1 ($st2 + ".ry");
+		setAttr -l 1 ($st2 + ".rz");
+		CheckCameraState();
+		SetCameraState($st2);
+	}
+}
+//シーン内のIMGカメラのロック状態を調べる
+global proc CheckCameraState(){
+	global string $cmr[];//IMGロケータ直下のカメラリスト
+	global string $c_st[];//カメラのアトリビュートロック状態
+	
+	for($i=0;$i<size($cmr);$i++){
+		string $st1[];
+		$st1[0] = `getAttr -l ($cmr[$i] + ".tx")`;
+		$st1[1] = `getAttr -l ($cmr[$i] + ".ty")`;
+		$st1[2] = `getAttr -l ($cmr[$i] + ".tz")`;
+		$st1[3] = `getAttr -l ($cmr[$i] + ".rx")`;
+		$st1[4] = `getAttr -l ($cmr[$i] + ".ry")`;
+		$st1[5] = `getAttr -l ($cmr[$i] + ".rz")`;
+		if($st1[0]==1 && $st1[1]==1 && $st1[2]==1 && $st1[3]==1 && $st1[4]==1 && $st1[5]==1){
+			$c_st[$i] = "ロック中";
+		}else{
+			$c_st[$i] = "解除";
+		}
+	}
+}
+
+//カメラ名を受けてカメラ位置テキストを更新する関数
+global proc SetCameraState(string $n_cmr){
+	//取得情報
+	global string $cmr[];//IMGロケータ直下のカメラリスト
+    global string $c_st[];//カメラのアトリビュートロック状態
+    //コントロール
+	global string $PZ_txt1;//カメラ位置固定表示テキスト
+	CheckCameraState();
+	for($i=0;$i<size($cmr);$i++){
+		if($cmr[$i]==$n_cmr){
+			if($c_st[$i]=="ロック中"){
+				text -edit -l $c_st[$i] -bgc 1 0 0 -w 40 -h 20 $PZ_txt1;
+			}else if($c_st[$i]=="解除"){
+				text -edit -l $c_st[$i] -bgc 0 0 1 -w 40 -h 20 $PZ_txt1;
+			}	
+		}
+	}	
+}
+
+
+//パネルにセットされている現在のカメラ
+global proc GetCamera(){
+	global string $locName;
+    //取得情報
+    global string $cmr[];//IMGロケータ直下のカメラリスト
+    //実行
+    clear $cmr;
+    $cmr = `listRelatives -ad -typ "transform" $locName`;
+    for($i=0;$i<size($cmr);$i++){
+        string $st1[] = `listRelatives -c $cmr[$i]`;//シェイプノードに変換
+        string $st2[] = `ls -st $st1[0]`;
+        if($st2[1]!="camera"){
+            stringArrayRemoveAtIndex($i,$cmr);
+            $i--;
+        }
+    }
+}
+//改めてシーン内のカメラ情報を読みオプションメニューを更新する関数
+global proc UpdateOptionMenu(){
+    //コントロール
+    global string $PZ_opm1;//オプションメニュー
+    global string $PZ_clm1;//オプションメニュー直上Columnレイアウト 
+    //取得情報
+    global string $cmr[];//IMGロケータ直下のカメラリスト
+    GetCamera();
+    if(`optionMenu -q -ex $PZ_opm1`)deleteUI $PZ_opm1;
+    $PZ_opm1 = `optionMenu -l "カメラ切替" -cc "SetCamera(\"#1\");SetCameraState(\"#1\")" -p $PZ_clm1`;
+    for($i=0;$i<size($cmr);$i++){
+        menuItem -l $cmr[$i];
+    }
+}
+
+//モデルパネルのカメラを切り替える関数
+global proc SetCamera(string $t_cam){
+    //コントロール
+    global string $PZ_pnl1;//パネルレイアウト名
+	//実行
+	string $st1 = `modelPanel -q -cam $PZ_pnl1`;
+	modelPanel -edit -cam $t_cam $PZ_pnl1;    
+
+}
+
+
+
+
+
+
+
+
