@@ -8,66 +8,100 @@ float3 gLight0Dir   :   DIRECTION <
     int UIOrder = 0;
 >;
 //カラー設定
-float3 gBaseColor <
+uniform bool gUseBaseColorTexture <
     string UIGroup = "Color Setting";
-    int UIOrder = 201;
+    int UIOrder = 100;
+    string UIName = "Use BaseColor Texture";
+> = false;
+
+uniform float3 gBaseColor <
+    string UIGroup = "Color Setting";
+    int UIOrder = 101;
     string UIName = "Base Color";
     string UIWidget = "Color Picker";
 > = {1.0f, 1.0f, 1.0f};
 
-float3 gShadowColor <
+uniform Texture2D gBaseColorTexture <
     string UIGroup = "Color Setting";
-    int UIOrder = 202;
+    int UIOrder = 102;
+    string UIName = "BaseColorTexture";
+    string UIWidget = "FilePicker";
+    string ResourceType = "2D";
+>;
+
+uniform bool gUseShadowColorTexture <
+    string UIGroup = "Color Setting";
+    int UIOrder = 103; 
+    string UIName = "Use ShadowColor Texture";
+> = false;
+
+uniform float3 gShadowColor <
+    string UIGroup = "Color Setting";
+    int UIOrder = 104;
     string UIName = "Shadow Color";
     string UIWidget = "Color Picker";
 > = {0.5f, 0.5f, 0.5f};
 
+uniform Texture2D gShadowColorTexture <
+    string UIGroup = "Color Setting";
+    int UIOrder = 105;
+    string UIName = "ShadowColor Texture";
+    string UIWidget = "FilePicker";
+    string ResourceType = "2D";
+>;
+
 //法線強調モード
-float gHilightIntensity <
+uniform float gHilightIntensity <
     string UIGroup = "Hilight Normal";
-    int UIOrder = 300;
+    int UIOrder = 200;
     string UIName = "Hilight Normal Intensity";
     float UIMin = 1.0f;
     float UIMax = 10.0f;
 > = 1.0f;
-//トゥーンモード
 
-float gToonThreshold <
+//トゥーンモード
+uniform float gToonThreshold <
     string UIGroup = "Toon Shading";
-    int UIOrder = 301;
+    int UIOrder = 300;
     string UIName = "Toon Shreshold";
     float UIMin = -1.0f;
     float UIMax = 1.0f;
 > = 0.0f;
 
-float gToonFeather <
+uniform float gToonFeather <
     string UIGroup = "Toon Shading";
-    int UIOrder = 302;
+    int UIOrder = 301;
     string UIName = "Toon Feather";
     float UIMin = 0.0f;
     float UIMax = 1.0f;
 > = 0.0f;
 
-bool gUseOutline <
+uniform bool gUseOutline <
     string UIGroup = "Outline";
-    int UIOrder = 303;
+    int UIOrder = 302;
     string UIName = "Use Outline";
 > = false;
 
-float3 gOutlineColor <
+uniform float3 gOutlineColor <
     string UIGroup = "Outline";
-    int UIOrder = 304;
+    int UIOrder = 303;
     string UIName = "Outline Color";
     string UIWidget = "Color Picker";
 > = {0.0f, 0.0f, 0.0f};
 
-float gOutlineWidth <
+uniform float gOutlineWidth <
     string UIGroup = "Outline";
-    int UIOrder = 305;
+    int UIOrder = 304;
     string UIName = "Outline Width";
     float UIMin = 0.0f;
     float UIMax = 5.0f;
 > = 1.0f;
+
+uniform SamplerState gWrapSampler{
+    Filter = MIN_MAG_MIP_LINEAR;
+    AddressU = WRAP;
+    AddressV = WRAP;
+};
 
 struct VS_INPUT{
     float4 Position :   POSITION;
@@ -107,7 +141,19 @@ float4 PS_DEF(VS_TO_PS In) : SV_Target{
     float N;
     float3 lightDir = normalize(gLight0Dir);
     N = dot(-gLight0Dir, In.Normal.xyz);
-    color = lerp(gShadowColor, gBaseColor, N);
+    float3 baseColor;
+    float3 shadowColor;
+    if(gUseBaseColorTexture == true){
+        baseColor = gBaseColorTexture.Sample(gWrapSampler, In.UV) * gBaseColor;
+    }else{
+        baseColor = gBaseColor;
+    }
+    if(gUseShadowColorTexture == true){
+        shadowColor = gShadowColorTexture.Sample(gWrapSampler, In.UV) * gShadowColor;
+    }else{
+        shadowColor = gShadowColor;
+    }
+    color = lerp(shadowColor, baseColor, N);
     return float4(color, 1.0f);
 }
 
@@ -117,7 +163,19 @@ float4 PS_HILIGHT(VS_TO_PS In) : SV_Target{
     float3 lightDir = normalize(gLight0Dir);
     N = dot(-gLight0Dir, In.Normal.xyz);
     N = pow(N * 0.5 + 0.5, gHilightIntensity) * 2.0f - 1.0f;
-    color = lerp(gShadowColor, gBaseColor, N);
+    float3 baseColor;
+    float3 shadowColor;
+    if(gUseBaseColorTexture == true){
+        baseColor = gBaseColorTexture.Sample(gWrapSampler, In.UV) * gBaseColor;
+    }else{
+        baseColor = gBaseColor;
+    }
+    if(gUseShadowColorTexture == true){
+        shadowColor = gShadowColorTexture.Sample(gWrapSampler, In.UV) * gShadowColor;
+    }else{
+        shadowColor = gShadowColor;
+    }
+    color = lerp(shadowColor, baseColor, N);
     return float4(color, 1.0f);
 }
 
@@ -128,7 +186,19 @@ float4 PS_TOON(VS_TO_PS In) : SV_Target{
     N = dot(-gLight0Dir, In.Normal.xyz);
     N = smoothstep(gToonThreshold - gToonFeather, gToonThreshold + gToonFeather, N);
     N = clamp(0.0, 1.0, N);
-    color = lerp(gShadowColor, gBaseColor, N);
+    float3 baseColor;
+    float3 shadowColor;
+    if(gUseBaseColorTexture == true){
+        baseColor = gBaseColorTexture.Sample(gWrapSampler, In.UV) * gBaseColor;
+    }else{
+        baseColor = gBaseColor;
+    }
+    if(gUseShadowColorTexture == true){
+        shadowColor = gShadowColorTexture.Sample(gWrapSampler, In.UV) * gShadowColor;
+    }else{
+        shadowColor = gShadowColor;
+    }
+    color = lerp(shadowColor, baseColor, N);
     return float4(color, 1.0f);
 }
 
