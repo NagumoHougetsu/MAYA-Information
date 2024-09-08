@@ -1,7 +1,7 @@
-//’¸“_–@ü‚ğ•ÒW‚·‚éMEL
+//é ‚ç‚¹æ³•ç·šã‚’ç·¨é›†ã™ã‚‹MEL
 global string $NHVEditWin;
 global string $sourceGrp = "NH_Source_GRP";
-//global int $digit = 2;//”’l‚ª‘å‚«‚¢‚Ù‚ÇŠë‹@‚ªã‚­‚È‚é
+//global int $digit = 2;//æ•°å€¤ãŒå¤§ãã„ã»ã©å±æ©ŸãŒå¼±ããªã‚‹
 global string $selectedSelSet;
 global string $txf1;
 global string $txf2;
@@ -49,76 +49,76 @@ global proc NH_VertexNormalEditor(){
 	global string $scrL1;
 	global string $shelB1;
 	string $path = GetScriptPath("NH_VtxEditor");
-	//d•¡‹N“®”rœ
+	//é‡è¤‡èµ·å‹•æ’é™¤
 	int $windowPos[];
 	if(`window -ex $NHVEditWin`==true){
 		$windowPos = `window -q -tlc $NHVEditWin`;
 		deleteUI $NHVEditWin;
 	}
-	//ƒEƒBƒ“ƒhƒEì¬
-	$NHVEditWin = `window -t "yNHƒc[ƒ‹z’¸“_–@ü•ÒWƒc[ƒ‹" -ret -tlc $windowPos[0] $windowPos[1]`;
-	//ƒRƒ“ƒgƒ[ƒ‹’è‹`
+	//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ä½œæˆ
+	$NHVEditWin = `window -t "ã€NHãƒ„ãƒ¼ãƒ«ã€‘é ‚ç‚¹æ³•ç·šç·¨é›†ãƒ„ãƒ¼ãƒ«" -ret -tlc $windowPos[0] $windowPos[1]`;
+	//ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«å®šç¾©
 	
 	rowLayout -nc 2 -rat 1 top 0 -rat 2 top 0 -p $NHVEditWin;
 		rowLayout -nc 3 -rat 1 top 0 -rat 2 top 0 -rat 3 top 0;
 			columnLayout;
-			 	frameLayout -l "ƒ\[ƒXƒƒbƒVƒ…" -w 180 -h 200;
+			 	frameLayout -l "ã‚½ãƒ¼ã‚¹ãƒ¡ãƒƒã‚·ãƒ¥" -w 180 -h 200;
 			 		columnLayout;
 				 		$scrL1 = `scrollLayout -hst 16 -vst 16 -w 180 -h 150 -bgc 0.18 0.18 0.18`;
 				 			$lBtn1[0] = `layerButton -p $scrL1`;UpdateSourceList();			 		
 				    	setParent..;
 				    	rowLayout -nc 4;
-					    	button -l "XV" -w 42 -c "UpdateSourceList()" -ann "ƒ\[ƒXƒƒbƒVƒ…ƒŠƒXƒg‚ğXV‚µ‚Ü‚·";
-					    	button -l "‘I‘ğ" -w 42 -c "SelectSourceList()" -ann "‘I‘ğ‚µ‚½ƒŒƒCƒ„[‚Ìƒ\[ƒXƒƒbƒVƒ…‚ğ‘I‘ğ‚µ‚Ü‚·";
-					    	button -l "’Ç‰Á" -w 42 -c "AddSourceList()" -ann "‘I‘ğ‚µ‚Ä‚¢‚éƒƒbƒVƒ…‚ğƒ\[ƒXƒƒbƒVƒ…ƒŠƒXƒg‚É’Ç‰Á‚µ‚Ü‚·\n’Ç‰Á‚³‚ê‚½ƒƒbƒVƒ…‚ÍuSourcevƒm[ƒh‚Ì’†‚ÉˆÚ“®‚³‚ê‚Ü‚·";
-					    	button -l "œ‹" -w 42 -c "DeleteLayer()" -ann "‘I‘ğ‚µ‚½ƒŒƒCƒ„[‚ğíœ‚µ‚Ü‚·\n‘ÎÛƒƒbƒVƒ…‚ÍuSourcevƒm[ƒh‚ÌŠO‚ÉˆÚ“®‚³‚ê‚Ü‚·";
+					    	button -l "æ›´æ–°" -w 42 -c "UpdateSourceList()" -ann "ã‚½ãƒ¼ã‚¹ãƒ¡ãƒƒã‚·ãƒ¥ãƒªã‚¹ãƒˆã‚’æ›´æ–°ã—ã¾ã™";
+					    	button -l "é¸æŠ" -w 42 -c "SelectSourceList()" -ann "é¸æŠã—ãŸãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚½ãƒ¼ã‚¹ãƒ¡ãƒƒã‚·ãƒ¥ã‚’é¸æŠã—ã¾ã™";
+					    	button -l "è¿½åŠ " -w 42 -c "AddSourceList()" -ann "é¸æŠã—ã¦ã„ã‚‹ãƒ¡ãƒƒã‚·ãƒ¥ã‚’ã‚½ãƒ¼ã‚¹ãƒ¡ãƒƒã‚·ãƒ¥ãƒªã‚¹ãƒˆã«è¿½åŠ ã—ã¾ã™\nè¿½åŠ ã•ã‚ŒãŸãƒ¡ãƒƒã‚·ãƒ¥ã¯ã€ŒSourceã€ãƒãƒ¼ãƒ‰ã®ä¸­ã«ç§»å‹•ã•ã‚Œã¾ã™";
+					    	button -l "é™¤å»" -w 42 -c "DeleteLayer()" -ann "é¸æŠã—ãŸãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’å‰Šé™¤ã—ã¾ã™\nå¯¾è±¡ãƒ¡ãƒƒã‚·ãƒ¥ã¯ã€ŒSourceã€ãƒãƒ¼ãƒ‰ã®å¤–ã«ç§»å‹•ã•ã‚Œã¾ã™";
 					    setParent..;
 				    setParent..;
 			    setParent..;
-			    frameLayout -l "ƒNƒCƒbƒN‘I‘ğƒZƒbƒg" -w 180 -h 200 -ann "’¸“_‘I‘ğ‚ğƒZƒbƒg‚Æ‚µ‚ÄŠÇ—‚µ‚Ü‚·\nƒAƒEƒgƒ‰ƒCƒiã‚É•\¦‚³‚ê‚Ä‚¢‚éuƒNƒCƒbƒN‘I‘ğƒZƒbƒgv‚ª‚±‚±‚É•\¦‚³‚ê‚Ü‚·\n¦ƒAƒEƒgƒ‰ƒCƒiã‚Å•ÒW‚µ‚Ä‚à–â‘è‚ ‚è‚Ü‚¹‚ñ‚ªuXVv‚µ‚È‚¢‚Æ”½‰f‚³‚ê‚Ü‚¹‚ñ";
+			    frameLayout -l "ã‚¯ã‚¤ãƒƒã‚¯é¸æŠã‚»ãƒƒãƒˆ" -w 180 -h 200 -ann "é ‚ç‚¹é¸æŠã‚’ã‚»ãƒƒãƒˆã¨ã—ã¦ç®¡ç†ã—ã¾ã™\nã‚¢ã‚¦ãƒˆãƒ©ã‚¤ãƒŠä¸Šã«è¡¨ç¤ºã•ã‚Œã¦ã„ã‚‹ã€Œã‚¯ã‚¤ãƒƒã‚¯é¸æŠã‚»ãƒƒãƒˆã€ãŒã“ã“ã«è¡¨ç¤ºã•ã‚Œã¾ã™\nâ€»ã‚¢ã‚¦ãƒˆãƒ©ã‚¤ãƒŠä¸Šã§ç·¨é›†ã—ã¦ã‚‚å•é¡Œã‚ã‚Šã¾ã›ã‚“ãŒã€Œæ›´æ–°ã€ã—ãªã„ã¨åæ˜ ã•ã‚Œã¾ã›ã‚“";
 			    	columnLayout;
 			    		$txScr2 = `textScrollList -h 120 -nr 12 -ams 1 -dkc "DeleteSelList()" -sc "SingleClickSetList()" -dcc "DoubleClickSelList()"`; UpdateSelList();
 				    	rowLayout -nc 4;
-				    		button -l "XV" -w 42 -c "UpdateSelList()" -ann "‘I‘ğƒZƒbƒgƒŠƒXƒg‚ğXV‚µ‚Ü‚·";
-				    		button -l "‘I‘ğ" -w 42 -c "SelectSetList()" -ann "‘I‘ğ‚µ‚½€–Ú‚Ì‘I‘ğƒZƒbƒg‚ÉŠÜ‚Ü‚ê‚é’¸“_‚ğ‘I‘ğ‚µ‚Ü‚·\n¦•¡”‘I‘ğ‰Â”\";
-				    		button -l "ì¬" -w 42 -c "CreateSetList()" -ann "‘I‘ğ‚µ‚Ä‚¢‚é’¸“_‚ğŠÜ‚Ş‘I‘ğƒZƒbƒg‚ğV‹Kì¬‚µ‚Ü‚·";
-				    		button -l "íœ" -w 42 -c "DeleteSelList()" -ann "‘I‘ğ‚µ‚½€–Ú‚ğƒV[ƒ““à‚©‚çíœ‚µ‚Ü‚·\nƒŠƒXƒg“à‚ÅuDeleteƒL[v‚È‚Ç‚Å‚àíœ‚Å‚«‚Ü‚·\n•¡”“¯íœ‰Â”\";
+				    		button -l "æ›´æ–°" -w 42 -c "UpdateSelList()" -ann "é¸æŠã‚»ãƒƒãƒˆãƒªã‚¹ãƒˆã‚’æ›´æ–°ã—ã¾ã™";
+				    		button -l "é¸æŠ" -w 42 -c "SelectSetList()" -ann "é¸æŠã—ãŸé …ç›®ã®é¸æŠã‚»ãƒƒãƒˆã«å«ã¾ã‚Œã‚‹é ‚ç‚¹ã‚’é¸æŠã—ã¾ã™\nâ€»è¤‡æ•°é¸æŠå¯èƒ½";
+				    		button -l "ä½œæˆ" -w 42 -c "CreateSetList()" -ann "é¸æŠã—ã¦ã„ã‚‹é ‚ç‚¹ã‚’å«ã‚€é¸æŠã‚»ãƒƒãƒˆã‚’æ–°è¦ä½œæˆã—ã¾ã™";
+				    		button -l "å‰Šé™¤" -w 42 -c "DeleteSelList()" -ann "é¸æŠã—ãŸé …ç›®ã‚’ã‚·ãƒ¼ãƒ³å†…ã‹ã‚‰å‰Šé™¤ã—ã¾ã™\nãƒªã‚¹ãƒˆå†…ã§ã€ŒDeleteã‚­ãƒ¼ã€ãªã©ã§ã‚‚å‰Šé™¤ã§ãã¾ã™\nè¤‡æ•°åŒæ™‚å‰Šé™¤å¯èƒ½";
 				    	setParent..;
 				    	rowLayout -nc 4;
-				    		button -l "•¡»" -w 42 -c "DuplicateSetList()" -ann "‘I‘ğƒZƒbƒg‚ğ•¡»‚µ‚Ü‚·";
-				    		button -l "‡¬" -w 42 -c "MergeSetList()" -ann "‘I‘ğ‚µ‚½‘I‘ğƒZƒbƒg‚ğƒ}[ƒW‚µ‚Ü‚·\n•¡»‚³‚ê‚½‘I‘ğƒZƒbƒg‚ªV‚½‚Éì¬‚³‚ê‚Ü‚·";
-				    		button -l "’Ç‰Á" -w 42 -c "AddSetList()" -ann "‘I‘ğ‚µ‚½‘I‘ğƒZƒbƒg‚É‘I‘ğ‚³‚ê‚½’¸“_‚ğ’Ç‰Á‚µ‚Ü‚·";
-				    		button -l "œ‹" -w 42 -c "RemoveSetList()" -ann "‘I‘ğ‚µ‚½‘I‘ğƒZƒbƒg‚©‚ç‘I‘ğ‚³‚ê‚½’¸“_‚ğœ‹‚µ‚Ü‚·";
+				    		button -l "è¤‡è£½" -w 42 -c "DuplicateSetList()" -ann "é¸æŠã‚»ãƒƒãƒˆã‚’è¤‡è£½ã—ã¾ã™";
+				    		button -l "åˆæˆ" -w 42 -c "MergeSetList()" -ann "é¸æŠã—ãŸé¸æŠã‚»ãƒƒãƒˆã‚’ãƒãƒ¼ã‚¸ã—ã¾ã™\nè¤‡è£½ã•ã‚ŒãŸé¸æŠã‚»ãƒƒãƒˆãŒæ–°ãŸã«ä½œæˆã•ã‚Œã¾ã™";
+				    		button -l "è¿½åŠ " -w 42 -c "AddSetList()" -ann "é¸æŠã—ãŸé¸æŠã‚»ãƒƒãƒˆã«é¸æŠã•ã‚ŒãŸé ‚ç‚¹ã‚’è¿½åŠ ã—ã¾ã™";
+				    		button -l "é™¤å»" -w 42 -c "RemoveSetList()" -ann "é¸æŠã—ãŸé¸æŠã‚»ãƒƒãƒˆã‹ã‚‰é¸æŠã•ã‚ŒãŸé ‚ç‚¹ã‚’é™¤å»ã—ã¾ã™";
 				    	setParent..;
 				    setParent..;
 			    setParent..;
 			setParent..;
 			columnLayout;
 				rowLayout -nc 3 -rat 1 top 0 -rat 2 top 0 -rat 3 top 0;
-					frameLayout -l "’¸“_–@üƒf[ƒ^ŠÇ—";
+					frameLayout -l "é ‚ç‚¹æ³•ç·šãƒ‡ãƒ¼ã‚¿ç®¡ç†";
 				    	columnLayout;
-				    		$txScr1 = `textScrollList -w 125 -nr 12 -ams 0 -dcc "InportNormal()" -ann "ƒvƒƒWƒFƒNƒg“à‚ÌunvnDatevƒtƒHƒ‹ƒ_“à‚Ìƒtƒ@ƒCƒ‹‚ª‚±‚±‚É•\¦‚³‚ê‚Ü‚·\nƒV[ƒ““à‚É‚È‚­‚Ä‚à•Û‘¶‚µ‚½ƒf[ƒ^‚ğ“Ç‚İ‚ß‚Î’¸“_–@ü‚Ì“]Ê‚ª‚Å‚«‚Ü‚·"`;UpdateNvnDate();
+				    		$txScr1 = `textScrollList -w 125 -nr 12 -ams 0 -dcc "InportNormal()" -ann "ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆå†…ã®ã€ŒnvnDateã€ãƒ•ã‚©ãƒ«ãƒ€å†…ã®ãƒ•ã‚¡ã‚¤ãƒ«ãŒã“ã“ã«è¡¨ç¤ºã•ã‚Œã¾ã™\nã‚·ãƒ¼ãƒ³å†…ã«ãªãã¦ã‚‚ä¿å­˜ã—ãŸãƒ‡ãƒ¼ã‚¿ã‚’èª­ã¿è¾¼ã‚ã°é ‚ç‚¹æ³•ç·šã®è»¢å†™ãŒã§ãã¾ã™"`;UpdateNvnDate();
 				    		rowLayout -nc 3;
-					    		button -l "•Û‘¶" -c "ExportNormal()" -ann "‘I‘ğ‚³‚ê‚½ƒƒbƒVƒ…‚Ì’¸“_î•ñ‚ğunvnDatevƒtƒHƒ‹ƒ_[“à‚É•Û‘¶‚µ‚Ü‚·" -w 40;
-					    		button -l "“Ç" -c "InportNormal()" -ann "‘I‘ğ‚µ‚½’¸“_–@üƒf[ƒ^‚ğƒƒbƒVƒ…‚É“K—p‚µ‚Ü‚·\n¦’¸“_‘I‘ğ‰Â”\" -w 40;
-					    		button -l "íœ" -c "DeleteNormal()" -ann "‘I‘ğ‚µ‚½’¸“_–@üƒf[ƒ^‚ğƒtƒHƒ‹ƒ_“à‚©‚çíœ‚µ‚Ü‚·\n•œŒ³•s”\" -w 40;
+					    		button -l "ä¿å­˜" -c "ExportNormal()" -ann "é¸æŠã•ã‚ŒãŸãƒ¡ãƒƒã‚·ãƒ¥ã®é ‚ç‚¹æƒ…å ±ã‚’ã€ŒnvnDateã€ãƒ•ã‚©ãƒ«ãƒ€ãƒ¼å†…ã«ä¿å­˜ã—ã¾ã™" -w 40;
+					    		button -l "èª­è¾¼" -c "InportNormal()" -ann "é¸æŠã—ãŸé ‚ç‚¹æ³•ç·šãƒ‡ãƒ¼ã‚¿ã‚’ãƒ¡ãƒƒã‚·ãƒ¥ã«é©ç”¨ã—ã¾ã™\nâ€»é ‚ç‚¹é¸æŠå¯èƒ½" -w 40;
+					    		button -l "å‰Šé™¤" -c "DeleteNormal()" -ann "é¸æŠã—ãŸé ‚ç‚¹æ³•ç·šãƒ‡ãƒ¼ã‚¿ã‚’ãƒ•ã‚©ãƒ«ãƒ€å†…ã‹ã‚‰å‰Šé™¤ã—ã¾ã™\nå¾©å…ƒä¸èƒ½" -w 40;
 					    	setParent..;
-					    	$txf3 = `textField -w 125 -ec "ExportNormal()" -ann "‚±‚±‚É”CˆÓ‚Ì•¶š—ñ‚ğ“ü—Í‚µ‚Äu•Û‘¶vƒ{ƒ^ƒ“‚ğ‰Ÿ‚·‚Æ,\nunvnDatevƒtƒHƒ‹ƒ_“à‚É“¯–¼‚Ì’¸“_–@üƒtƒ@ƒCƒ‹‚ªì¬‚³‚ê‚Ü‚·\n¦Šg’£q‚Í“ü—Í•s—v‚Å‚·"`;
-					    	$optMenu7 = `optionMenu -l "“]Ê•û®" -ann "Œ`ó‚ª‹ß—‚µ‚Ä‚¢‚éê‡‚ÍuÅ‹ßÚv‚ª“K‚µ‚Ä‚¢‚Ü‚·/nŒ`ó‚ª‘å‚«‚­ˆá‚¤ê‡‚Íu–@üv‚ğ‘I‚ñ‚Å‚­‚¾‚³‚¢\n’¸“_–@ü‚Ì“]Ê‚Å‚Íu’¸“_”Ô†v‚âuUV‹óŠÔv•û®‚Íg—p‚Å‚«‚Ü‚¹‚ñ" -w 125`;
-					    				menuItem -l "Å‹ßÚ";
-										menuItem -l "–@ü";		    		
+					    	$txf3 = `textField -w 125 -ec "ExportNormal()" -ann "ã“ã“ã«ä»»æ„ã®æ–‡å­—åˆ—ã‚’å…¥åŠ›ã—ã¦ã€Œä¿å­˜ã€ãƒœã‚¿ãƒ³ã‚’æŠ¼ã™ã¨,\nã€ŒnvnDateã€ãƒ•ã‚©ãƒ«ãƒ€å†…ã«åŒåã®é ‚ç‚¹æ³•ç·šãƒ•ã‚¡ã‚¤ãƒ«ãŒä½œæˆã•ã‚Œã¾ã™\nâ€»æ‹¡å¼µå­ã¯å…¥åŠ›ä¸è¦ã§ã™"`;
+					    	$optMenu7 = `optionMenu -l "è»¢å†™æ–¹å¼" -ann "å½¢çŠ¶ãŒè¿‘ä¼¼ã—ã¦ã„ã‚‹å ´åˆã¯ã€Œæœ€è¿‘æ¥ã€ãŒé©ã—ã¦ã„ã¾ã™/nå½¢çŠ¶ãŒå¤§ããé•ã†å ´åˆã¯ã€Œæ³•ç·šã€ã‚’é¸ã‚“ã§ãã ã•ã„\né ‚ç‚¹æ³•ç·šã®è»¢å†™ã§ã¯ã€Œé ‚ç‚¹ç•ªå·ã€ã‚„ã€ŒUVç©ºé–“ã€æ–¹å¼ã¯ä½¿ç”¨ã§ãã¾ã›ã‚“" -w 125`;
+					    				menuItem -l "æœ€è¿‘æ¥";
+										menuItem -l "æ³•ç·š";		    		
 			    		setParent..;
 				    setParent..;
 					columnLayout;
-						frameLayout -l "•½‹Ï‰»";
+						frameLayout -l "å¹³å‡åŒ–";
 							columnLayout;
 								rowLayout -nc 2 -rat 1 top 0 -rat 2 top 0;
-									shelfButton -annotation "‘I‘ğ‚µ‚½’¸“_‚ğAŒ³X‚Ì’¸“_–@ü‚Ì•½‹Ï’l‚É“ˆê‚µ‚Ü‚·"
+									shelfButton -annotation "é¸æŠã—ãŸé ‚ç‚¹ã‚’ã€å…ƒã€…ã®é ‚ç‚¹æ³•ç·šã®å¹³å‡å€¤ã«çµ±ä¸€ã—ã¾ã™"
 					    				-image1 ($path + "NH_icon_01.png") -c "SetAverageNormal()";
-				    				shelfButton -annotation "‘I‘ğ‚µ‚½’¸“_‚ğAŒ³X‚Ì’¸“_–@ü‚Ì•½‹Ï’l‚É‹ß‚Ã‚¯‚Ü‚·"
+				    				shelfButton -annotation "é¸æŠã—ãŸé ‚ç‚¹ã‚’ã€å…ƒã€…ã®é ‚ç‚¹æ³•ç·šã®å¹³å‡å€¤ã«è¿‘ã¥ã‘ã¾ã™"
 				    					-image1 ($path + "NH_icon_02.png") -c "SmoothAverageNormal()";
 					    		setParent..;
-					    		$optMenu3 = `optionMenu -l "ƒXƒ€[ƒX‹­“x" -w 130 -ann "’¸“_–@ü•½‹Ï‰»‚ÌŒø‚«‹ï‡‚ğ’²®‚Å‚«‚Ü‚·\n”’l‚ª‘å‚«‚¢‚Ù‚ÇŒø‚«‚ª‹­‚¢‚Å‚·"`;
+					    		$optMenu3 = `optionMenu -l "ã‚¹ãƒ ãƒ¼ã‚¹å¼·åº¦" -w 130 -ann "é ‚ç‚¹æ³•ç·šå¹³å‡åŒ–ã®åŠ¹ãå…·åˆã‚’èª¿æ•´ã§ãã¾ã™\næ•°å€¤ãŒå¤§ãã„ã»ã©åŠ¹ããŒå¼·ã„ã§ã™"`;
 				    				menuItem -l "0.1";
 									menuItem -l "0.01";
 									menuItem -l "0.001";
@@ -126,21 +126,21 @@ global proc NH_VertexNormalEditor(){
 								text -l "";
 							setParent..;
 						setParent..;
-						frameLayout -l "Null•½‹Ï‰»";
+						frameLayout -l "Nullå¹³å‡åŒ–";
 							columnLayout;
 				    			rowLayout -nc 2 -rat 1 top 0 -rat 2 top 0;
-					    			shelfButton -annotation "‘I‘ğ‚µ‚½’¸“_‚ğAdSÀ•W‚©‚ç–Ú•WÀ•W‚ÉŒü‚©‚¤’l‚É“ˆê‚µ‚Ü‚·"
+					    			shelfButton -annotation "é¸æŠã—ãŸé ‚ç‚¹ã‚’ã€é‡å¿ƒåº§æ¨™ã‹ã‚‰ç›®æ¨™åº§æ¨™ã«å‘ã‹ã†å€¤ã«çµ±ä¸€ã—ã¾ã™"
 										-image1 ($path + "NH_icon_03.png") -c "SetDirectedNormal()";
-									shelfButton -annotation "‘I‘ğ‚µ‚½’¸“_‚ğAdSÀ•W‚©‚ç–Ú•WÀ•W‚ÉŒü‚©‚¤’l‚É‹ß‚Ã‚¯‚Ü‚·"
+									shelfButton -annotation "é¸æŠã—ãŸé ‚ç‚¹ã‚’ã€é‡å¿ƒåº§æ¨™ã‹ã‚‰ç›®æ¨™åº§æ¨™ã«å‘ã‹ã†å€¤ã«è¿‘ã¥ã‘ã¾ã™"
 										-image1 ($path + "NH_icon_04.png") -c "SmoothDirectionNormal()";
 								setParent..;
-								$optMenu4 = `optionMenu -l "ƒXƒ€[ƒX‹­“x" -w 130 -ann "’¸“_–@üNull•½‹Ï‰»‚ÌŒø‚«‹ï‡‚ğ’²®‚Å‚«‚Ü‚·\n”’l‚ª‘å‚«‚¢‚Ù‚ÇŒø‚«‚ª‹­‚¢‚Å‚·"`;
+								$optMenu4 = `optionMenu -l "ã‚¹ãƒ ãƒ¼ã‚¹å¼·åº¦" -w 130 -ann "é ‚ç‚¹æ³•ç·šNullå¹³å‡åŒ–ã®åŠ¹ãå…·åˆã‚’èª¿æ•´ã§ãã¾ã™\næ•°å€¤ãŒå¤§ãã„ã»ã©åŠ¹ããŒå¼·ã„ã§ã™"`;
 					    				menuItem -l "0.1";
 										menuItem -l "0.01";
 										menuItem -l "0.001";
 								rowLayout -nc 2;					
-									button -l "‘I‘ğ" -c "SetTarget1()" -w 40
-										 -ann "uƒAƒEƒgƒ‰ƒCƒiv‚âuƒ\[ƒXƒƒbƒVƒ…ƒŠƒXƒgv‚ÅƒƒbƒVƒ…‚ğ‘I‘ğ‚µ‚ÄÀs‚µ‚Ä‚­‚¾‚³‚¢\nNull•½‹Ï‰»‚Ìƒ\[ƒX‚Æ‚µ‚Äİ’è‚µ‚Ü‚·\n¦ƒƒbƒVƒ…‚ğ‘I‘ğ‚µ‚½ê‡ƒsƒ{ƒbƒgÀ•W‚ğŠî€‚É‚µ‚Ü‚·";
+									button -l "é¸æŠ" -c "SetTarget1()" -w 40
+										 -ann "ã€Œã‚¢ã‚¦ãƒˆãƒ©ã‚¤ãƒŠã€ã‚„ã€Œã‚½ãƒ¼ã‚¹ãƒ¡ãƒƒã‚·ãƒ¥ãƒªã‚¹ãƒˆã€ã§ãƒ¡ãƒƒã‚·ãƒ¥ã‚’é¸æŠã—ã¦å®Ÿè¡Œã—ã¦ãã ã•ã„\nNullå¹³å‡åŒ–ã®ã‚½ãƒ¼ã‚¹ã¨ã—ã¦è¨­å®šã—ã¾ã™\nâ€»ãƒ¡ãƒƒã‚·ãƒ¥ã‚’é¸æŠã—ãŸå ´åˆãƒ”ãƒœãƒƒãƒˆåº§æ¨™ã‚’åŸºæº–ã«ã—ã¾ã™";
 									$txf1 = `textField -w 90`;
 								setParent..;
 							setParent..;
@@ -148,45 +148,45 @@ global proc NH_VertexNormalEditor(){
 					setParent..;
 					columnLayout;
 						rowLayout -nc 2 -rat 1 top 0 -rat 2 top 0;
-							frameLayout -l "Source•½‹Ï‰»";
+							frameLayout -l "Sourceå¹³å‡åŒ–";
 								columnLayout;
 									rowLayout -nc 2;
-										shelfButton -annotation "‘I‘ğ‚µ‚½’¸“_‚ğAƒ\[ƒX‚Ì–@ü‚Éˆê’v‚³‚¹‚é"
+										shelfButton -annotation "é¸æŠã—ãŸé ‚ç‚¹ã‚’ã€ã‚½ãƒ¼ã‚¹ã®æ³•ç·šã«ä¸€è‡´ã•ã›ã‚‹"
 						    				-image1 ($path + "NH_icon_05.png") -c "BakeSourceNormal()";
-						    			shelfButton -annotation "‘I‘ğ‚µ‚½’¸“_‚ğAƒ\[ƒX‚Ì–@ü‚É‹ß‚Ã‚¯‚Ü‚·"
+						    			shelfButton -annotation "é¸æŠã—ãŸé ‚ç‚¹ã‚’ã€ã‚½ãƒ¼ã‚¹ã®æ³•ç·šã«è¿‘ã¥ã‘ã¾ã™"
 						    				-image1 ($path + "NH_icon_06.png") -c "SmoothBakeNormal()";
 						    		setParent..;
-						    		$optMenu5 = `optionMenu -l "ƒXƒ€[ƒX‹­“x" -w 130 -ann "ƒ\[ƒX•½‹Ï‰»‚ÌŒø‚«‹ï‡‚ğ’²®‚Å‚«‚Ü‚·\n”’l‚ª‘å‚«‚¢‚Ù‚ÇŒø‚«‚ª‹­‚¢‚Å‚·"`;
+						    		$optMenu5 = `optionMenu -l "ã‚¹ãƒ ãƒ¼ã‚¹å¼·åº¦" -w 130 -ann "ã‚½ãƒ¼ã‚¹å¹³å‡åŒ–ã®åŠ¹ãå…·åˆã‚’èª¿æ•´ã§ãã¾ã™\næ•°å€¤ãŒå¤§ãã„ã»ã©åŠ¹ããŒå¼·ã„ã§ã™"`;
 					    				menuItem -l "1";
 										menuItem -l "0.1";
 										menuItem -l "0.01";
 						    		rowLayout -nc 2;					
-										button -l "‘I‘ğ" -c "SetTarget2()" -w 40
-											-ann "uƒAƒEƒgƒ‰ƒCƒiv‚âuƒ\[ƒXƒƒbƒVƒ…ƒŠƒXƒgv‚ÅƒƒbƒVƒ…‚ğ‘I‘ğ‚µ‚ÄÀs‚µ‚Ä‚­‚¾‚³‚¢\nNull•½‹Ï‰»‚Ìƒ\[ƒX‚Æ‚µ‚Äİ’è‚µ‚Ü‚·\n";
+										button -l "é¸æŠ" -c "SetTarget2()" -w 40
+											-ann "ã€Œã‚¢ã‚¦ãƒˆãƒ©ã‚¤ãƒŠã€ã‚„ã€Œã‚½ãƒ¼ã‚¹ãƒ¡ãƒƒã‚·ãƒ¥ãƒªã‚¹ãƒˆã€ã§ãƒ¡ãƒƒã‚·ãƒ¥ã‚’é¸æŠã—ã¦å®Ÿè¡Œã—ã¦ãã ã•ã„\nNullå¹³å‡åŒ–ã®ã‚½ãƒ¼ã‚¹ã¨ã—ã¦è¨­å®šã—ã¾ã™\n";
 										$txf2 = `textField -w 90`;
 									setParent..;
-									$optMenu6 = `optionMenu -l "“]Ê•û®" -w 130 -ann "Œ`ó‚ª‹ß—‚µ‚Ä‚¢‚éê‡‚ÍuÅ‹ßÚv‚ª“K‚µ‚Ä‚¢‚Ü‚·/nŒ`ó‚ª‘å‚«‚­ˆá‚¤ê‡‚Íu–@üv‚ğ‘I‚ñ‚Å‚­‚¾‚³‚¢"`;
-					    				menuItem -l "Å‹ßÚ";
-										menuItem -l "–@ü";
+									$optMenu6 = `optionMenu -l "è»¢å†™æ–¹å¼" -w 130 -ann "å½¢çŠ¶ãŒè¿‘ä¼¼ã—ã¦ã„ã‚‹å ´åˆã¯ã€Œæœ€è¿‘æ¥ã€ãŒé©ã—ã¦ã„ã¾ã™/nå½¢çŠ¶ãŒå¤§ããé•ã†å ´åˆã¯ã€Œæ³•ç·šã€ã‚’é¸ã‚“ã§ãã ã•ã„"`;
+					    				menuItem -l "æœ€è¿‘æ¥";
+										menuItem -l "æ³•ç·š";
 								setParent..;
 							setParent..;
-							frameLayout -l "‘I‘ğ•\¦Ø‘Ö";
+							frameLayout -l "é¸æŠè¡¨ç¤ºåˆ‡æ›¿";
 								columnLayout;
-									$shelB1 = `shelfButton -annotation "ƒAƒNƒeƒBƒu‚Èƒrƒ…[‚Ì‘I‘ğ€–Ú‚ÌƒnƒCƒ‰ƒCƒg•\¦‚Ì—L–³‚ğØ‚è‘Ö‚¦‚Ü‚·"
+									$shelB1 = `shelfButton -annotation "ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ãªãƒ“ãƒ¥ãƒ¼ã®é¸æŠé …ç›®ã®ãƒã‚¤ãƒ©ã‚¤ãƒˆè¡¨ç¤ºã®æœ‰ç„¡ã‚’åˆ‡ã‚Šæ›¿ãˆã¾ã™"
 						    			-image1 ($path + "NH_icon_15.png") -c "ToggleHilight()"`;
 						    	setParent..;
 						    setParent..;
 						setParent..;
-						frameLayout -l "ƒ\[ƒXƒƒbƒVƒ…©“®¶¬";	
+						frameLayout -l "ã‚½ãƒ¼ã‚¹ãƒ¡ãƒƒã‚·ãƒ¥è‡ªå‹•ç”Ÿæˆ";	
 							columnLayout;
 								rowLayout -nc 2 -rat 1 top 0 -rat 2 top 0;
-									shelfButton -annotation "‘I‘ğ‚µ‚½’¸“_‚É‡‚í‚¹‚½ƒ\[ƒXƒƒbƒVƒ…‚ğ©“®¶¬‚µ‚Ü‚·"
+									shelfButton -annotation "é¸æŠã—ãŸé ‚ç‚¹ã«åˆã‚ã›ãŸã‚½ãƒ¼ã‚¹ãƒ¡ãƒƒã‚·ãƒ¥ã‚’è‡ªå‹•ç”Ÿæˆã—ã¾ã™"
 					    				-image1 ($path + "NH_icon_14.png") -c "CreateTemplate()";
 					    			columnLayout;
-							    		$fsG1 = `floatSliderGrp -l "ƒTƒCƒY" -f 1 -min 1.00 -max 2.00 -v 1.50 -pre 2 -cw3 30 40 60 -cl3 "left" "right" "right" -ann "¶¬‚³‚ê‚éƒƒbƒVƒ…‚ÌƒTƒCƒY‚ğ•ÏX‚µ‚Ü‚·"`;
-							    		$fsG3 = `floatSliderGrp -l "‹È—¦" -f 1 -min 1.00 -max 2.00 -v 1.50 -pre 2 -cw3 30 40 60 -cl3 "left" "right" "right" -ann "¶¬‚³‚ê‚éƒƒbƒVƒ…‚Ì‹È—¦‚ğ•ÏX‚µ‚Ü‚·\n”’l‚ª¬‚³‚¢‚Ù‚Ç‹È—¦‚Í‘å‚«‚­‚È‚è‚Ü‚·"`;
-							    		$fsG2 = `floatSliderGrp -l "‹——£" -f 1 -min -0.50 -max 0.50 -v -0.25 -pre 2 -cw3 30 40 60 -cl3 "left" "right" "right" -ann "¶¬‚³‚ê‚éƒƒbƒVƒ…‚ÌˆÊ’u‚ğ’²®‚µ‚Ü‚·\n”’l‚ª¬‚³‚¢‚Ù‚Çƒ^[ƒQƒbƒg‚Ì‹ß‚­‚Éì¬‚µ‚Ü‚·"`;
-							    		$isG1 = `intSliderGrp -l "•ªŠ„" -f 1 -min 0 -max 4 -v 2 -cw3 30 40 60 -cl3 "left" "right" "right" -ann "¶¬‚³‚ê‚éƒƒbƒVƒ…‚Ì•ªŠ„”‚ğ•ÏX‚µ‚Ü‚·\n”’l‚ª‘å‚«‚¢‚Ù‚Çƒ|ƒŠƒSƒ“”‚ª‘å‚«‚­‚È‚è‚Ü‚·"`;
+							    		$fsG1 = `floatSliderGrp -l "ã‚µã‚¤ã‚º" -f 1 -min 1.00 -max 2.00 -v 1.50 -pre 2 -cw3 30 40 60 -cl3 "left" "right" "right" -ann "ç”Ÿæˆã•ã‚Œã‚‹ãƒ¡ãƒƒã‚·ãƒ¥ã®ã‚µã‚¤ã‚ºã‚’å¤‰æ›´ã—ã¾ã™"`;
+							    		$fsG3 = `floatSliderGrp -l "æ›²ç‡" -f 1 -min 1.00 -max 2.00 -v 1.50 -pre 2 -cw3 30 40 60 -cl3 "left" "right" "right" -ann "ç”Ÿæˆã•ã‚Œã‚‹ãƒ¡ãƒƒã‚·ãƒ¥ã®æ›²ç‡ã‚’å¤‰æ›´ã—ã¾ã™\næ•°å€¤ãŒå°ã•ã„ã»ã©æ›²ç‡ã¯å¤§ãããªã‚Šã¾ã™"`;
+							    		$fsG2 = `floatSliderGrp -l "è·é›¢" -f 1 -min -0.50 -max 0.50 -v -0.25 -pre 2 -cw3 30 40 60 -cl3 "left" "right" "right" -ann "ç”Ÿæˆã•ã‚Œã‚‹ãƒ¡ãƒƒã‚·ãƒ¥ã®ä½ç½®ã‚’èª¿æ•´ã—ã¾ã™\næ•°å€¤ãŒå°ã•ã„ã»ã©ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã®è¿‘ãã«ä½œæˆã—ã¾ã™"`;
+							    		$isG1 = `intSliderGrp -l "åˆ†å‰²" -f 1 -min 0 -max 4 -v 2 -cw3 30 40 60 -cl3 "left" "right" "right" -ann "ç”Ÿæˆã•ã‚Œã‚‹ãƒ¡ãƒƒã‚·ãƒ¥ã®åˆ†å‰²æ•°ã‚’å¤‰æ›´ã—ã¾ã™\næ•°å€¤ãŒå¤§ãã„ã»ã©ãƒãƒªã‚´ãƒ³æ•°ãŒå¤§ãããªã‚Šã¾ã™"`;
 					    			setParent..;
 					    		setParent..;
 					    	setParent..;
@@ -194,25 +194,25 @@ global proc NH_VertexNormalEditor(){
 					setParent..;
 				setParent..;																																				
 				rowLayout -nc 2 -rat 1 top 0 -rat 2 top 0;
-					frameLayout -l "ˆê”Ê‹@”\";
+					frameLayout -l "ä¸€èˆ¬æ©Ÿèƒ½";
 						rowLayout -nc 5 -rat 1 top 0
 							-rat 2 top 0 -rat 3 top 0 -rat 4 top 0 -rat 5 top 0;
-							shelfButton -annotation "’¸“_–@ü‚Ì•\¦‚ğØ‚è‘Ö‚¦‚Ü‚·"
+							shelfButton -annotation "é ‚ç‚¹æ³•ç·šã®è¡¨ç¤ºã‚’åˆ‡ã‚Šæ›¿ãˆã¾ã™"
 				    				-image1 ($path + "NH_icon_07.png") -c "ToggleDisplayNormal()";
 				    		columnLayout;
-								shelfButton -annotation "’¸“_–@ü‚ÌƒTƒCƒY‚ğÅ“K‰»‚µ‚Ü‚·"
+								shelfButton -annotation "é ‚ç‚¹æ³•ç·šã®ã‚µã‚¤ã‚ºã‚’æœ€é©åŒ–ã—ã¾ã™"
 					    				-image1 ($path + "NH_icon_08.png") -c "AdjustDisplaySize()";
 					    		$optMenu1 = `optionMenu`;
-									menuItem -l "’Êí";
+									menuItem -l "é€šå¸¸";
 									menuItem -l "1/2";
-									menuItem -l "“ñ”{";
+									menuItem -l "äºŒå€";
 							setParent..;
-							shelfButton -annotation "‘I‘ğ’¸“_‚Ì’¸“_–@ü‚ÌƒƒbƒN‚ğ‰ğœ‚µ‚Ü‚·"
+							shelfButton -annotation "é¸æŠé ‚ç‚¹ã®é ‚ç‚¹æ³•ç·šã®ãƒ­ãƒƒã‚¯ã‚’è§£é™¤ã—ã¾ã™"
 			    				-image1 ($path + "NH_icon_09.png") -c "UnlockNormal()";
-				    		shelfButton -annotation "‘I‘ğ’¸“_‚Ì’¸“_–@ü‚ğƒXƒ€[ƒX‚µ‚Ü‚·"
+				    		shelfButton -annotation "é¸æŠé ‚ç‚¹ã®é ‚ç‚¹æ³•ç·šã‚’ã‚¹ãƒ ãƒ¼ã‚¹ã—ã¾ã™"
 			    				-image1 ($path + "NH_icon_10.png") -c "SmoothNormal()";
 							columnLayout;
-								shelfButton -annotation "ƒIƒuƒWƒFƒNƒg‚Ì’¸“_–@ü‚ğ¶‰E”½“]‚µ‚Ü‚·"
+								shelfButton -annotation "ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®é ‚ç‚¹æ³•ç·šã‚’å·¦å³åè»¢ã—ã¾ã™"
 					    				-image1 ($path + "NH_icon_11.png") -c "SymmetryNormal()";
 					    		$optMenu2 = `optionMenu`;
 									menuItem -l "-X";
@@ -222,9 +222,9 @@ global proc NH_VertexNormalEditor(){
 					setParent..;
 					frameLayout -l "ToonShader";
 						rowLayout -nc 2 -rat 1 top 0 -rat 2 top 0;
-							shelfButton -annotation "’²®—p‚ÉToonƒVƒF[ƒ_[‚ğˆê“I‚Éì¬‚µ‚Ä“K—p‚µ‚Ü‚·"
+							shelfButton -annotation "èª¿æ•´ç”¨ã«Toonã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã‚’ä¸€æ™‚çš„ã«ä½œæˆã—ã¦é©ç”¨ã—ã¾ã™"
 			    				-image1 ($path + "NH_icon_12.png") -c "MakeToonMat()";
-			    			shelfButton -annotation "’²®—p‚ÌToonƒVƒF[ƒ_[‚ğíœ‚µ‚Ü‚·"
+			    			shelfButton -annotation "èª¿æ•´ç”¨ã®Toonã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã‚’å‰Šé™¤ã—ã¾ã™"
 			    				-image1 ($path + "NH_icon_13.png") -c "DeleteToonMat()";
 						setParent..;
 					setParent..;
@@ -236,13 +236,13 @@ global proc NH_VertexNormalEditor(){
 	showWindow $NHVEditWin;
 	$windouPos = `window -q -tlc $NHVEditWin`;	
 }
-/*‘I‘ğ€–Ú‚ÌƒnƒCƒ‰ƒCƒg•\¦‚ğØ‚è‘Ö‚¦‚é*/
+/*é¸æŠé …ç›®ã®ãƒã‚¤ãƒ©ã‚¤ãƒˆè¡¨ç¤ºã‚’åˆ‡ã‚Šæ›¿ãˆã‚‹*/
 global proc ToggleHilight(){
 	global string $shelB1;
 	string $path = GetScriptPath("NH_VtxEditor");
-	//Œ»İƒAƒNƒeƒBƒu‚Èƒrƒ…[‚ğ’²‚×‚é
+	//ç¾åœ¨ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ãªãƒ“ãƒ¥ãƒ¼ã‚’èª¿ã¹ã‚‹
 	string $active = `getPanel -wf`;
-	//‘I‘ğ€–Ú‚ÌƒnƒCƒ‰ƒCƒg•\¦‚Ìó‘Ô‚É‰‚¶‚ÄƒgƒOƒ‹
+	//é¸æŠé …ç›®ã®ãƒã‚¤ãƒ©ã‚¤ãƒˆè¡¨ç¤ºã®çŠ¶æ…‹ã«å¿œã˜ã¦ãƒˆã‚°ãƒ«
 	int $state = `modelEditor -q -sel $active`;
 	if($state==1){
 		modelEditor -e -sel 0 $active;
@@ -253,24 +253,24 @@ global proc ToggleHilight(){
 	}
 }
 
-/*ŠÈˆÕƒ\[ƒX‚ğ©“®¶¬‚·‚é*/
+/*ç°¡æ˜“ã‚½ãƒ¼ã‚¹ã‚’è‡ªå‹•ç”Ÿæˆã™ã‚‹*/
 global proc CreateTemplate(){
 	global string $fsG1;
 	global string $fsG2;
 	global string $fsG3;
 	global string $isG1;
 	global string $sourceGrp;
-	//Šeƒpƒ‰ƒ[ƒ^[‚ğæ“¾‚·‚é
+	//å„ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒ¼ã‚’å–å¾—ã™ã‚‹
 	float $size = `floatSliderGrp -q -v $fsG1`;
 	float $distance = `floatSliderGrp -q -v $fsG2`;
 	int $division = `intSliderGrp -q -v $isG1`;
 	float $curve = `floatSliderGrp -q -v $fsG3`;
-	//‘I‘ğ’¸“_‚ğƒŠƒXƒg‰»‚·‚é
+	//é¸æŠé ‚ç‚¹ã‚’ãƒªã‚¹ãƒˆåŒ–ã™ã‚‹
 	string $vtxNameOri[] = `ls -sl -fl`;
 	string $vtxNameOri[] = `polyListComponentConversion -tv $vtxNameOri`;
 	$vtxNameOri = `filterExpand -sm 31 $vtxNameOri`;
 	string $vtxName[];
-	//ƒIƒuƒWƒFƒNƒg‚ğ•¡»‚µ‚ÄƒtƒŠ[ƒY‚µÄæ“¾
+	//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’è¤‡è£½ã—ã¦ãƒ•ãƒªãƒ¼ã‚ºã—å†å–å¾—
 	string $objName[];
 	tokenize $vtxNameOri[0] "." $objName;
 	string $dupObjName[] = `duplicate $objName[0]`;
@@ -282,13 +282,13 @@ global proc CreateTemplate(){
 	}
 	CenterPivot $dupObjName[0];
 	select -r $vtxName;
-	//‘I‘ğ’¸“_‚Ì’¸“_À•WƒŠƒXƒg‚ğì¬‚·‚é
+	//é¸æŠé ‚ç‚¹ã®é ‚ç‚¹åº§æ¨™ãƒªã‚¹ãƒˆã‚’ä½œæˆã™ã‚‹
 	vector $vtxPos[];
 	for($i=0;$i<size($vtxName);$i++){
 		float $temp1[] = `pointPosition $vtxName[$i]`;
 		$vtxPos[$i] = <<$temp1[0], $temp1[1], $temp1[2]>>;
 	}
-	//dSÀ•W‚ğì¬‚·‚é
+	//é‡å¿ƒåº§æ¨™ã‚’ä½œæˆã™ã‚‹
 	vector $averagePos;
 	for($i=0;$i<size($vtxPos);$i++){
 		vector $vec1 = $vtxPos[$i];
@@ -301,11 +301,11 @@ global proc CreateTemplate(){
 	float $y3 = $averagePos.y / size($vtxPos);
 	float $z3 = $averagePos.z / size($vtxPos);
 	$averagePos = <<$x3, $y3, $z3>>;
-	//ƒIƒuƒWƒFƒNƒg‚Ì’†S‚ğ’²‚×‚é
+	//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ä¸­å¿ƒã‚’èª¿ã¹ã‚‹
 	vector $centerPos;
 	float $temp[] = `objectCenter $dupObjName[0]`;
 	$centerPos = <<$temp[0], $temp[1], $temp[2]>>;
-	//ƒoƒEƒ“ƒfƒBƒ“ƒOƒ{ƒbƒNƒX‚ğæ“¾‚µƒXƒP[ƒ‹’l‚ğ“¾‚é
+	//ãƒã‚¦ãƒ³ãƒ‡ã‚£ãƒ³ã‚°ãƒœãƒƒã‚¯ã‚¹ã‚’å–å¾—ã—ã‚¹ã‚±ãƒ¼ãƒ«å€¤ã‚’å¾—ã‚‹
 	float $bound[] = `polyEvaluate -bc`;
 	float $lenth[];
 	$lenth[0] = abs( $bound[1] - $bound[0]);
@@ -320,9 +320,9 @@ global proc CreateTemplate(){
 			}
 		}
 	}
-	//‚±‚±‚Å•¡»‚ğíœ
+	//ã“ã“ã§è¤‡è£½ã‚’å‰Šé™¤
 	delete $dupObjName[0];
-	//ƒeƒ“ƒvƒŒ‚ğì¬‚·‚é
+	//ãƒ†ãƒ³ãƒ—ãƒ¬ã‚’ä½œæˆã™ã‚‹
 	string $meshName[] = `polyCube  -w 1 -h 1 -d 1 -sx 1 -sy 1 -sz 1 -ax 0 1 0 -cuv 4 -ch 1`;
 	polySmooth -dv 2 -kb 0 $meshName[0];
 	delete -ch $meshName[0];
@@ -330,10 +330,10 @@ global proc CreateTemplate(){
 		createNode "locator" -n $sourceGrp ;
 	}
 	parent $meshName[0] $sourceGrp;
-	//ƒeƒ“ƒvƒŒ‚Ì’¸“_”Ô†ƒŠƒXƒg‚ğì‚é
+	//ãƒ†ãƒ³ãƒ—ãƒ¬ã®é ‚ç‚¹ç•ªå·ãƒªã‚¹ãƒˆã‚’ä½œã‚‹
 	string $sVtxName[] = `polyListComponentConversion -tv $meshName[0]`;
 	$sVtxName = `filterExpand -sm 31 $sVtxName`;
-	//æ“¾‚µ‚½î•ñ
+	//å–å¾—ã—ãŸæƒ…å ±
 	float $posX = $averagePos.x;
 	float $posY = $averagePos.y;
 	float $posZ = $averagePos.z;
@@ -342,7 +342,7 @@ global proc CreateTemplate(){
 	float $cPosX = $centerPos.x;
 	float $cPosY = $centerPos.y;
 	float $cPosZ = $centerPos.z;
-	//ƒeƒ“ƒvƒŒ‚Ì-Z”¼•ª‚ğíœ‚·‚é
+	//ãƒ†ãƒ³ãƒ—ãƒ¬ã®-ZåŠåˆ†ã‚’å‰Šé™¤ã™ã‚‹
 	string $deleteVtx[];
 	int $cnt = 0;
 	for($i=0;$i<size($sVtxName);$i++){
@@ -361,12 +361,12 @@ global proc CreateTemplate(){
 	makeIdentity -apply false -t 1 -r 1 -s 1 -n 0 -pn 1 $meshName[0];
 	CenterPivot $meshName[0];
 	
-	//ƒeƒ“ƒvƒŒ‚ğƒ‚ƒfƒ‹‚ÌdS‚É
+	//ãƒ†ãƒ³ãƒ—ãƒ¬ã‚’ãƒ¢ãƒ‡ãƒ«ã®é‡å¿ƒã«
 	xform -t 0 $cPosY $cPosZ $meshName[0];
-	//ƒGƒCƒ€—pƒXƒtƒBƒAì¬
+	//ã‚¨ã‚¤ãƒ ç”¨ã‚¹ãƒ•ã‚£ã‚¢ä½œæˆ
 	string $sphereName[] = `polySphere -r 1 -sx 8 -sy 8 -ax 0 1 0 -cuv 2 -ch 1`;
 	xform -t $posX $posY $posZ $sphereName[0];
-	//‹…‘Ì‚É–@üƒRƒ“ƒXƒgƒŒƒCƒ“
+	//çƒä½“ã«æ³•ç·šã‚³ãƒ³ã‚¹ãƒˆãƒ¬ã‚¤ãƒ³
 	aimConstraint -offset 0 0 0 -weight 1 -aimVector 0 1 0 -upVector 0 1 0 -worldUpType "vector" -worldUpVector 0 1 0 $sphereName[0] $meshName[0];
 	delete -ch $sphereName[0];
 	delete -ch $meshName[0];
@@ -380,15 +380,15 @@ global proc CreateTemplate(){
 	UpdateSourceList();
 }
 
-/*‘I‘ğ’¸“_‚©‚ç‘I‘ğƒZƒbƒg‚ğV‹Kì¬*/
+/*é¸æŠé ‚ç‚¹ã‹ã‚‰é¸æŠã‚»ãƒƒãƒˆã‚’æ–°è¦ä½œæˆ*/
 global proc CreateSetList(){
 	global string $txScr2;
 	global string $selectedSelSet;
-	//‘I‘ğ‚³‚ê‚½’¸“_‚ğƒŠƒXƒg‰»
+	//é¸æŠã•ã‚ŒãŸé ‚ç‚¹ã‚’ãƒªã‚¹ãƒˆåŒ–
 	string $vtxName[] = `ls -sl -fl`;
-	//ƒvƒƒ“ƒvƒg‚ÅV‹Kì¬–¼‚ğ“ü—Í
-	string $prpId = `promptDialog -tx "Set" -t "‘I‘ğƒZƒbƒgV‹Kì¬" -m "–¼‘O‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢"
-		-b "•ÏX" -b "ƒLƒƒƒ“ƒZƒ‹" -db "•ÏX" -cb "ƒLƒƒƒ“ƒZƒ‹" -ds "ƒLƒƒƒ“ƒZƒ‹"`;
+	//ãƒ—ãƒ­ãƒ³ãƒ—ãƒˆã§æ–°è¦ä½œæˆåã‚’å…¥åŠ›
+	string $prpId = `promptDialog -tx "Set" -t "é¸æŠã‚»ãƒƒãƒˆæ–°è¦ä½œæˆ" -m "åå‰ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„"
+		-b "å¤‰æ›´" -b "ã‚­ãƒ£ãƒ³ã‚»ãƒ«" -db "å¤‰æ›´" -cb "ã‚­ãƒ£ãƒ³ã‚»ãƒ«" -ds "ã‚­ãƒ£ãƒ³ã‚»ãƒ«"`;
 	string $name = `promptDialog -q -t $prpId`;
 	select -r $vtxName;
 	sets -name $name -text "gCharacterSet";
@@ -398,7 +398,7 @@ global proc CreateSetList(){
 	$selectedSelSet = $name;
 }
 
-/*‘I‘ğƒZƒbƒgDelete‹““®*/
+/*é¸æŠã‚»ãƒƒãƒˆDeleteæ™‚æŒ™å‹•*/
 global proc DeleteSelList(){
 	global string $txScr2;
 	global string $selectedSelSet;
@@ -413,64 +413,64 @@ global proc DeleteSelList(){
 	$selectedSelSet = "";
 }
 
-/*‘I‘ğƒZƒbƒg‚©‚ç’¸“_‚ğœ‹‚·‚é*/
+/*é¸æŠã‚»ãƒƒãƒˆã‹ã‚‰é ‚ç‚¹ã‚’é™¤å»ã™ã‚‹*/
 global proc RemoveSetList(){
 	global string $txScr2;
-	//‘I‘ğ‚³‚ê‚½‘I‘ğƒZƒbƒg‚ğ’²‚×‚é
+	//é¸æŠã•ã‚ŒãŸé¸æŠã‚»ãƒƒãƒˆã‚’èª¿ã¹ã‚‹
 	string $selected[] = `textScrollList -q -si $txScr2`;
-	//‘I‘ğ‚³‚ê‚½’¸“_‚ğƒŠƒXƒg‰»
+	//é¸æŠã•ã‚ŒãŸé ‚ç‚¹ã‚’ãƒªã‚¹ãƒˆåŒ–
 	string $vtxName[] = `ls -sl -fl`;
 	$vtxName =`polyListComponentConversion -tv $vtxName`;
 	$vtxName = `filterExpand -sm 31 $vtxName`;
-	//ƒZƒbƒg“à‚Ì’¸“_‚ğƒŠƒXƒg‰»
+	//ã‚»ãƒƒãƒˆå†…ã®é ‚ç‚¹ã‚’ãƒªã‚¹ãƒˆåŒ–
 	select -r -ne $selected;
 	pickWalk -d down;
 	string $sVtxName[] = `ls -sl -fl`;
 	$sVtxName = `polyListComponentConversion -tv $sVtxName`;
 	$sVtxName = `filterExpand -sm 31 $sVtxName`;
-	//ƒZƒbƒg“à‚Ì’¸“_‚©‚çˆø‚«Z‚µ‚½‚ğƒŠƒXƒgì¬
+	//ã‚»ãƒƒãƒˆå†…ã®é ‚ç‚¹ã‹ã‚‰å¼•ãç®—ã—ãŸã‚’ãƒªã‚¹ãƒˆä½œæˆ
 	string $newVtx[] = stringArrayRemove($vtxName, $sVtxName);
-	//ˆê’U‘I‘ğƒZƒbƒg‚ğíœ‚µ‚Ä“¯–¼‚Åì‚è’¼‚·
+	//ä¸€æ—¦é¸æŠã‚»ãƒƒãƒˆã‚’å‰Šé™¤ã—ã¦åŒåã§ä½œã‚Šç›´ã™
 	delete $selected;
 	select -r $newVtx;
 	sets -name $selected[0] -text "gCharacterSet";
 	select -r $newVtx;
 }
 
-/*‘I‘ğƒZƒbƒg‚É’¸“_‚ğ’Ç‰Á‚·‚é*/
+/*é¸æŠã‚»ãƒƒãƒˆã«é ‚ç‚¹ã‚’è¿½åŠ ã™ã‚‹*/
 global proc AddSetList(){
 	global string $txScr2;
-	//‘I‘ğ‚³‚ê‚½‘I‘ğƒZƒbƒg‚ğ’²‚×‚é
+	//é¸æŠã•ã‚ŒãŸé¸æŠã‚»ãƒƒãƒˆã‚’èª¿ã¹ã‚‹
 	string $selected[] = `textScrollList -q -si $txScr2`;
-	//‘I‘ğ‚³‚ê‚½’¸“_‚ğƒŠƒXƒg‰»
+	//é¸æŠã•ã‚ŒãŸé ‚ç‚¹ã‚’ãƒªã‚¹ãƒˆåŒ–
 	string $vtxName[] = `ls -sl -fl`;
 	$vtxName =`polyListComponentConversion -tv $vtxName`;
 	$vtxName = `filterExpand -sm 31 $vtxName`;
-	//ƒZƒbƒg“à‚Ì’¸“_‚ğƒŠƒXƒg‰»
+	//ã‚»ãƒƒãƒˆå†…ã®é ‚ç‚¹ã‚’ãƒªã‚¹ãƒˆåŒ–
 	select -r -ne $selected;
 	pickWalk -d down;
 	string $sVtxName[] = `ls -sl -fl`;
 	$sVtxName =`polyListComponentConversion -tv $sVtxName`;
 	$sVtxName = `filterExpand -sm 31 $sVtxName`;
-	//‡¬‚³‚ê‚½’¸“_ƒŠƒXƒg‚ğì¬
+	//åˆæˆã•ã‚ŒãŸé ‚ç‚¹ãƒªã‚¹ãƒˆã‚’ä½œæˆ
 	string $newVtx[] = stringArrayCatenate($vtxName, $sVtxName);
-	//ˆê’U‘I‘ğƒZƒbƒg‚ğíœ‚µ‚Ä“¯–¼‚Åì‚è’¼‚·
+	//ä¸€æ—¦é¸æŠã‚»ãƒƒãƒˆã‚’å‰Šé™¤ã—ã¦åŒåã§ä½œã‚Šç›´ã™
 	delete $selected;
 	select -r $newVtx;
 	sets -name $selected[0] -text "gCharacterSet";
 	select -r $newVtx;
 }
 
-/*•¡”‘I‘ğ‚³‚ê‚½‘I‘ğƒZƒbƒg‚ğƒ}[ƒW‚·‚é*/
+/*è¤‡æ•°é¸æŠã•ã‚ŒãŸé¸æŠã‚»ãƒƒãƒˆã‚’ãƒãƒ¼ã‚¸ã™ã‚‹*/
 global proc MergeSetList(){
 	global string $txScr2;
 	global string $selectedSelSet;
-	//‘I‘ğ‚³‚ê‚½‘I‘ğƒZƒbƒg‚ğ’²‚×‚é
+	//é¸æŠã•ã‚ŒãŸé¸æŠã‚»ãƒƒãƒˆã‚’èª¿ã¹ã‚‹
 	string $selected[] = `textScrollList -q -si $txScr2`;
-	//ˆê’U•¡»‚µ‚Äíœ‚µ‚Â‚Â–¼‘O‚ğæ“¾
+	//ä¸€æ—¦è¤‡è£½ã—ã¦å‰Šé™¤ã—ã¤ã¤åå‰ã‚’å–å¾—
 	string $dupName[] = `duplicate $selected[0]`;
 	delete $dupName[0];
-	//‘I‘ğƒZƒbƒg‚ğ•¡»‚·‚é
+	//é¸æŠã‚»ãƒƒãƒˆã‚’è¤‡è£½ã™ã‚‹
 	select -r -ne $selected;
 	pickWalk -d down;
 	sets -name $dupName[0] -text "gCharacterSet";
@@ -480,16 +480,16 @@ global proc MergeSetList(){
 	$selectedSelSet = $dupName[0];
 }
 
-/*‘I‘ğƒZƒbƒgƒŒƒCƒ„‚É‚ ‚é€–Ú‚ğ•¡»‚·‚é*/
+/*é¸æŠã‚»ãƒƒãƒˆãƒ¬ã‚¤ãƒ¤ã«ã‚ã‚‹é …ç›®ã‚’è¤‡è£½ã™ã‚‹*/
 global proc DuplicateSetList(){
 	global string $txScr2;
 	global string $selectedSelSet;
-	//‘I‘ğ‚³‚ê‚½‘I‘ğƒZƒbƒg‚ğ’²‚×‚é
+	//é¸æŠã•ã‚ŒãŸé¸æŠã‚»ãƒƒãƒˆã‚’èª¿ã¹ã‚‹
 	string $selected[] = `textScrollList -q -si $txScr2`;
-	//ˆê’U•¡»‚µ‚Äíœ‚µ‚Â‚Â–¼‘O‚ğæ“¾
+	//ä¸€æ—¦è¤‡è£½ã—ã¦å‰Šé™¤ã—ã¤ã¤åå‰ã‚’å–å¾—
 	string $dupName[] = `duplicate $selected[0]`;
 	delete $dupName[0];
-	//‘I‘ğƒZƒbƒg‚ğV‹Kì¬‚·‚é
+	//é¸æŠã‚»ãƒƒãƒˆã‚’æ–°è¦ä½œæˆã™ã‚‹
 	select -r -ne $selected[0];
 	pickWalk -d down;
 	sets -name $dupName[0] -text "gCharacterSet";
@@ -498,7 +498,7 @@ global proc DuplicateSetList(){
 	$selectedSelSet = $dupName[0];
 }
 
-/*‘I‘ğƒZƒbƒgƒŠƒXƒg‚Ì’¸“_‚ğ‘I‘ğ‚·‚é*/
+/*é¸æŠã‚»ãƒƒãƒˆãƒªã‚¹ãƒˆã®é ‚ç‚¹ã‚’é¸æŠã™ã‚‹*/
 global proc SelectSetList(){
 	global string $txScr2;
 	string $selected[] = `textScrollList -q -si $txScr2`;
@@ -506,38 +506,38 @@ global proc SelectSetList(){
 	pickWalk -d down;
 }
 
-/*‘I‘ğ’¸“_ƒZƒbƒgƒŠƒXƒg‚ÌƒVƒ“ƒOƒ‹ƒNƒŠƒbƒN‚Ì‹““®*/
+/*é¸æŠé ‚ç‚¹ã‚»ãƒƒãƒˆãƒªã‚¹ãƒˆã®ã‚·ãƒ³ã‚°ãƒ«ã‚¯ãƒªãƒƒã‚¯æ™‚ã®æŒ™å‹•*/
 global proc SingleClickSetList(){
 	global string $txScr2;
 	global string $selectedSelSet;
 	string $selected[] = `textScrollList -q -si $txScr2`;
-	//Œ»İ‘I‘ğ‚³‚ê‚Ä‚¢‚é‚·‚×‚Ä
-	if($selectedSelSet==$selected[0]){//Šù‚É•\¦‚³‚ê‚Ä‚¢‚é€–Ú‚ğ‚à‚¤ˆê‰ñ‰Ÿ‚·‚Æ‚«i”ñ‘I‘ğ‚É‚·‚éj
+	//ç¾åœ¨é¸æŠã•ã‚Œã¦ã„ã‚‹ã™ã¹ã¦
+	if($selectedSelSet==$selected[0]){//æ—¢ã«è¡¨ç¤ºã•ã‚Œã¦ã„ã‚‹é …ç›®ã‚’ã‚‚ã†ä¸€å›æŠ¼ã™ã¨ãï¼ˆéé¸æŠã«ã™ã‚‹ï¼‰
 		textScrollList -e -da $txScr2;
 		$selectedSelSet = "";
-	}else{//‘I‘ğ‚³‚ê‚Ä‚¢‚È‚¢€–Ú‚ğ‰‚ß‚Ä‰Ÿ‚·i‘I‘ğ‚É‚·‚éj
+	}else{//é¸æŠã•ã‚Œã¦ã„ãªã„é …ç›®ã‚’åˆã‚ã¦æŠ¼ã™ï¼ˆé¸æŠã«ã™ã‚‹ï¼‰
 		$selectedSelSet = $selected[0];
 	}
 }
 
-/*‘I‘ğƒZƒbƒgƒŠƒXƒgƒ_ƒuƒ‹ƒNƒŠƒbƒN‚Ì‹““®*/
+/*é¸æŠã‚»ãƒƒãƒˆãƒªã‚¹ãƒˆãƒ€ãƒ–ãƒ«ã‚¯ãƒªãƒƒã‚¯æ™‚ã®æŒ™å‹•*/
 global proc DoubleClickSelList(){
 	global string $txScr2;
 	global string $selectedSelSet;
 	string $origine[] = `textScrollList -q -selectItem $txScr2`;
-	//ƒvƒƒ“ƒvƒg‚ğ•\¦
-	string $prpId = `promptDialog -t "‘I‘ğƒZƒbƒg–¼•ÏX" -tx $origine[0] -m "•ÏX‚µ‚½‚¢–¼‘O‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢"
-		-b "•ÏX" -b "ƒLƒƒƒ“ƒZƒ‹" -db "•ÏX" -cb "ƒLƒƒƒ“ƒZƒ‹" -ds "ƒLƒƒƒ“ƒZƒ‹"`;
+	//ãƒ—ãƒ­ãƒ³ãƒ—ãƒˆã‚’è¡¨ç¤º
+	string $prpId = `promptDialog -t "é¸æŠã‚»ãƒƒãƒˆåå¤‰æ›´" -tx $origine[0] -m "å¤‰æ›´ã—ãŸã„åå‰ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„"
+		-b "å¤‰æ›´" -b "ã‚­ãƒ£ãƒ³ã‚»ãƒ«" -db "å¤‰æ›´" -cb "ã‚­ãƒ£ãƒ³ã‚»ãƒ«" -ds "ã‚­ãƒ£ãƒ³ã‚»ãƒ«"`;
 	string $name = `promptDialog -q -t $prpId`;
-	//ƒŠƒl[ƒ€ˆ—
-	if($prpId!="ƒLƒƒƒ“ƒZƒ‹"){
+	//ãƒªãƒãƒ¼ãƒ å‡¦ç†
+	if($prpId!="ã‚­ãƒ£ãƒ³ã‚»ãƒ«"){
 		rename $origine[0] $name;
 		global string $txScr2;
 		UpdateSelList();
 	}
 	$selectedSelSet = $name;
 }
-/*‘I‘ğƒZƒbƒgƒŠƒXƒg‚©‚ç€–Ú‚ğíœ‚·‚é*/
+/*é¸æŠã‚»ãƒƒãƒˆãƒªã‚¹ãƒˆã‹ã‚‰é …ç›®ã‚’å‰Šé™¤ã™ã‚‹*/
 global proc DeleteSelList(){
 	global string $selectedSelSet;
 	global string $txScr2;
@@ -547,14 +547,14 @@ global proc DeleteSelList(){
 	$selectedSelSet = "";
 }
 
-/*ƒNƒCƒbƒN‘I‘ğƒZƒbƒgƒŠƒXƒgXV*/
+/*ã‚¯ã‚¤ãƒƒã‚¯é¸æŠã‚»ãƒƒãƒˆãƒªã‚¹ãƒˆæ›´æ–°*/
 global proc UpdateSelList(){
 	global string $txScr2;
 	global string $selectedSelSet;
 	string $st = "modelPanel*";
-	//ˆê’U‘Síœ
+	//ä¸€æ—¦å…¨å‰Šé™¤
 	textScrollList -edit -ra $txScr2;
-	//‘I‘ğƒZƒbƒg‚ğƒŠƒXƒg‰»
+	//é¸æŠã‚»ãƒƒãƒˆã‚’ãƒªã‚¹ãƒˆåŒ–
 	string $list[] = `lsType("objectSet")`;
 	for($i=0;$i<size($list);$i++){
 		if(`gmatch $list[$i] $st`==1){
@@ -567,7 +567,7 @@ global proc UpdateSelList(){
 	}
 	$selectedSelSet = "";
 }
-/*ƒ\[ƒXƒŠƒXƒg‚Å‘I‘ğ’†‚ÌƒƒbƒVƒ…‚ğ‘I‘ğ‚·‚é*/
+/*ã‚½ãƒ¼ã‚¹ãƒªã‚¹ãƒˆã§é¸æŠä¸­ã®ãƒ¡ãƒƒã‚·ãƒ¥ã‚’é¸æŠã™ã‚‹*/
 global proc SelectSourceList(){
 	global string $lBtn1[];
 	int $id;
@@ -580,16 +580,16 @@ global proc SelectSourceList(){
 	select -r $obj;
 }
 
-/*‘I‘ğƒIƒuƒWƒFƒNƒg‚ğSourceƒŠƒXƒg‚É’Ç‰Á‚·‚é*/
+/*é¸æŠã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’Sourceãƒªã‚¹ãƒˆã«è¿½åŠ ã™ã‚‹*/
 global proc AddSourceList(){
 	global string $lBtn1[];
 	global string $sourceGrp;
-	//‘ÎÛƒ‚ƒfƒ‹‚ğæ“¾
+	//å¯¾è±¡ãƒ¢ãƒ‡ãƒ«ã‚’å–å¾—
 	string $mesh[] = `ls -sl -fl`;
-	//ƒƒbƒVƒ…‚ğSourceˆÈ‰º‚ÉŠi”[
+	//ãƒ¡ãƒƒã‚·ãƒ¥ã‚’Sourceä»¥ä¸‹ã«æ ¼ç´
 	parent $mesh $sourceGrp;
 	UpdateSourceList();
-	//’Ç‰Á‚³‚ê‚½ƒŒƒCƒ„‚ğ‘I‘ğ‚·‚é
+	//è¿½åŠ ã•ã‚ŒãŸãƒ¬ã‚¤ãƒ¤ã‚’é¸æŠã™ã‚‹
 	for($i=0;$i<10;$i++){
 		if(`layerButton -q -l $lBtn1[$i]`==$mesh[0]){
 			layerButton -e -s 1 $lBtn1[$i];
@@ -598,15 +598,15 @@ global proc AddSourceList(){
 		}
 	}
 }
-/*ƒŒƒCƒ„[‚ğíœ‚·‚é*/
+/*ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’å‰Šé™¤ã™ã‚‹*/
 global proc DeleteLayer(){
 	global string $lBtn1[];
 	global string $sourceGrp;
 	string $tarUI;
 	string $tarMesh;	
-	//ƒ\[ƒXƒ‚ƒfƒ‹‚ğƒŠƒXƒg‰»
+	//ã‚½ãƒ¼ã‚¹ãƒ¢ãƒ‡ãƒ«ã‚’ãƒªã‚¹ãƒˆåŒ–
 	string $list[] = `listRelatives -c -typ "transform" $sourceGrp`;
-	//‘I‘ğ‚³‚ê‚Ä‚¢‚éƒŒƒCƒ„‚ğ’²‚×‚é
+	//é¸æŠã•ã‚Œã¦ã„ã‚‹ãƒ¬ã‚¤ãƒ¤ã‚’èª¿ã¹ã‚‹
 	for($i=0;$i<10;$i++){
 		int $num = `layerButton -q -s $lBtn1[$i]`;
 		if($num==1){
@@ -614,48 +614,48 @@ global proc DeleteLayer(){
 			$tarMesh = $list[$i];
 		}
 	}
-	//ƒŒƒCƒ„‚ÆƒƒbƒVƒ…‚ğíœ‚·‚é
+	//ãƒ¬ã‚¤ãƒ¤ã¨ãƒ¡ãƒƒã‚·ãƒ¥ã‚’å‰Šé™¤ã™ã‚‹
 	parent -w $tarMesh;
 	UpdateSourceList();
 }
 
-/*ƒ\[ƒXƒŠƒXƒg‚ğƒ_ƒuƒ‹ƒNƒŠƒbƒN‚µ‚½‚Æ‚«‚Ì‹““®*/
+/*ã‚½ãƒ¼ã‚¹ãƒªã‚¹ãƒˆã‚’ãƒ€ãƒ–ãƒ«ã‚¯ãƒªãƒƒã‚¯ã—ãŸã¨ãã®æŒ™å‹•*/
 global proc LayerDoubleClick(int $id){
 	global string $lBtn1[];
 	global string $sourceGrp;
-	//ƒ\[ƒXƒ‚ƒfƒ‹‚ğƒŠƒXƒg‰»
+	//ã‚½ãƒ¼ã‚¹ãƒ¢ãƒ‡ãƒ«ã‚’ãƒªã‚¹ãƒˆåŒ–
 	string $list[] = `listRelatives -c -typ "transform" $sourceGrp`;
-	string $prpId = `promptDialog -t "ƒƒbƒVƒ…–¼•ÏX" -tx $list[$id] -m "•ÏX‚µ‚½‚¢–¼‘O‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢"
-		-b "•ÏX" -b "ƒLƒƒƒ“ƒZƒ‹" -db "•ÏX" -cb "ƒLƒƒƒ“ƒZƒ‹" -ds "ƒLƒƒƒ“ƒZƒ‹"`;
+	string $prpId = `promptDialog -t "ãƒ¡ãƒƒã‚·ãƒ¥åå¤‰æ›´" -tx $list[$id] -m "å¤‰æ›´ã—ãŸã„åå‰ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„"
+		-b "å¤‰æ›´" -b "ã‚­ãƒ£ãƒ³ã‚»ãƒ«" -db "å¤‰æ›´" -cb "ã‚­ãƒ£ãƒ³ã‚»ãƒ«" -ds "ã‚­ãƒ£ãƒ³ã‚»ãƒ«"`;
 	string $name = `promptDialog -q -t $prpId`;
-	//ƒƒbƒVƒ…–¼‚ğ•ÏX
-	if($prpId!="ƒLƒƒƒ“ƒZƒ‹"){
+	//ãƒ¡ãƒƒã‚·ãƒ¥åã‚’å¤‰æ›´
+	if($prpId!="ã‚­ãƒ£ãƒ³ã‚»ãƒ«"){
 		rename $list[$id] $name;
-		//ƒŒƒCƒ„–¼‚ğ•ÏX
+		//ãƒ¬ã‚¤ãƒ¤åã‚’å¤‰æ›´
 		layerButton -e -l $name $lBtn1[$id];
 		UpdateSourceList();
 	}
 }
-/*SourceƒƒbƒVƒ…ƒŠƒXƒgXVi10ƒRj*/
+/*Sourceãƒ¡ãƒƒã‚·ãƒ¥ãƒªã‚¹ãƒˆæ›´æ–°ï¼ˆ10ã‚³ï¼‰*/
 global proc UpdateSourceList(){
 	global string $lBtn1[];
 	global string $scrL1;
 	global string $sourceGrp;
-	//ƒ\[ƒXGRP‚ª‚ ‚é‚©‚Ç‚¤‚©ƒ`ƒFƒbƒN
+	//ã‚½ãƒ¼ã‚¹GRPãŒã‚ã‚‹ã‹ã©ã†ã‹ãƒã‚§ãƒƒã‚¯
 	if(`objExists $sourceGrp`==0){
 		string $name = `createNode "locator"`;
 		$name = `substitute "Shape" $name ""`;
 		rename $name $sourceGrp;		
 	}
-	//ƒ\[ƒXƒ‚ƒfƒ‹‚ğƒŠƒXƒg‰»
+	//ã‚½ãƒ¼ã‚¹ãƒ¢ãƒ‡ãƒ«ã‚’ãƒªã‚¹ãƒˆåŒ–
 	string $list[] = `listRelatives -c -typ "transform" $sourceGrp`;
-	//ƒ\[ƒX“à‚ÌƒIƒuƒWƒFƒNƒg‚Ìó‘Ô‚ğŠm”F
+	//ã‚½ãƒ¼ã‚¹å†…ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®çŠ¶æ…‹ã‚’ç¢ºèª
 	int $stateType[];
 	int $stateVis[];
 	int $exist[];
-	//ƒ‚ƒfƒ‹‚Ìó‘Ô‚ğ’²‚×‚é
+	//ãƒ¢ãƒ‡ãƒ«ã®çŠ¶æ…‹ã‚’èª¿ã¹ã‚‹
 	for($i=0;$i<size($list);$i++){
-		//‚Ü‚¸•`‰æƒI[ƒo[ƒ‰ƒCƒh‚ğƒIƒ“‚É‚·‚é
+		//ã¾ãšæç”»ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰ã‚’ã‚ªãƒ³ã«ã™ã‚‹
 		if($list[$i]==""){
 			$exist[$i] = 0;
 			$i++;
@@ -666,38 +666,38 @@ global proc UpdateSourceList(){
 			$exist[$i] = 1;
 		}
 	}
-	//ˆê’UUIíœ
+	//ä¸€æ—¦UIå‰Šé™¤
 	for($i=0;$i<10;$i++){
 		if(`layerButton -q -ex $lBtn1[$i]`==1){
 			deleteUI -ctl $lBtn1[$i];
 		}
 	}
-	//ƒƒP[ƒ^‚©‚Ç‚¤‚©ƒ`ƒFƒbƒN
+	//ãƒ­ã‚±ãƒ¼ã‚¿ã‹ã©ã†ã‹ãƒã‚§ãƒƒã‚¯
 	string $type[];
 	for($i=0;$i<size($list);$i++){
 		string $temp1[] = `listRelatives -c -s $list[$i]`;
 		$type[$i] = `objectType $temp1[0]`;
-		print "ƒ`ƒFƒbƒN";
+		print "ãƒã‚§ãƒƒã‚¯";
 		print $type[$i];
 	}
-	//UI‚ğì¬
+	//UIã‚’ä½œæˆ
 	for($i=0;$i<10;$i++){
 		if($exist[$i]==1){
-			//ˆê’Uì¬‚·‚é
-			$lBtn1[$i] = `layerButton -w 180 -bgc 0.18 0.18 0.18 -l $list[$i] -p $scrL1  -ann "’¸“_–@ü‚ğÄ‚«•t‚¯‚éƒ\[ƒXƒƒbƒVƒ…‚ÌƒŠƒXƒg‚Å‚·\nƒAƒEƒgƒ‰ƒCƒiã‚ÌuNH_Source_GRPvƒm[ƒh“à‚ÌƒƒbƒVƒ…‚ª‚±‚±‚É©“®•\¦‚³‚ê‚Ü‚·\n¦ƒAƒEƒgƒ‰ƒCƒiã‚Å•ÒW‚µ‚Ä‚à–â‘è‚ ‚è‚Ü‚¹‚ñ‚ªuXVv‚µ‚È‚¢‚Æ”½‰f‚³‚ê‚Ü‚¹‚ñ"`;
-			//ƒŒƒCƒ„‚Ì‰Â‹«İ’è
+			//ä¸€æ—¦ä½œæˆã™ã‚‹
+			$lBtn1[$i] = `layerButton -w 180 -bgc 0.18 0.18 0.18 -l $list[$i] -p $scrL1  -ann "é ‚ç‚¹æ³•ç·šã‚’ç„¼ãä»˜ã‘ã‚‹ã‚½ãƒ¼ã‚¹ãƒ¡ãƒƒã‚·ãƒ¥ã®ãƒªã‚¹ãƒˆã§ã™\nã‚¢ã‚¦ãƒˆãƒ©ã‚¤ãƒŠä¸Šã®ã€ŒNH_Source_GRPã€ãƒãƒ¼ãƒ‰å†…ã®ãƒ¡ãƒƒã‚·ãƒ¥ãŒã“ã“ã«è‡ªå‹•è¡¨ç¤ºã•ã‚Œã¾ã™\nâ€»ã‚¢ã‚¦ãƒˆãƒ©ã‚¤ãƒŠä¸Šã§ç·¨é›†ã—ã¦ã‚‚å•é¡Œã‚ã‚Šã¾ã›ã‚“ãŒã€Œæ›´æ–°ã€ã—ãªã„ã¨åæ˜ ã•ã‚Œã¾ã›ã‚“"`;
+			//ãƒ¬ã‚¤ãƒ¤ã®å¯è¦–æ€§è¨­å®š
 			if($stateVis[$i]==0){
 				layerButton -e -lv 0 $lBtn1[$i];
 			}else if($stateVis[$i]==1){
 				layerButton -e -lv 1 $lBtn1[$i];
 			}
-			//ƒŒƒCƒ„ƒJƒ‰[‚ğƒƒP[ƒ^[‚©‚Ç‚¤‚©‚Å•Ï‚¦‚é
+			//ãƒ¬ã‚¤ãƒ¤ã‚«ãƒ©ãƒ¼ã‚’ãƒ­ã‚±ãƒ¼ã‚¿ãƒ¼ã‹ã©ã†ã‹ã§å¤‰ãˆã‚‹
 			if($type[$i]=="locator"){
 				layerButton -e -cl 1 0 1 $lBtn1[$i];
 			}else if($type[$i]=="mesh"){
 				layerButton -e -cl 0.5 0.5 0.5 $lBtn1[$i];
 			}
-			//ƒŒƒCƒ„‚Ìó‘Ôİ’è
+			//ãƒ¬ã‚¤ãƒ¤ã®çŠ¶æ…‹è¨­å®š
 			if($stateType[$i]=="normal"){
 				layerButton -e -ls "template" $lBtn1[$i];
 			}else if($stateType[$i]=="template"){
@@ -709,7 +709,7 @@ global proc UpdateSourceList(){
 			$lBtn1[$i] = `layerButton -vis 0 -p $scrL1`;
 		}
 	}
-	//ƒRƒ}ƒ“ƒh‚Ìİ’è
+	//ã‚³ãƒãƒ³ãƒ‰ã®è¨­å®š
 	layerButton -e -c "LayerClick(0)" -vc "LayerVisClick(0)" -tc "LayerTypeClick(0)" -dcc "LayerDoubleClick(0)" $lBtn1[0];		
 	layerButton -e -c "LayerClick(1)" -vc "LayerVisClick(1)" -tc "LayerTypeClick(1)" -dcc "LayerDoubleClick(1)" $lBtn1[1];
 	layerButton -e -c "LayerClick(2)" -vc "LayerVisClick(2)" -tc "LayerTypeClick(2)" -dcc "LayerDoubleClick(2)" $lBtn1[2];
@@ -721,11 +721,11 @@ global proc UpdateSourceList(){
 	layerButton -e -c "LayerClick(8)" -vc "LayerVisClick(8)" -tc "LayerTypeClick(8)" -dcc "LayerDoubleClick(8)" $lBtn1[8];
 	layerButton -e -c "LayerClick(9)" -vc "LayerVisClick(9)" -tc "LayerTypeClick(9)" -dcc "LayerDoubleClick(9)" $lBtn1[9];		
 }
-/*ƒŒƒCƒ„‚ğƒNƒŠƒbƒN‚µ‚½‚Æ‚«‚Ì‹““®*/
+/*ãƒ¬ã‚¤ãƒ¤ã‚’ã‚¯ãƒªãƒƒã‚¯ã—ãŸã¨ãã®æŒ™å‹•*/
 global proc LayerClick(int $id){
 	global string $lBtn1[];
 	int $state = `layerButton -q -s $lBtn1[$id]`;
-	if($state==0){//ƒNƒŠƒbƒN‚µ‚½ƒŒƒCƒ„[‚ª‘I‘ğ•\¦‚¶‚á‚È‚¢ê‡
+	if($state==0){//ã‚¯ãƒªãƒƒã‚¯ã—ãŸãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒé¸æŠè¡¨ç¤ºã˜ã‚ƒãªã„å ´åˆ
 		for($i=0;$i<size($lBtn1);$i++){
 			if($i==$id){
 				layerButton -edit -s 1 $lBtn1[$i];
@@ -738,15 +738,15 @@ global proc LayerClick(int $id){
 		layerButton -edit -s 0 $lBtn1[$id];	
 	}
 }
-/*ƒ\[ƒXƒŒƒCƒ„[ƒŠƒXƒg‚Ì•\¦ƒ{ƒ^ƒ“‰Ÿ‚µ‚½‚Æ‚«‚Ì‹““®*/
+/*ã‚½ãƒ¼ã‚¹ãƒ¬ã‚¤ãƒ¤ãƒ¼ãƒªã‚¹ãƒˆã®è¡¨ç¤ºãƒœã‚¿ãƒ³æŠ¼ã—ãŸã¨ãã®æŒ™å‹•*/
 global proc LayerVisClick(int $id){
 	global string $lBtn1[];
 	global string $sourceGrp;
-	//ƒ\[ƒXƒ‚ƒfƒ‹‚ğƒŠƒXƒg‰»
+	//ã‚½ãƒ¼ã‚¹ãƒ¢ãƒ‡ãƒ«ã‚’ãƒªã‚¹ãƒˆåŒ–
 	string $list[] = `listRelatives -c -typ "transform" $sourceGrp`;
-	//Œ»İ‚Ì‰Â‹«ó‘ÔŠm”F
+	//ç¾åœ¨ã®å¯è¦–æ€§çŠ¶æ…‹ç¢ºèª
 	int $state = `layerButton -q -lv $lBtn1[$id]`;
-	//ƒŒƒCƒ„‰Â‹«EƒIƒuƒWƒFƒNƒg‰Â‹«‚ğƒgƒOƒ‹
+	//ãƒ¬ã‚¤ãƒ¤å¯è¦–æ€§ãƒ»ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆå¯è¦–æ€§ã‚’ãƒˆã‚°ãƒ«
 	if($state==0){
 		layerButton -edit -lv 1 $lBtn1[$id];
 		setAttr ($list[$id] + ".visibility") 1;
@@ -755,15 +755,15 @@ global proc LayerVisClick(int $id){
 		setAttr ($list[$id] + ".visibility") 0;
 	}
 }
-/*ƒ\[ƒXƒŒƒCƒ„[ƒŠƒXƒg‚Ìƒ^ƒCƒvƒ{ƒ^ƒ“‰Ÿ‚µ‚½‚Æ‚«‚Ì‹““®*/
+/*ã‚½ãƒ¼ã‚¹ãƒ¬ã‚¤ãƒ¤ãƒ¼ãƒªã‚¹ãƒˆã®ã‚¿ã‚¤ãƒ—ãƒœã‚¿ãƒ³æŠ¼ã—ãŸã¨ãã®æŒ™å‹•*/
 global proc LayerTypeClick(int $id){
 	global string $lBtn1[];
 	global string $sourceGrp;
-	//ƒ\[ƒXƒ‚ƒfƒ‹‚ğƒŠƒXƒg‰»
+	//ã‚½ãƒ¼ã‚¹ãƒ¢ãƒ‡ãƒ«ã‚’ãƒªã‚¹ãƒˆåŒ–
 	string $list[] = `listRelatives -c -typ "transform" $sourceGrp`;
-	//Œ»İ‚Ìƒ^ƒCƒv‚ğŠm”F
+	//ç¾åœ¨ã®ã‚¿ã‚¤ãƒ—ã‚’ç¢ºèª
 	string $state = `layerButton -q -ls $lBtn1[$id]`;
-	//ƒŒƒCƒ„ƒ^ƒCƒvEƒIƒuƒWƒFƒNƒgƒ^ƒCƒv‚ğƒgƒOƒ‹
+	//ãƒ¬ã‚¤ãƒ¤ã‚¿ã‚¤ãƒ—ãƒ»ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚¿ã‚¤ãƒ—ã‚’ãƒˆã‚°ãƒ«
 	if($state=="normal"){
 		layerButton -edit -ls "template" $lBtn1[$id];
 		setAttr ($list[$id] + ".overrideDisplayType") 1;
@@ -778,33 +778,33 @@ global proc LayerTypeClick(int $id){
 
 
 
-/*’¸“_–@üƒf[ƒ^‚ğíœ‚·‚é*/
+/*é ‚ç‚¹æ³•ç·šãƒ‡ãƒ¼ã‚¿ã‚’å‰Šé™¤ã™ã‚‹*/
 global proc DeleteNormal(){
 	global string $txScr1;
-	//‘I‘ğ‚³‚ê‚½ƒtƒ@ƒCƒ‹–¼‚ğ’²‚×‚é
+	//é¸æŠã•ã‚ŒãŸãƒ•ã‚¡ã‚¤ãƒ«åã‚’èª¿ã¹ã‚‹
 	string $file[] = `textScrollList -q -selectItem $txScr1`;
-	//ƒvƒƒWƒFƒNƒgƒpƒX‚ğæ“¾
+	//ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆãƒ‘ã‚¹ã‚’å–å¾—
 		string $project = `workspace -q -rd`;
-	//ƒpƒX‚ğì¬‚·‚é
+	//ãƒ‘ã‚¹ã‚’ä½œæˆã™ã‚‹
 	string $path = $project + "\\" + "nvnDate" + "\\" + $file[0];
 	sysFile -del $path;
-	confirmDialog -t "íœŠ®—¹" -message "’¸“_–@üƒtƒ@ƒCƒ‹‚ğíœ‚µ‚Ü‚µ‚½"
+	confirmDialog -t "å‰Šé™¤å®Œäº†" -message "é ‚ç‚¹æ³•ç·šãƒ•ã‚¡ã‚¤ãƒ«ã‚’å‰Šé™¤ã—ã¾ã—ãŸ"
 		 -button "OK" -defaultButton "OK" -cancelButton "OK" -dismissString "OK";
-	//ƒEƒBƒ“ƒhƒE‚ğXV‚·‚é
+	//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’æ›´æ–°ã™ã‚‹
 	UpdateNvnDate();
 }
 
-/*’¸“_–@üƒf[ƒ^‚ğ“Ç‚İ‚Ş*/
+/*é ‚ç‚¹æ³•ç·šãƒ‡ãƒ¼ã‚¿ã‚’èª­ã¿è¾¼ã‚€*/
 global proc InportNormal(){
-	//ƒXƒNƒ[ƒ‹ƒŠƒXƒg‚Å‘I‘ğ‚³‚ê‚Ä‚¢‚éƒtƒ@ƒCƒ‹–¼‚ğ’m‚ç??ƒ”ƒFƒ‹
+	//ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«ãƒªã‚¹ãƒˆã§é¸æŠã•ã‚Œã¦ã„ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«åã‚’çŸ¥ã‚‰??ãƒ´ã‚§ãƒ«
 	global string $txScr1;
 	global string $optMenu7;
 	string $file[] = `textScrollList -q -selectItem $txScr1`;
-	//“]Ê•û®‚ğ’²‚×‚é
+	//è»¢å†™æ–¹å¼ã‚’èª¿ã¹ã‚‹
 	string $mode = `optionMenu -q -v $optMenu7`;
-	//‘I‘ğ‚µ‚Ä‚¢‚éƒIƒuƒWƒFƒNƒg–¼‚ğ’²‚×‚é
+	//é¸æŠã—ã¦ã„ã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆåã‚’èª¿ã¹ã‚‹
 	string $objName[] = `ls -sl -fl`;
-	//ƒvƒƒWƒFƒNƒgƒpƒX‚ğæ“¾
+	//ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆãƒ‘ã‚¹ã‚’å–å¾—
 	string $project = `workspace -q -rd`;
 	string $path = $project + "nvnDate\\" + $file[0];string $allMesh[] = `lsType("mesh")`;
 	string $source[];
@@ -818,16 +818,16 @@ global proc InportNormal(){
 		}
 	}
 	if(`size($source)`!=0){
-		confirmDialog -t "ƒGƒ‰[" -message "Šù‚ÉuNH_tempv‚Æ‚¢‚¤ƒl[ƒ€ƒXƒy[ƒX‚ğ‚ÂƒƒbƒVƒ…‚ª‘¶İ‚µ‚Ä‚¢‚Ü‚·"
-		 -button "’†~" -defaultButton "’†~" -cancelButton "’†~" -dismissString "’†~";
+		confirmDialog -t "ã‚¨ãƒ©ãƒ¼" -message "æ—¢ã«ã€ŒNH_tempã€ã¨ã„ã†ãƒãƒ¼ãƒ ã‚¹ãƒšãƒ¼ã‚¹ã‚’æŒã¤ãƒ¡ãƒƒã‚·ãƒ¥ãŒå­˜åœ¨ã—ã¦ã„ã¾ã™"
+		 -button "ä¸­æ­¢" -defaultButton "ä¸­æ­¢" -cancelButton "ä¸­æ­¢" -dismissString "ä¸­æ­¢";
 	}else if(`size($objName)`==0){
-		confirmDialog -t "ƒGƒ‰[" -message "“]‘—æ‚ÌƒIƒuƒWƒFƒNƒgi’¸“_j‚ª‘I‘ğ‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ"
-		 -button "’†~" -defaultButton "’†~" -cancelButton "’†~" -dismissString "’†~";
+		confirmDialog -t "ã‚¨ãƒ©ãƒ¼" -message "è»¢é€å…ˆã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆï¼ˆé ‚ç‚¹ï¼‰ãŒé¸æŠã•ã‚Œã¦ã„ã¾ã›ã‚“"
+		 -button "ä¸­æ­¢" -defaultButton "ä¸­æ­¢" -cancelButton "ä¸­æ­¢" -dismissString "ä¸­æ­¢";
 	}else{
-		//ƒCƒ“ƒ|[ƒg‚·‚é
+		//ã‚¤ãƒ³ãƒãƒ¼ãƒˆã™ã‚‹
 		file -import -type "OBJ"  -ignoreVersion -ra true -mergeNamespacesOnClash false
 			-namespace "NH_temp" -options "mo=1" -pr $path;
-		//ƒ\[ƒX‚Æ‚È‚éƒIƒuƒWƒFƒNƒg–¼‚ğæ“¾‚·‚é
+		//ã‚½ãƒ¼ã‚¹ã¨ãªã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆåã‚’å–å¾—ã™ã‚‹
 		clear $allMesh;
 		$allMesh = `lsType("mesh")`;
 		$cnt = 0;
@@ -839,44 +839,44 @@ global proc InportNormal(){
 			}
 		}
 		$source[0] = `substitute "Shape" $source[0] ""`;
-		print "‘ÎÛƒƒbƒVƒ…\n";
+		print "å¯¾è±¡ãƒ¡ãƒƒã‚·ãƒ¥\n";
 		print $source[0];
-		//’¸“_–@ü‚ğÄ‚«•t‚¯‚é
-		if($mode=="Å‹ßÚ"){
+		//é ‚ç‚¹æ³•ç·šã‚’ç„¼ãä»˜ã‘ã‚‹
+		if($mode=="æœ€è¿‘æ¥"){
 			transferAttributes -nml 1 -sm 3 $source[0] $objName;
-		}else if($mode=="–@ü"){
+		}else if($mode=="æ³•ç·š"){
 			transferAttributes -nml 1 -sm 0 $source[0] $objName;
 		}
 		delete -ch $source;
 		delete -ch $objName[0];
 		delete $source[0];
-		confirmDialog -t "“Ç¬Œ÷" -message "’¸“_–@ü‚ğ“]‘—‚µ‚Ü‚µ‚½"
+		confirmDialog -t "èª­è¾¼æˆåŠŸ" -message "é ‚ç‚¹æ³•ç·šã‚’è»¢é€ã—ã¾ã—ãŸ"
 			-button "OK" -defaultButton "OK" -cancelButton "OK" -dismissString "OK";
 	}
 }
 
-/*’¸“_–@üƒf[ƒ^ŠÇ—ƒfƒBƒXƒvƒŒƒCXV*/
+/*é ‚ç‚¹æ³•ç·šãƒ‡ãƒ¼ã‚¿ç®¡ç†ãƒ‡ã‚£ã‚¹ãƒ—ãƒ¬ã‚¤æ›´æ–°*/
 global proc UpdateNvnDate(){
 	global string $txScr1;
-	//ˆê’U‘Síœ
+	//ä¸€æ—¦å…¨å‰Šé™¤
 	textScrollList -edit -ra $txScr1;
-	//ƒtƒ@ƒCƒ‹‚ğƒŠƒXƒg‰»‚·‚é
+	//ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ãƒªã‚¹ãƒˆåŒ–ã™ã‚‹
 	string $list[] = CheckFolder();
 	for($i=0;$i<size($list)+1;$i++){
 		textScrollList -edit -append $list[$i] $txScr1;
 	}
 }
 
-/*ƒEƒBƒ“ƒhƒE•\¦‘O‚ÉunvnDatevƒtƒHƒ‹ƒ_‚Ì’†g‚ğŒŸõ‚·‚é*/
+/*ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦è¡¨ç¤ºå‰ã«ã€ŒnvnDateã€ãƒ•ã‚©ãƒ«ãƒ€ã®ä¸­èº«ã‚’æ¤œç´¢ã™ã‚‹*/
 global proc string[] CheckFolder(){
 	string $project = `workspace -q -rd`;
 	string $path = $project + "nvnDate" + "\\";
 	string $fileList[] = `getFileList -fld $path`;
 	return $fileList;
 }
-/*ƒEƒBƒ“ƒhƒE‹N“®‚É©“®‚ÅunvnDatevƒtƒHƒ‹ƒ_‚ğì¬‚·‚é*/
+/*ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦èµ·å‹•æ™‚ã«è‡ªå‹•ã§ã€ŒnvnDateã€ãƒ•ã‚©ãƒ«ãƒ€ã‚’ä½œæˆã™ã‚‹*/
 global proc MakeFolder(){
-	//ƒvƒƒWƒFƒNƒgƒpƒX‚ğæ“¾
+	//ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆãƒ‘ã‚¹ã‚’å–å¾—
 	string $project = `workspace -q -rd`;
 	int $check = `filetest -d ($project + "nvnDate" + "\\")`;
 	if($check==0){
@@ -884,38 +884,38 @@ global proc MakeFolder(){
 	}
 }
 
-/*–@üî•ñ‚ğo—Íi“à•”“I‚É‚ÍOBJŒ`®j*/
+/*æ³•ç·šæƒ…å ±ã‚’å‡ºåŠ›ï¼ˆå†…éƒ¨çš„ã«ã¯OBJå½¢å¼ï¼‰*/
 global proc ExportNormal(){
 	global string $txf3;
-	//ƒIƒuƒWƒFƒNƒg–¼æ“¾
+	//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆåå–å¾—
 	string $objName[] = `ls -sl -fl`;
-	//ƒvƒƒWƒFƒNƒgƒpƒX‚ğæ“¾
+	//ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆãƒ‘ã‚¹ã‚’å–å¾—
 	string $project = `workspace -q -rd`;
 	string $dir = $project + "\\" + "nvnDate" + "\\";
-	//ƒtƒHƒ‹ƒ_‚ğì¬‚·‚éiŠg’£q‚ÍnvnAƒtƒHƒ‹ƒ_–¼‚ÍunvnDatevj
+	//ãƒ•ã‚©ãƒ«ãƒ€ã‚’ä½œæˆã™ã‚‹ï¼ˆæ‹¡å¼µå­ã¯nvnã€ãƒ•ã‚©ãƒ«ãƒ€åã¯ã€ŒnvnDateã€ï¼‰
 	int $check1 = `filetest -d ($project + "nvnDate" + "\\")`;
 	if($check1==0){
 		sysFile -md ($project + "nvnDate" + "\\");
 	}
-	//o—ÍƒpƒX‚ğì¬‚·‚é
+	//å‡ºåŠ›ãƒ‘ã‚¹ã‚’ä½œæˆã™ã‚‹
 	string $inputName = `textField -q -tx $txf3`;
 	string $path = $dir + $inputName;
-	//o—Í
+	//å‡ºåŠ›
 	file -force -options "groups=0;ptgroups=0;materials=0;smoothing=1;normals=1"
 		-typ "OBJexport" -pr -es $path;
-	confirmDialog -t "•Û‘¶Š®—¹" -message "’¸“_–@üî•ñ‚ğ•Û‘¶‚µ‚Ü‚µ‚½"
+	confirmDialog -t "ä¿å­˜å®Œäº†" -message "é ‚ç‚¹æ³•ç·šæƒ…å ±ã‚’ä¿å­˜ã—ã¾ã—ãŸ"
 		 -button "OK" -defaultButton "OK" -cancelButton "OK" -dismissString "OK";
 	UpdateNvnDate();
 }
 
 
-/*ƒXƒNƒŠƒvƒgƒpƒX‚ğæ“¾‚·‚é*/
+/*ã‚¹ã‚¯ãƒªãƒ—ãƒˆãƒ‘ã‚¹ã‚’å–å¾—ã™ã‚‹*/
 global proc string GetScriptPath(string $mel){    
     string $whatIs=`whatIs $mel`;
-    // •s–¾‚Ìê‡’â~
+    // ä¸æ˜ã®å ´åˆåœæ­¢
     if("Unknown"==$whatIs) error -n "Unknown";
     
-    // •s—v•”•ª‚Ìíœ
+    // ä¸è¦éƒ¨åˆ†ã®å‰Šé™¤
     string $path;
     $path=`substitute "Script found in: " $whatIs ""`;
     $path=`substitute "Mel procedure found in: " $path ""`;
@@ -925,7 +925,7 @@ global proc string GetScriptPath(string $mel){
     $iconPath[0] = stringArrayToString($iconPath,"/");
     return $iconPath[0];
 }
-/*ƒgƒD[ƒ“ƒVƒF[ƒ_[‚ğíœ‚·‚é*/
+/*ãƒˆã‚¥ãƒ¼ãƒ³ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã‚’å‰Šé™¤ã™ã‚‹*/
 global proc DeleteToonMat(){
 	int $check1 = `objExists NH_toon`;
 	if($check1==1){
@@ -934,9 +934,9 @@ global proc DeleteToonMat(){
 	}	
 }
 
-/*ƒgƒD[ƒ“ƒVƒF[ƒ_[‚ğˆê“I‚É“K—p*/
+/*ãƒˆã‚¥ãƒ¼ãƒ³ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã‚’ä¸€æ™‚çš„ã«é©ç”¨*/
 global proc MakeToonMat(){
-	//ƒV[ƒ““à‚É‚ ‚éLambertƒ}ƒeƒŠƒAƒ‹‚ğƒŠƒXƒg‰»
+	//ã‚·ãƒ¼ãƒ³å†…ã«ã‚ã‚‹Lambertãƒãƒ†ãƒªã‚¢ãƒ«ã‚’ãƒªã‚¹ãƒˆåŒ–
 	string $curMatName[] = `lsType "lambert"`;
 	int $num = size($curMatName)-1;
 	string $temp[] = `lsType "phong"`;
@@ -952,12 +952,12 @@ global proc MakeToonMat(){
 	$curMatName = stringArrayCatenate($curMatName, $temp);
 	$num = size($curMatName);
 	int $check = `objExists NH_toon`;
-	if($num>=3 && $check==0){//ƒV[ƒ““à‚ÉLambert1ˆÓŠO‚Éƒ}ƒeƒŠƒAƒ‹‚ª‚¿‚á‚ñ‚Æ‚ ‚éê‡
-		//rampƒVƒF[ƒ_[‚ğì¬‚·‚é
+	if($num>=3 && $check==0){//ã‚·ãƒ¼ãƒ³å†…ã«Lambert1æ„å¤–ã«ãƒãƒ†ãƒªã‚¢ãƒ«ãŒã¡ã‚ƒã‚“ã¨ã‚ã‚‹å ´åˆ
+		//rampã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã‚’ä½œæˆã™ã‚‹
 		shadingNode -asShader rampShader -n NH_toon;
 		sets -r 1 -nss true -em -n NH_toonSG;
 		connectAttr -f NH_toon.outColor NH_toonSG.surfaceShader;
-		//ƒgƒD[ƒ“‚Ì’²®
+		//ãƒˆã‚¥ãƒ¼ãƒ³ã®èª¿æ•´
 		setAttr "NH_toon.colorInput" 1;
 		setAttr "NH_toon.color[0].color_Interp" 0;
 		setAttr "NH_toon.color[0].color_Color" -type double3 0 0 0 ;
@@ -965,20 +965,20 @@ global proc MakeToonMat(){
 		setAttr "NH_toon.color[1].color_Color" -type double3 0.21 0.21 0.21 ;
 		setAttr "NH_toon.color[1].color_Position" 0.5;
 		setAttr "NH_toon.specularColor[0].specularColor_Color" -type double3 0 0 0 ;
-		//rampƒVƒF[ƒ_[‚ğ‘Sƒ}ƒeƒŠƒAƒ‹‚Ìambient‚ÉƒRƒlƒNƒg‚·‚é
+		//rampã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã‚’å…¨ãƒãƒ†ãƒªã‚¢ãƒ«ã®ambientã«ã‚³ãƒã‚¯ãƒˆã™ã‚‹
 		for($i=1;$i<size($curMatName)-1;$i++){
 			connectAttr -f NH_toon.outColor ($curMatName[$i] + ".ambientColor");
 		}
-		confirmDialog -t "ƒVƒF[ƒ_[V‹Kì¬" -message "ƒgƒD[ƒ“ƒVƒF[ƒ_[‚ğV‹Kì¬‚µ‚ÄƒRƒlƒNƒg‚µ‚Ü‚µ‚½"
+		confirmDialog -t "ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼æ–°è¦ä½œæˆ" -message "ãƒˆã‚¥ãƒ¼ãƒ³ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã‚’æ–°è¦ä½œæˆã—ã¦ã‚³ãƒã‚¯ãƒˆã—ã¾ã—ãŸ"
 		 -button "OK" -defaultButton "OK" -cancelButton "OK" -dismissString "OK";
-	}else{//ƒV[ƒ““à‚Éƒ}ƒeƒŠƒAƒ‹‚ª‚È‚¢‚Æ‚«A‚·‚Å‚É‘¶İ‚µ‚Ä‚¢‚é‚Æ‚«
-		confirmDialog -title "Œx" -message "ƒV[ƒ““à‚Éƒ}ƒeƒŠƒAƒ‹‚ª‘¶İ‚µ‚È‚¢‚©A\nŠù‚ÉƒVƒF[ƒ_[‚ª‘¶İ‚µ‚Ä‚¢‚é‚½‚ß\n‚½‚ß’†~‚µ‚Ü‚·"
-		    -button "•Â‚¶‚é" -defaultButton "•Â‚¶‚é"
-		    -cancelButton "•Â‚¶‚é" -dismissString "•Â‚¶‚é";
+	}else{//ã‚·ãƒ¼ãƒ³å†…ã«ãƒãƒ†ãƒªã‚¢ãƒ«ãŒãªã„ã¨ãã€ã™ã§ã«å­˜åœ¨ã—ã¦ã„ã‚‹ã¨ã
+		confirmDialog -title "è­¦å‘Š" -message "ã‚·ãƒ¼ãƒ³å†…ã«ãƒãƒ†ãƒªã‚¢ãƒ«ãŒå­˜åœ¨ã—ãªã„ã‹ã€\næ—¢ã«ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ãŒå­˜åœ¨ã—ã¦ã„ã‚‹ãŸã‚\nãŸã‚ä¸­æ­¢ã—ã¾ã™"
+		    -button "é–‰ã˜ã‚‹" -defaultButton "é–‰ã˜ã‚‹"
+		    -cancelButton "é–‰ã˜ã‚‹" -dismissString "é–‰ã˜ã‚‹";
 	}
 	
 }
-/*’¸“_–@ü‚ğ¶‰E”½“]‚·‚é*/
+/*é ‚ç‚¹æ³•ç·šã‚’å·¦å³åè»¢ã™ã‚‹*/
 global proc SymmetryNormal(){
 	global string $optMenu2;
 	string $mode = `optionMenu -q -v $optMenu2`;
@@ -989,7 +989,7 @@ global proc SymmetryNormal(){
 	tokenize $vtxName[0] "." $objName;
 	string $target[];
 	int $cnt = 0;
-	if($mode=="-X"){//XÀ•W‚ª0ˆÈ‰º‚Ì’¸“_‚Ì‚İ‚Éi‚é
+	if($mode=="-X"){//Xåº§æ¨™ãŒ0ä»¥ä¸‹ã®é ‚ç‚¹ã®ã¿ã«çµã‚‹
 		for($i=0;$i<size($vtxName);$i++){
 			float $pos[] = `pointPosition $vtxName[$i]`;
 			if($pos[0]<=0){
@@ -1020,7 +1020,7 @@ global proc SymmetryNormal(){
 	delete -ch `polyListComponentConversion`;
 }
 
-/*’¸“_–@ü‚ğƒ^[ƒQƒbƒg‚ÉŒü‚©‚Á‚ÄƒXƒ€[ƒX‚·‚éA˜A‘±‰Ÿ‰º‚Å•½‹Ï‰»‚³‚ê‚é*/
+/*é ‚ç‚¹æ³•ç·šã‚’ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã«å‘ã‹ã£ã¦ã‚¹ãƒ ãƒ¼ã‚¹ã™ã‚‹ã€é€£ç¶šæŠ¼ä¸‹ã§å¹³å‡åŒ–ã•ã‚Œã‚‹*/
 global proc SmoothBakeNormal(){
 	//global int $digit;
 	global string $txf2;
@@ -1028,52 +1028,52 @@ global proc SmoothBakeNormal(){
 	global string $optMenu6;
 	global float $tempAttr[];
 	global string $intSG1;
-	//ƒXƒ€[ƒX‹­“x‚ğ’²‚×‚é
+	//ã‚¹ãƒ ãƒ¼ã‚¹å¼·åº¦ã‚’èª¿ã¹ã‚‹
 	float $digit = `optionMenu -q -v $optMenu5`;	
-	//‘I‘ğ‚³‚ê‚½ƒIƒuƒWƒFƒNƒg‚ğ’²‚×‚é
+	//é¸æŠã•ã‚ŒãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’èª¿ã¹ã‚‹
 	string $target = `textField -q -tx $txf2`;
-	//‘I‘ğ‚³‚ê‚½“]Ê•û®‚ğ’²‚×‚é
+	//é¸æŠã•ã‚ŒãŸè»¢å†™æ–¹å¼ã‚’èª¿ã¹ã‚‹
 	string $mode = `optionMenu -q -v $optMenu6`;
-	//‘I‘ğ’¸“_‚ğƒŠƒXƒg‰»
+	//é¸æŠé ‚ç‚¹ã‚’ãƒªã‚¹ãƒˆåŒ–
 	string $vtxName[] = GetVtxList();
 	$vtxName = `polyListComponentConversion -tv $vtxName`;
 	$vtxName = `filterExpand -sm 31 $vtxName`;
-	//‘I‘ğ’¸“_‚ªŠÜ‚Ü‚ê‚éƒƒbƒVƒ…–¼‚ğæ“¾
+	//é¸æŠé ‚ç‚¹ãŒå«ã¾ã‚Œã‚‹ãƒ¡ãƒƒã‚·ãƒ¥åã‚’å–å¾—
 	string $objName[];
 	tokenize $vtxName[0] "." $objName;
-	//ƒ^[ƒQƒbƒgƒ‚ƒfƒ‹‚Ì•¡»
+	//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãƒ¢ãƒ‡ãƒ«ã®è¤‡è£½
 	string $objName2[] = `duplicate $objName[0]`;
-	//•¡»‚µ‚½ƒ‚ƒfƒ‹‚É‚¨‚¯‚éŠY“–’¸“_ƒŠƒXƒg‚ğæ“¾
+	//è¤‡è£½ã—ãŸãƒ¢ãƒ‡ãƒ«ã«ãŠã‘ã‚‹è©²å½“é ‚ç‚¹ãƒªã‚¹ãƒˆã‚’å–å¾—
 	string $vtxName2[];
 	for($i=0;$i<size($vtxName);$i++){
 		string $temp[];
 		tokenize $vtxName[$i] "." $temp;
 		$vtxName2[$i] = ($objName2[0] + "." + $temp[1]);
 	}
-	//‚à‚Æ‚à‚Æİ’è‚³‚ê‚Ä‚¢‚½’¸“_–@ü‚ğæ“¾
+	//ã‚‚ã¨ã‚‚ã¨è¨­å®šã•ã‚Œã¦ã„ãŸé ‚ç‚¹æ³•ç·šã‚’å–å¾—
 	vector $preNor[];
 	for($i=0;$i<size($vtxName);$i++){
 		float $temp1[] = `polyNormalPerVertex -q -xyz $vtxName[$i]`;
 		$preNor[$i] = <<$temp1[0], $temp1[1], $temp1[2]>>;
 	}
-	//•¡»‚µ‚½ƒ‚ƒfƒ‹“¯m‚Å“]Ê
+	//è¤‡è£½ã—ãŸãƒ¢ãƒ‡ãƒ«åŒå£«ã§è»¢å†™
 	string $sourceName[] = `duplicate $target`;
 	makeIdentity -apply true -t 1 -r 1 -s 1 -n 0 -pn 1 $sourceName[0];
-	if($mode == "Å‹ßÚ"){		
+	if($mode == "æœ€è¿‘æ¥"){		
 		transferAttributes -nml 1 -sm 3 $sourceName[0] $objName2[0];
-	}else if($mode == "–@ü"){
+	}else if($mode == "æ³•ç·š"){
 		transferAttributes -nml 1 -sm 0 $sourceName[0] $objName2[0];
 	}
-	//ƒxƒCƒN‚µ‚½Œã‚Ì’¸“_–@ü‚ğæ“¾	
+	//ãƒ™ã‚¤ã‚¯ã—ãŸå¾Œã®é ‚ç‚¹æ³•ç·šã‚’å–å¾—	
 	vector $postNor[];
 	for($i=0;$i<size($vtxName2);$i++){
 		float $tempNor[] = `polyNormalPerVertex -q -xyz $vtxName2[$i]`;
 		$postNor[$i] = <<$tempNor[0], $tempNor[1], $tempNor[2]>>;
 	}
-	//’¸“_–@ü‚Ì‘OŒã‚ğŒvZ‚µ‚½–@ü‚ğæ“¾‚·‚é
+	//é ‚ç‚¹æ³•ç·šã®å‰å¾Œã‚’è¨ˆç®—ã—ãŸæ³•ç·šã‚’å–å¾—ã™ã‚‹
 	vector $targetNor[];
 	for($i=0;$i<size($vtxName);$i++){
-		//’¸“_–@ü‚ğ‡¬‚·‚é
+		//é ‚ç‚¹æ³•ç·šã‚’åˆæˆã™ã‚‹
 		vector $vec1 = $preNor[$i];
 		vector $vec2 = $postNor[$i];
 		float $x1 = $vec1.x + ($vec2.x * $digit);
@@ -1081,7 +1081,7 @@ global proc SmoothBakeNormal(){
 		float $z1 = $vec1.z + ($vec2.z * $digit);
 		$targetNor[$i] = <<$x1, $y1, $z1>>;
 		$targetNor[$i] = `unit $targetNor[$i]`;
-		//’¸“_–@ü‚ğ“K—p‚·‚é
+		//é ‚ç‚¹æ³•ç·šã‚’é©ç”¨ã™ã‚‹
 		vector $vec3 = $targetNor[$i];
 		float $x2 = $vec3.x;
 		float $y2 = $vec3.y;
@@ -1089,7 +1089,7 @@ global proc SmoothBakeNormal(){
 		polyNormalPerVertex -ufn 0 $vtxName[$i];
 		polyNormalPerVertex -xyz $x2 $y2 $z2 $vtxName[$i];	
 	}
-	//ƒqƒXƒgƒŠ‚Ìíœi‚ÅƒtƒH[ƒ}ˆÈŠOj	
+	//ãƒ’ã‚¹ãƒˆãƒªã®å‰Šé™¤ï¼ˆã§ãƒ•ã‚©ãƒ¼ãƒä»¥å¤–ï¼‰	
 	select -r $vtxName;
 	delete -ch `polyListComponentConversion`;
 	select -r $vtxName;
@@ -1099,32 +1099,32 @@ global proc SmoothBakeNormal(){
 	delete -ch $objName2[0];
 	delete $objName2[0];
 }
-/*’¸“_–@ü‚ğƒ^[ƒQƒbƒg‚ÉƒxƒCƒN*/
+/*é ‚ç‚¹æ³•ç·šã‚’ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã«ãƒ™ã‚¤ã‚¯*/
 global proc BakeSourceNormal(){
 	global string $txf2;
 	global string $optMenu5;
 	global string $optMenu6;
 	global float $tempAttr[];
 	global string $txScr3;
-	//‘I‘ğ‚³‚ê‚½“]Ê•û®‚ğ’²‚×‚é
+	//é¸æŠã•ã‚ŒãŸè»¢å†™æ–¹å¼ã‚’èª¿ã¹ã‚‹
 	string $mode = `optionMenu -q -v $optMenu6`;
-	//‘I‘ğ’¸“_‚ğƒŠƒXƒg‰»
+	//é¸æŠé ‚ç‚¹ã‚’ãƒªã‚¹ãƒˆåŒ–
 	string $vtxName[] = GetVtxList();
 	$vtxName = `polyListComponentConversion -tv $vtxName`;
 	$vtxName = `filterExpand -sm 31 $vtxName`;
-	//‘I‘ğ’¸“_‚ªŠÜ‚Ü‚ê‚éƒƒbƒVƒ…–¼‚ğæ“¾
+	//é¸æŠé ‚ç‚¹ãŒå«ã¾ã‚Œã‚‹ãƒ¡ãƒƒã‚·ãƒ¥åã‚’å–å¾—
 	string $objName[];
 	tokenize $vtxName[0] "." $objName;
-	//ƒ^[ƒQƒbƒgƒ‚ƒfƒ‹‚Ì•¡»
+	//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãƒ¢ãƒ‡ãƒ«ã®è¤‡è£½
 	string $objName2[] = `duplicate $objName[0]`;
-	//•¡»‚µ‚½ƒ‚ƒfƒ‹‚É‚¨‚¯‚éŠY“–’¸“_ƒŠƒXƒg‚ğæ“¾
+	//è¤‡è£½ã—ãŸãƒ¢ãƒ‡ãƒ«ã«ãŠã‘ã‚‹è©²å½“é ‚ç‚¹ãƒªã‚¹ãƒˆã‚’å–å¾—
 	string $vtxName2[];
 	for($i=0;$i<size($vtxName);$i++){
 		string $temp[];
 		tokenize $vtxName[$i] "." $temp;
 		$vtxName2[$i] = ($objName2[0] + "." + $temp[1]);
 	}
-	//‘I‘ğ‚³‚ê‚½ƒ\[ƒXƒIƒuƒWƒFƒNƒg–¼‚ğ’²‚×‚é
+	//é¸æŠã•ã‚ŒãŸã‚½ãƒ¼ã‚¹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆåã‚’èª¿ã¹ã‚‹
 	string $tx = `textField -q -tx $txf2`;
 	string $target;
 	if($tx!=""){
@@ -1133,22 +1133,22 @@ global proc BakeSourceNormal(){
 		string $temp[] = `textScrollList -q -selectItem $txScr3`;
 		$target = $temp[0];
 	}
-	//ƒ\[ƒXƒ‚ƒfƒ‹‚ğ•¡»‚µ‚ÄƒtƒŠ[ƒY
+	//ã‚½ãƒ¼ã‚¹ãƒ¢ãƒ‡ãƒ«ã‚’è¤‡è£½ã—ã¦ãƒ•ãƒªãƒ¼ã‚º
 	string $sourceName[] = `duplicate $target`;
 	makeIdentity -apply true -t 1 -r 1 -s 1 -n 0 -pn 1 $sourceName[0];
-	//•¡»‚µ‚½Ò“¯m‚Å“]Ê
-	if($mode == "Å‹ßÚ"){		
+	//è¤‡è£½ã—ãŸè€…åŒå£«ã§è»¢å†™
+	if($mode == "æœ€è¿‘æ¥"){		
 		transferAttributes -nml 1 -sm 3 $sourceName[0] $objName2[0];
-	}else if($mode == "–@ü"){
+	}else if($mode == "æ³•ç·š"){
 		transferAttributes -nml 1 -sm 0 $sourceName[0] $objName2[0];
 	}
-	//•¡»‚Ì’¸“_–@ü‚ğæ“¾‚·‚é
+	//è¤‡è£½ã®é ‚ç‚¹æ³•ç·šã‚’å–å¾—ã™ã‚‹
 	vector $targetNor[];
 	for($i=0;$i<size($vtxName2);$i++){
 		float $temp1[] = `polyNormalPerVertex -q -xyz $vtxName2[$i]`;
 		$targetNor[$i] = <<$temp1[0], $temp1[1], $temp1[2]>>;
 	}
-	//Œ³‚Ìƒ^[ƒQƒbƒgƒ‚ƒfƒ‹‚É’¸“_–@ü‚ğ—¬‚µ‚Ş
+	//å…ƒã®ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãƒ¢ãƒ‡ãƒ«ã«é ‚ç‚¹æ³•ç·šã‚’æµã—è¾¼ã‚€
 	for($i=0;$i<size($vtxName);$i++){
 		vector $vec1 = $targetNor[$i];
 		float $x1 = $vec1.x;
@@ -1157,21 +1157,21 @@ global proc BakeSourceNormal(){
 		polyNormalPerVertex -xyz $x1 $y1 $z1 $vtxName[$i];
 	}
 	
-	//ƒqƒXƒgƒŠ‚Ìíœi‚ÅƒtƒH[ƒ}ˆÈŠOjAˆêƒ‚ƒfƒ‹‚ğíœ
+	//ãƒ’ã‚¹ãƒˆãƒªã®å‰Šé™¤ï¼ˆã§ãƒ•ã‚©ãƒ¼ãƒä»¥å¤–ï¼‰ã€ä¸€æ™‚ãƒ¢ãƒ‡ãƒ«ã‚’å‰Šé™¤
 	select -r $vtxName;
 	delete -ch `polyListComponentConversion`;
 	delete -ch $sourceName[0];
 	delete $sourceName[0];
 	delete -ch $objName2[0];
 	delete $objName2[0];
-	//Ä‘I‘ğ
+	//å†é¸æŠ
 	select -r $vtxName;
 }
-/*ƒ^[ƒQƒbƒg‚ğİ’è‚µ‚Ä•\¦‚ğXViSourceƒ^[ƒQƒbƒg‚ ‚èj*/
+/*ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚’è¨­å®šã—ã¦è¡¨ç¤ºã‚’æ›´æ–°ï¼ˆSourceã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚ã‚Šï¼‰*/
 global proc SetTarget2(){
 	global string $txf2;
 	global string $lBtn1[];
-	//ƒŠƒXƒg‚Ì‘I‘ğó‘Ô‚ğ’²‚×‚é
+	//ãƒªã‚¹ãƒˆã®é¸æŠçŠ¶æ…‹ã‚’èª¿ã¹ã‚‹
 	int $id;
 	int $cnt = 0;
 	for($i=0;$i<size($lBtn1);$i++){
@@ -1181,16 +1181,16 @@ global proc SetTarget2(){
 			$cnt++;
 		}
 	}
-	if($cnt==0){//ƒŠƒXƒg‘I‘ğ‚ª‚È‚¢ê‡
+	if($cnt==0){//ãƒªã‚¹ãƒˆé¸æŠãŒãªã„å ´åˆ
 		string $obj[] = `ls -sl -fl`;
 		textField -e -tx $obj[0] $txf2;
-	}else if($cnt!=0){//ƒŠƒXƒg‚Å‘I‘ğ‚ª‚ ‚ê‚Î
+	}else if($cnt!=0){//ãƒªã‚¹ãƒˆã§é¸æŠãŒã‚ã‚Œã°
 		string $selected = `layerButton -q -l $lBtn1[$id]`;
 		textField -e -tx $selected $txf2;
 	}
 }
 
-/*’¸“_–@ü‚Ì‘I‘ğ’¸“_‚¾‚¯‚ÌƒƒbƒN‰ğœ*/
+/*é ‚ç‚¹æ³•ç·šã®é¸æŠé ‚ç‚¹ã ã‘ã®ãƒ­ãƒƒã‚¯è§£é™¤*/
 global proc UnlockNormal(){
 	string $vtxName[] = GetVtxList();
 	$vtxName = `polyListComponentConversion -tv $vtxName`;
@@ -1200,20 +1200,20 @@ global proc UnlockNormal(){
 	}
 }
 
-/*‘I‘ğ’¸“_‚ğ’Pƒ‚ÉƒXƒ€[ƒX‚·‚é*/
+/*é¸æŠé ‚ç‚¹ã‚’å˜ç´”ã«ã‚¹ãƒ ãƒ¼ã‚¹ã™ã‚‹*/
 global proc SmoothNormal(){
-	//‘I‘ğ’¸“_‚ğƒŠƒXƒg‰»
+	//é¸æŠé ‚ç‚¹ã‚’ãƒªã‚¹ãƒˆåŒ–
 	string $vtxName[] = GetVtxList();
 	$vtxName = `polyListComponentConversion -tv $vtxName`;
 	$vtxName = `filterExpand -sm 31 $vtxName`;
-	//Še’¸“_‚Ìƒ^[ƒQƒbƒg–@ü‚ğZo
+	//å„é ‚ç‚¹ã®ã‚¿ãƒ¼ã‚²ãƒƒãƒˆæ³•ç·šã‚’ç®—å‡º
 	for($i=0;$i<size($vtxName);$i++){
-		//Še’¸“_‚Ìü•Ó’¸“_‚ğƒŠƒXƒg‰»‚·‚é
+		//å„é ‚ç‚¹ã®å‘¨è¾ºé ‚ç‚¹ã‚’ãƒªã‚¹ãƒˆåŒ–ã™ã‚‹
 		string $aroundVtx[];
 		select -r $vtxName[$i];
 		GrowPolygonSelectionRegion;
 		$aroundVtx = `ls -sl -fl`;
-		//Še’¸“_‚Ìü•Ó’¸“_‚Ì’¸“_–@ü‚ğ³‹K‰»‚·‚é
+		//å„é ‚ç‚¹ã®å‘¨è¾ºé ‚ç‚¹ã®é ‚ç‚¹æ³•ç·šã‚’æ­£è¦åŒ–ã™ã‚‹
 		vector $arVtxNor[];
 		for($j=0;$j<size($aroundVtx);$j++){
 			float $tempNor[] = `polyNormalPerVertex -q -xyz $aroundVtx[$j]`;
@@ -1225,7 +1225,7 @@ global proc SmoothNormal(){
 				$arVtxNor[$j] = <<$x1, $y1, $z1>>;
 			}
 		}
-		//Še’¸“_‚Ìü•Ó‚Ì’¸“_–@ü‚Ì•½‹Ï‚ğ‹‚ß‚é
+		//å„é ‚ç‚¹ã®å‘¨è¾ºã®é ‚ç‚¹æ³•ç·šã®å¹³å‡ã‚’æ±‚ã‚ã‚‹
 		vector $targetNor;
 		for($j=0;$j<size($arVtxNor);$j++){
 			vector $vec3 = $targetNor;
@@ -1241,12 +1241,12 @@ global proc SmoothNormal(){
 		float $z3 = $targetNor.z;
 		polyNormalPerVertex -xyz $x3 $y3 $z3 $vtxName[$i];
 	}
-	//ƒqƒXƒgƒŠ‚ğíœ‚·‚é
+	//ãƒ’ã‚¹ãƒˆãƒªã‚’å‰Šé™¤ã™ã‚‹
 	select -r $vtxName;
 	delete -ch `polyListComponentConversion`;
 }
 
-/*’¸“_–@ü‚Ì•\¦Ø‘Ö*/
+/*é ‚ç‚¹æ³•ç·šã®è¡¨ç¤ºåˆ‡æ›¿*/
 global proc ToggleDisplayNormal(){
 	string $obj[] = `ls -sl -fl`;
 	int $pt[] = `polyOptions -q -dn $obj[0]`;
@@ -1257,7 +1257,7 @@ global proc ToggleDisplayNormal(){
 	}
 }
 
-/*’¸“_–@ü•\¦ƒTƒCƒY‚ÌÅ“K‰»*/
+/*é ‚ç‚¹æ³•ç·šè¡¨ç¤ºã‚µã‚¤ã‚ºã®æœ€é©åŒ–*/
 global proc AdjustDisplaySize(){
 	global string $optMenu1;
 	string $mode = `optionMenu -q -v $optMenu1`;
@@ -1268,33 +1268,33 @@ global proc AdjustDisplaySize(){
 	float $disZ = abs ($bound[5] - $bound[4]);
 	float $size = ($disX + $disY + $disZ)/3;
 	$size = $size/20;
-	if($mode=="1/2"){//”¼•ª
+	if($mode=="1/2"){//åŠåˆ†
 		$size = $size/2;
 		polyOptions -sn $size -dn 1 -pt $obj[0];
-	}else if($mode=="’Êí"){//’Êí
+	}else if($mode=="é€šå¸¸"){//é€šå¸¸
 		polyOptions -sn $size -dn 1 -pt $obj[0];
-	}else if($mode=="“ñ”{"){//“ñ”{
+	}else if($mode=="äºŒå€"){//äºŒå€
 		$size = $size*2;
 		polyOptions -sn $size -dn 1 -pt $obj[0];
 	}
 	
 }
 
-/*’¸“_–@ü‚ğƒ^[ƒQƒbƒg‚ÉŒü‚©‚Á‚ÄƒXƒ€[ƒX‚·‚éA˜A‘±‰Ÿ‰º‚Å•½‹Ï‰»‚³‚ê‚é*/
+/*é ‚ç‚¹æ³•ç·šã‚’ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã«å‘ã‹ã£ã¦ã‚¹ãƒ ãƒ¼ã‚¹ã™ã‚‹ã€é€£ç¶šæŠ¼ä¸‹ã§å¹³å‡åŒ–ã•ã‚Œã‚‹*/
 global proc SmoothDirectionNormal(){
 	global string $optMenu4;
-	//ƒXƒ€[ƒX‹­“x‚ğ’²‚×‚é
+	//ã‚¹ãƒ ãƒ¼ã‚¹å¼·åº¦ã‚’èª¿ã¹ã‚‹
 	float $digit = `optionMenu -q -v $optMenu4`;
-	//‘I‘ğ’¸“_‚ÌdS‚©‚çƒ^[ƒQƒbƒgƒIƒuƒWƒFƒNƒg‚ÖŒü‚©‚¤ƒxƒNƒgƒ‹‚ğ‹‚ß‚é
+	//é¸æŠé ‚ç‚¹ã®é‡å¿ƒã‹ã‚‰ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã¸å‘ã‹ã†ãƒ™ã‚¯ãƒˆãƒ«ã‚’æ±‚ã‚ã‚‹
 	vector $avVec = GetDirection();
-	//‘I‘ğ’¸“_‚ğƒŠƒXƒg‰»
+	//é¸æŠé ‚ç‚¹ã‚’ãƒªã‚¹ãƒˆåŒ–
 	string $vtxName[] = `ls -sl -fl`;
 	$vtxName = `polyListComponentConversion -tv $vtxName`;
 	$vtxName = `filterExpand -sm 31 $vtxName`;
-	//Še’¸“_‚Ì–Ú•W’¸“_–@ü‚ğæ“¾‚·‚é
+	//å„é ‚ç‚¹ã®ç›®æ¨™é ‚ç‚¹æ³•ç·šã‚’å–å¾—ã™ã‚‹
 	vector $targetNor[];
 	for($i=0;$i<size($vtxName);$i++){
-		//Še’¸“_–@ü‚ğ³‹K‰»‚·‚é
+		//å„é ‚ç‚¹æ³•ç·šã‚’æ­£è¦åŒ–ã™ã‚‹
 		float $tempNor[] = `polyNormalPerVertex -q -xyz $vtxName[$i]`;
 		vector $vtxNor;
 		for($j=0;$j<size($tempNor);$j++){
@@ -1304,26 +1304,26 @@ global proc SmoothDirectionNormal(){
 			$vtxNor = <<$x1, $y1, $z1>>;	
 		}
 		$vtxNor = `unit $vtxNor`;
-		//’¸“_–@ü‚Æ–Ú•W–@ü‚ğ‡¬‚·‚é
+		//é ‚ç‚¹æ³•ç·šã¨ç›®æ¨™æ³•ç·šã‚’åˆæˆã™ã‚‹
 		float $x2 = $vtxNor.x + ($avVec.x * $digit);
 		float $y2 = $vtxNor.y + ($avVec.y * $digit);
 		float $z2 = $vtxNor.z + ($avVec.z * $digit);
 		
 		$targetNor[$i] = <<$x2, $y2, $z2>>;
 		$targetNor[$i] = `unit $targetNor[$i]`;
-		//Še’¸“_‚É•â³’¸“_–@ü‚ğ“K—p
+		//å„é ‚ç‚¹ã«è£œæ­£é ‚ç‚¹æ³•ç·šã‚’é©ç”¨
 		vector $vec1 = $targetNor[$i];
 		float $x3 = $vec1.x;
 		float $y3 = $vec1.y;
 		float $z3 = $vec1.z;
 		polyNormalPerVertex -xyz $x3 $y3 $z3 $vtxName[$i];	
 	}
-	//ƒqƒXƒgƒŠ‚ğíœ
+	//ãƒ’ã‚¹ãƒˆãƒªã‚’å‰Šé™¤
 	select -r $vtxName;
 	delete -ch `polyListComponentConversion`;
 }
 
-/*ƒ^[ƒQƒbƒgƒIƒuƒWƒFƒNƒg•ûŒü‚Éˆê—¥’¸“_–@üİ’è*/
+/*ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ–¹å‘ã«ä¸€å¾‹é ‚ç‚¹æ³•ç·šè¨­å®š*/
 global proc SetDirectedNormal(){
 	vector $target = GetDirection();
 	float $x = $target.x; float $y = $target.y; float $z = $target.z; 
@@ -1333,15 +1333,15 @@ global proc SetDirectedNormal(){
 	}
 }
 
-/*’¸“_ŒQ•½‹ÏÀ•W‚©‚çƒ^[ƒQƒbƒgƒIƒuƒWƒFƒNƒg‚ÉŒü‚©‚¤ƒxƒNƒgƒ‹‚ğæ“¾*/
+/*é ‚ç‚¹ç¾¤å¹³å‡åº§æ¨™ã‹ã‚‰ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã«å‘ã‹ã†ãƒ™ã‚¯ãƒˆãƒ«ã‚’å–å¾—*/
 global proc vector GetDirection(){
 	global string $txf1;
 	global string $txScr3;
-	//‘I‘ğ’¸“_‚ğƒŠƒXƒg‰»
+	//é¸æŠé ‚ç‚¹ã‚’ãƒªã‚¹ãƒˆåŒ–
 	string $vtxName[] = GetVtxList();
 	$vtxName = `polyListComponentConversion -tv $vtxName`;
 	$vtxName = `filterExpand -sm 31 $vtxName`;
-	//‘I‘ğ’¸“_ŒQ‚ÌdSÀ•W‚ğ‹‚ß‚é
+	//é¸æŠé ‚ç‚¹ç¾¤ã®é‡å¿ƒåº§æ¨™ã‚’æ±‚ã‚ã‚‹
 	float $vtxPos[];
 	for($i=0;$i<size($vtxName);$i++){
 		float $temp[] = `pointPosition -w $vtxName[$i]`;
@@ -1352,7 +1352,7 @@ global proc vector GetDirection(){
 	$vtxPos[0] = $vtxPos[0]/size($vtxName);
 	$vtxPos[1] = $vtxPos[1]/size($vtxName);
 	$vtxPos[2] = $vtxPos[2]/size($vtxName);
-	//ƒ^[ƒQƒbƒg‚ÌƒIƒuƒWƒFƒNƒg–¼‚ğ’²‚×‚é
+	//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆåã‚’èª¿ã¹ã‚‹
 	string $tx = `textField -q -tx $txf1`;
 	string $target;
 	if($tx!=""){
@@ -1362,7 +1362,7 @@ global proc vector GetDirection(){
 		$target = $temp[0];
 	}
 	float $tPos[] = `objectCenter $target`;
-	//ã‹L‚ÉÀ•W‚ğ‚Â‚È‚®ƒxƒNƒgƒ‹‚ğZo‚·‚é
+	//ä¸Šè¨˜ã«åº§æ¨™ã‚’ã¤ãªããƒ™ã‚¯ãƒˆãƒ«ã‚’ç®—å‡ºã™ã‚‹
 	float $x = $tPos[0] - $vtxPos[0];
 	float $y = $tPos[1] - $vtxPos[1];
 	float $z = $tPos[2] - $vtxPos[2];
@@ -1371,11 +1371,11 @@ global proc vector GetDirection(){
 	return $dirVec;	
 }
 
-/*ƒ^[ƒQƒbƒg‚ğİ’è‚µ‚Ä•\¦‚ğXViNullƒ^[ƒQƒbƒg‚ ‚èj*/
+/*ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚’è¨­å®šã—ã¦è¡¨ç¤ºã‚’æ›´æ–°ï¼ˆNullã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚ã‚Šï¼‰*/
 global proc SetTarget1(){
 	global string $txf1;
 	global string $lBtn1[];
-	//ƒŠƒXƒg‚Ì‘I‘ğó‘Ô‚ğ’²‚×‚é
+	//ãƒªã‚¹ãƒˆã®é¸æŠçŠ¶æ…‹ã‚’èª¿ã¹ã‚‹
 	int $id;
 	int $cnt = 0;
 	for($i=0;$i<size($lBtn1);$i++){
@@ -1385,30 +1385,30 @@ global proc SetTarget1(){
 			$cnt++;
 		}
 	}
-	if($cnt==0){//ƒŠƒXƒg‘I‘ğ‚ª‚È‚¢ê‡
+	if($cnt==0){//ãƒªã‚¹ãƒˆé¸æŠãŒãªã„å ´åˆ
 		string $obj[] = `ls -sl -fl`;
 		textField -e -tx $obj[0] $txf1;
-	}else if($cnt!=0){//ƒŠƒXƒg‚Å‘I‘ğ‚ª‚ ‚ê‚Î
+	}else if($cnt!=0){//ãƒªã‚¹ãƒˆã§é¸æŠãŒã‚ã‚Œã°
 		string $selected = `layerButton -q -l $lBtn1[$id]`;
 		textField -e -tx $selected $txf1;
 	}
 }
 
-/*’¸“_–@ü‚ğƒXƒ€[ƒX‚·‚éA˜A‘±‰Ÿ‰º‚Å•½‹Ï‰»‚³‚ê‚é*/
+/*é ‚ç‚¹æ³•ç·šã‚’ã‚¹ãƒ ãƒ¼ã‚¹ã™ã‚‹ã€é€£ç¶šæŠ¼ä¸‹ã§å¹³å‡åŒ–ã•ã‚Œã‚‹*/
 global proc SmoothAverageNormal(){
 	global string $optMenu3;
-	//ƒXƒ€[ƒX‹­“x‚ğ’²‚×‚é
+	//ã‚¹ãƒ ãƒ¼ã‚¹å¼·åº¦ã‚’èª¿ã¹ã‚‹
 	float $digit = `optionMenu -q -v $optMenu3`;
-	//‘I‘ğ’¸“_‚Ì•½‹Ï–@üƒxƒNƒgƒ‹‚ğ’²‚×‚é
+	//é¸æŠé ‚ç‚¹ã®å¹³å‡æ³•ç·šãƒ™ã‚¯ãƒˆãƒ«ã‚’èª¿ã¹ã‚‹
 	vector $avVec = GetAverageNormal();
-	//‘I‘ğ’¸“_‚ğƒŠƒXƒg‰»
+	//é¸æŠé ‚ç‚¹ã‚’ãƒªã‚¹ãƒˆåŒ–
 	string $vtxName[] = GetVtxList();
 	$vtxName = `polyListComponentConversion -tv $vtxName`;
 	$vtxName = `filterExpand -sm 31 $vtxName`;
-	//ƒ^[ƒQƒbƒg‚Æ‚È‚é’¸“_–@ü‚Æ•½‹Ï–@ü‚ğ‡¬‚µ‚½Še’¸“_–@ü‚ğZo‚·‚é
+	//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã¨ãªã‚‹é ‚ç‚¹æ³•ç·šã¨å¹³å‡æ³•ç·šã‚’åˆæˆã—ãŸå„é ‚ç‚¹æ³•ç·šã‚’ç®—å‡ºã™ã‚‹
 	vector $targetNor[];
 	for($i=0;$i<size($vtxName);$i++){
-		//Še’¸“_‚Ì’¸“_–@ü‚ğ³‹K‰»‚·‚é
+		//å„é ‚ç‚¹ã®é ‚ç‚¹æ³•ç·šã‚’æ­£è¦åŒ–ã™ã‚‹
 		float $tempNor[] = `polyNormalPerVertex -q -xyz $vtxName[$i]`;
 		vector $vtxNor[];
 		for($j=0;$j<size($tempNor);$j++){
@@ -1419,7 +1419,7 @@ global proc SmoothAverageNormal(){
 			$vtxNor[$i] = <<$x1, $y1, $z1>>;		
 		}
 		$vtxNor[$i] = `unit $vtxNor[$i]`;
-		//Še’¸“_–@ü‚Æ•½‹Ï–@üƒxƒNƒgƒ‹‚ğ‡¬‚·‚é
+		//å„é ‚ç‚¹æ³•ç·šã¨å¹³å‡æ³•ç·šãƒ™ã‚¯ãƒˆãƒ«ã‚’åˆæˆã™ã‚‹
 		vector $vec2 = $vtxNor[$i];
 		float $x2 = $vec2.x + ($avVec.x * $digit);
 		float $y2 = $vec2.y + ($avVec.y * $digit);
@@ -1434,7 +1434,7 @@ global proc SmoothAverageNormal(){
 	}
 	delete -ch `polyListComponentConversion`;
 }
-/*‘I‘ğ’¸“_‚ğƒŠƒXƒg‚©ƒV[ƒ“‚Ç‚¿‚ç‚©‚©‚çæ“¾‚·‚é*/
+/*é¸æŠé ‚ç‚¹ã‚’ãƒªã‚¹ãƒˆã‹ã‚·ãƒ¼ãƒ³ã©ã¡ã‚‰ã‹ã‹ã‚‰å–å¾—ã™ã‚‹*/
 global proc string[] GetVtxList(){
 	global string $txScr2;
 	string $selected[] = `ls -sl -fl`;
@@ -1453,31 +1453,31 @@ global proc string[] GetVtxList(){
 	return $return;
 }
 
-/*•½‹Ï’¸“_–@üƒxƒNƒgƒ‹‚ğˆê—¥“K—p‚·‚é*/
+/*å¹³å‡é ‚ç‚¹æ³•ç·šãƒ™ã‚¯ãƒˆãƒ«ã‚’ä¸€å¾‹é©ç”¨ã™ã‚‹*/
 global proc SetAverageNormal(){
-	//‘I‘ğ’¸“_ŒQ‚Ì•½‹Ï–@üƒxƒNƒgƒ‹‚ğæ“¾‚·‚é
+	//é¸æŠé ‚ç‚¹ç¾¤ã®å¹³å‡æ³•ç·šãƒ™ã‚¯ãƒˆãƒ«ã‚’å–å¾—ã™ã‚‹
 	vector $vec = GetAverageNormal();
 	float $x = $vec.x;
 	float $y = $vec.y;
 	float $z = $vec.z;
-	//‘I‘ğ’¸“_‚ğƒŠƒXƒg‰»‚·‚é
+	//é¸æŠé ‚ç‚¹ã‚’ãƒªã‚¹ãƒˆåŒ–ã™ã‚‹
 	string $vtxName[] = GetVtxList();
 	$vtxName = `polyListComponentConversion -tv $vtxName`;
 	$vtxName = `filterExpand -sm 31 $vtxName`;
-	//•½‹Ï–@ü‚ğ“K—p‚·‚é
+	//å¹³å‡æ³•ç·šã‚’é©ç”¨ã™ã‚‹
 	for($i=0;$i<size($vtxName);$i++){
 		polyNormalPerVertex -xyz $x $y $z;
 	}
 	delete -ch `polyListComponentConversion`;
 }
 
-/*‘I‘ğ’¸“_‚Ì•½‹Ï’¸“_–@üƒxƒNƒgƒ‹‚ğæ“¾‚·‚é*/
+/*é¸æŠé ‚ç‚¹ã®å¹³å‡é ‚ç‚¹æ³•ç·šãƒ™ã‚¯ãƒˆãƒ«ã‚’å–å¾—ã™ã‚‹*/
 global proc vector GetAverageNormal(){
-	//‘I‘ğ’¸“_”Ô†‚ğæ“¾‚·‚é
+	//é¸æŠé ‚ç‚¹ç•ªå·ã‚’å–å¾—ã™ã‚‹
 	string $vtxName[] = `ls -sl -fl`;
 	$vtxName = `polyListComponentConversion -tv $vtxName`;
 	$vtxName = `filterExpand -sm 31 $vtxName`;
-	//‘S’¸“_‚Ì’¸“_–@ü‚ğæ“¾‚µ‚Ä³‹K‰»‚·‚é
+	//å…¨é ‚ç‚¹ã®é ‚ç‚¹æ³•ç·šã‚’å–å¾—ã—ã¦æ­£è¦åŒ–ã™ã‚‹
 	vector $vtxNor[];;
 	for($i=0;$i<size($vtxName);$i++){
 		float $temp[] = `polyNormalPerVertex -q -xyz`;
@@ -1490,7 +1490,7 @@ global proc vector GetAverageNormal(){
 		}
 		$vtxNor[$i] = `unit $vtxNor[$i]`;			
 	}
-	//‘I‘ğ’¸“_ŒQ‚Ì•½‹Ï–@üƒxƒNƒgƒ‹‚ğæ“¾‚·‚é
+	//é¸æŠé ‚ç‚¹ç¾¤ã®å¹³å‡æ³•ç·šãƒ™ã‚¯ãƒˆãƒ«ã‚’å–å¾—ã™ã‚‹
 	vector $aveNor;
 	for($i=0;$i<size($vtxNor);$i++){
 		vector $vec2 = $vtxNor[$i];
