@@ -17,6 +17,36 @@ runTimeCommand
 	-helpUrl ""
 	-hotkeyCtx ""
 	-commandLanguage "mel"
+	-command ("waitCursor -state on;\nstring $fileTextures[] = `ls -tex`;\nint $count=0;\nsource AEfileTemplate.mel;\nfor ($node in $fileTextures)\n{\nif (`attributeQuery -node $node -ex fileTextureName`)\n{\nAEfileTextureReloadCmd ($node+\".fileTextureName\");\n$count = ++$count;\n}\n}\nwaitCursor -state off;")
+	textureReload;
+
+runTimeCommand
+	-label ""
+	-annotation ""
+	-longAnnotation ""
+	-category "Custom Scripts"
+	-image ""
+	-tags ""
+	-keywords ""
+	-plugin ""
+	-helpUrl ""
+	-hotkeyCtx ""
+	-commandLanguage "mel"
+	-command ("string $mp = `getPanel -wf`; modelEditor -e -sel (!`modelEditor -q -sel $mp`) $mp;")
+	hilightSelection;
+
+runTimeCommand
+	-label ""
+	-annotation ""
+	-longAnnotation ""
+	-category "Custom Scripts"
+	-image ""
+	-tags ""
+	-keywords ""
+	-plugin ""
+	-helpUrl ""
+	-hotkeyCtx ""
+	-commandLanguage "mel"
 	-command ("string $current_panel = `getPanel -withFocus`;\nmodelEditor -e -dl flat $current_panel;")
 	noLight;
 
@@ -32,39 +62,12 @@ runTimeCommand
 	-helpUrl ""
 	-hotkeyCtx ""
 	-commandLanguage "mel"
-	-command ("$panel = `getPanel -withFocus`;\nif(`getPanel -typeOf $panel` == \"modelPanel\"){\n    modelEditor -e -xray (!`modelEditor -q -xray $panel`) $panel;\n}")
+	-command ("$panel = `getPanel -withFocus`;\nif(`getPanel -typeOf $panel` == \"modelPanel\")\nmodelEditor -e -xray (!`modelEditor -q -xray $panel`) $panel;\n")
 	xRay;
-
-runTimeCommand
-	-label ""
-	-annotation ""
-	-longAnnotation ""
-	-category "Custom Scripts"
-	-image ""
-	-tags ""
-	-keywords ""
-	-plugin ""
-	-helpUrl ""
-	-hotkeyCtx ""
-	-commandLanguage "mel"
-	-command ("waitCursor -state on;\nstring $fileTextures[] = `ls -tex`;\nint $count=0;\nsource AEfileTemplate.mel;\nfor ($node in $fileTextures){\n    if (`attributeQuery -node $node -ex fileTextureName`){\n        AEfileTextureReloadCmd ($node+\".fileTextureName\");\n        $count = ++$count;\n    }\n}\nwaitCursor -state off;")
-	textureReload;
 
 //
 // The name commands referenced by the hotkeys
 //
-nameCommand
-	-annotation "noLightNameCommand"
-	-sourceType "mel"
-	-command ("noLight")
-	noLightNameCommand;
-
-nameCommand
-	-annotation "xRayNameCommand"
-	-sourceType "mel"
-	-command ("xRay")
-	xRayNameCommand;
-
 nameCommand
 	-annotation "ExportSelectionNameCommand"
 	-sourceType "mel"
@@ -76,6 +79,42 @@ nameCommand
 	-sourceType "mel"
 	-command ("SetProject")
 	SetProjectNameCommand;
+
+nameCommand
+	-annotation "PasteVertexWeightsNameCommand"
+	-sourceType "mel"
+	-command ("PasteVertexWeights")
+	PasteVertexWeightsNameCommand;
+
+nameCommand
+	-annotation "TextureViewWindowNameCommand"
+	-sourceType "mel"
+	-command ("TextureViewWindow")
+	TextureViewWindowNameCommand;
+
+nameCommand
+	-annotation "HypershadeWindowNameCommand"
+	-sourceType "mel"
+	-command ("HypershadeWindow")
+	HypershadeWindowNameCommand;
+
+nameCommand
+	-annotation "noLightNameCommand"
+	-sourceType "mel"
+	-command ("noLight")
+	noLightNameCommand;
+
+nameCommand
+	-annotation "textureReloadNameCommand"
+	-sourceType "mel"
+	-command ("textureReload")
+	textureReloadNameCommand;
+
+nameCommand
+	-annotation "xRayNameCommand"
+	-sourceType "mel"
+	-command ("xRay")
+	xRayNameCommand;
 
 nameCommand
 	-annotation "BakeNonDefHistoryNameCommand"
@@ -96,34 +135,34 @@ nameCommand
 	ToggleTextureBorderEdgesNameCommand;
 
 nameCommand
-	-annotation "TextureViewWindowNameCommand"
-	-sourceType "mel"
-	-command ("TextureViewWindow")
-	TextureViewWindowNameCommand;
-
-nameCommand
-	-annotation "HypershadeWindowNameCommand"
-	-sourceType "mel"
-	-command ("HypershadeWindow")
-	HypershadeWindowNameCommand;
-
-nameCommand
 	-annotation "CopyVertexWeightsOptionsNameCommand"
 	-sourceType "mel"
 	-command ("CopyVertexWeightsOptions")
 	CopyVertexWeightsOptionsNameCommand;
 
 nameCommand
-	-annotation "PasteVertexWeightsNameCommand"
+	-annotation "ToggleCreaseEdgesNameCommand"
 	-sourceType "mel"
-	-command ("PasteVertexWeights")
-	PasteVertexWeightsNameCommand;
+	-command ("ToggleCreaseEdges")
+	ToggleCreaseEdgesNameCommand;
 
 nameCommand
-	-annotation "textureReloadNameCommand"
+	-annotation "ToggleDisplayColorsAttrNameCommand"
 	-sourceType "mel"
-	-command ("textureReload")
-	textureReloadNameCommand;
+	-command ("ToggleDisplayColorsAttr")
+	ToggleDisplayColorsAttrNameCommand;
+
+nameCommand
+	-annotation "PaintVertexColorToolOptionsNameCommand"
+	-sourceType "mel"
+	-command ("PaintVertexColorToolOptions")
+	PaintVertexColorToolOptionsNameCommand;
+
+nameCommand
+	-annotation "hilightSelectionNameCommand"
+	-sourceType "mel"
+	-command ("hilightSelection")
+	hilightSelectionNameCommand;
 
 //
 // The user hotkeys
@@ -131,39 +170,44 @@ nameCommand
 //
 // The hotkey set
 //
-hotkeySet -source "Maya_Default" -current mayaHotkey_kitamura;
+hotkeySet -source "Maya_Default" -current mayaHotkey;
 //
 // The hotkey contexts and hotkeys
 //
-hotkey -keyShortcut "9" -name ("textureReloadNameCommand");
-hotkey -keyShortcut "0" -name ("xRayNameCommand");
-hotkey -keyShortcut "t" -alt -name ("TextureViewWindowNameCommand");
-hotkey -keyShortcut "8" -name ("noLightNameCommand");
-hotkey -keyShortcut "t" -name ("ToggleTextureBorderEdgesNameCommand");
-hotkey -keyShortcut "r" -ctl -sht -name ("HypershadeWindowNameCommand");
-hotkey -keyShortcut "v" -ctl -name ("PasteVertexWeightsNameCommand");
-hotkey -keyShortcut "n" -name ("ToggleVertexNormalDisplayNameCommand");
-hotkey -keyShortcut "c" -ctl -name ("CopyVertexWeightsOptionsNameCommand");
-hotkey -keyShortcut "e" -ctl -name ("ExportSelectionNameCommand");
-hotkey -keyShortcut "s" -alt -name ("SetProjectNameCommand");
-hotkey -keyShortcut "h" -alt -name ("BakeNonDefHistoryNameCommand");
 hotkey -keyShortcut "n" -releaseName ("");
+hotkey -keyShortcut "p" -ctl -name ("PaintVertexColorToolOptionsNameCommand");
+hotkey -keyShortcut "F1" -name ("hilightSelectionNameCommand");
+hotkey -keyShortcut "h" -alt -name ("BakeNonDefHistoryNameCommand");
+hotkey -keyShortcut "h" -name ("ToggleCreaseEdgesNameCommand");
+hotkey -keyShortcut "s" -alt -name ("SetProjectNameCommand");
+hotkey -keyShortcut "e" -ctl -name ("ExportSelectionNameCommand");
+hotkey -keyShortcut "c" -ctl -name ("CopyVertexWeightsOptionsNameCommand");
+hotkey -keyShortcut "n" -name ("ToggleVertexNormalDisplayNameCommand");
+hotkey -keyShortcut "v" -ctl -name ("PasteVertexWeightsNameCommand");
+hotkey -keyShortcut "9" -name ("textureReloadNameCommand");
+hotkey -keyShortcut "r" -ctl -sht -name ("HypershadeWindowNameCommand");
+hotkey -keyShortcut "F3" -name ("");
+hotkey -keyShortcut "t" -name ("ToggleTextureBorderEdgesNameCommand");
+hotkey -keyShortcut "8" -name ("noLightNameCommand");
+hotkey -keyShortcut "c" -alt -name ("ToggleDisplayColorsAttrNameCommand");
+hotkey -keyShortcut "t" -alt -name ("TextureViewWindowNameCommand");
+hotkey -keyShortcut "0" -name ("xRayNameCommand");
+hotkeyCtx -type "Editor" -addClient "nodeEditorPanel";
+hotkeyCtx -type "Editor" -addClient "hyperGraphPanel";
+hotkeyCtx -type "Editor" -addClient "timeEditorPanel";
+hotkeyCtx -type "Editor" -addClient "graphEditor";
+hotkeyCtx -type "Editor" -addClient "posePanel";
+hotkeyCtx -type "Editor" -addClient "profilerPanel";
 hotkeyCtx -type "Editor" -addClient "polyTexturePlacementPanel";
 hotkeyCtx -type "Editor" -addClient "shapePanel";
 hotkeyCtx -type "Editor" -addClient "outlinerPanel";
-hotkeyCtx -type "Editor" -addClient "posePanel";
-hotkeyCtx -type "Editor" -addClient "dopeSheetPanel";
-hotkeyCtx -type "Editor" -addClient "hyperGraphPanel";
 hotkeyCtx -type "Editor" -addClient "hyperShadePanel";
-hotkeyCtx -type "Editor" -addClient "timeEditorPanel";
-hotkeyCtx -type "Editor" -addClient "profilerPanel";
-hotkeyCtx -type "Editor" -addClient "nodeEditorPanel";
-hotkeyCtx -type "Editor" -addClient "graphEditor";
+hotkeyCtx -type "Editor" -addClient "dopeSheetPanel";
+hotkeyCtx -type "Tool" -addClient "bpDraw";
+hotkeyCtx -type "Tool" -addClient "Unfold3DBrush";
+hotkeyCtx -type "Tool" -addClient "xgmIGBrush";
 hotkeyCtx -type "Tool" -addClient "texSculptCacheContext";
 hotkeyCtx -type "Tool" -addClient "SymmetrizeUVBrush";
 hotkeyCtx -type "Tool" -addClient "polyCutUV";
-hotkeyCtx -type "Tool" -addClient "xgmIGBrush";
-hotkeyCtx -type "Tool" -addClient "Unfold3DBrush";
-hotkeyCtx -type "Tool" -addClient "sculptMeshCache";
 hotkeyCtx -type "Tool" -addClient "texCutContext";
-hotkeyCtx -type "Tool" -addClient "bpDraw";
+hotkeyCtx -type "Tool" -addClient "sculptMeshCache";
