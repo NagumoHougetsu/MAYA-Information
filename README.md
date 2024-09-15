@@ -1,5 +1,6 @@
+![image](https://github.com/user-attachments/assets/670bf968-8679-40f8-8f6d-4e4f06a74a97)
 ## Shadersフォルダで紹介しているfxファイルについて  
-MAYAまにあっく講座で紹介しているシェーダーを公開しています
+MAYAまにあっく講座で紹介しているシェーダーを公開しています  
 [Youtubeチャンネルリンク](https://www.youtube.com/playlist?list=PLss86bgHfJVIW4_6XF0pLDlpRK61NHvpR)  
 ### 導入方法
 シェーダーをMAYAに導入する方法については
