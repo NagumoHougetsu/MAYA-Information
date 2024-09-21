@@ -7,6 +7,7 @@ float3 gLight0Dir   :   DIRECTION <
     string Object = "Light 0";
     int UIOrder = 0;
 >;
+
 //カラー設定
 uniform bool gUseBaseColorTexture <
     string UIGroup = "Color Setting";
@@ -51,12 +52,12 @@ uniform Texture2D gShadowColorTexture <
 >;
 
 //法線強調モード
-uniform float gHilightIntensity <
-    string UIGroup = "Hilight Normal";
+uniform float gCurvatureIntensity <
+    string UIGroup = "Curvature";
     int UIOrder = 200;
-    string UIName = "Hilight Normal Intensity";
+    string UIName = "Curvature Intensity";
     float UIMin = 1.0f;
-    float UIMax = 10.0f;
+    float UIMax = 5.0f;
 > = 1.0f;
 
 //トゥーンモード
@@ -157,12 +158,20 @@ float4 PS_DEF(VS_TO_PS In) : SV_Target{
     return float4(color, 1.0f);
 }
 
-float4 PS_HILIGHT(VS_TO_PS In) : SV_Target{
+float4 PS_CURVATURE(VS_TO_PS In) : SV_Target{
+    float3 dx = ddx(In.Normal);
+    float3 dy = ddx(In.Normal);
+    float3 xneg = In.Normal - dx;
+    float3 xpos = In.Normal + dx;
+    float3 yneg = In.Normal - dy;
+    float3 ypos = In.Normal + dy;
+    float depth = In.HPos.z / In.HPos.w * 0.5f + 0.5f;
+    float curvature = (cross(xneg, xpos).y - cross(yneg, ypos).x) * 4.0f / depth;
+    float ambient = pow(float3(curvature + 0.5f, curvature + 0.5f, curvature + 0.5f), gCurvatureIntensity);
     float3 color;
     float N;
     float3 lightDir = normalize(gLight0Dir);
     N = dot(-gLight0Dir, In.Normal.xyz);
-    N = pow(N * 0.5 + 0.5, gHilightIntensity) * 2.0f - 1.0f;
     float3 baseColor;
     float3 shadowColor;
     if(gUseBaseColorTexture == true){
@@ -175,9 +184,10 @@ float4 PS_HILIGHT(VS_TO_PS In) : SV_Target{
     }else{
         shadowColor = gShadowColor;
     }
-    color = lerp(shadowColor, baseColor, N);
+    color = lerp(shadowColor, baseColor, N * ambient);
     return float4(color, 1.0f);
 }
+
 
 float4 PS_TOON(VS_TO_PS In) : SV_Target{
     float3 color;
@@ -220,11 +230,11 @@ technique11 Default{
         SetVertexShader(CompileShader(vs_5_0, VS()));
         SetPixelShader(CompileShader(ps_5_0, PS_DEF()));
     }
-}technique11 HilightNormal{
+}technique11 Curvature{
     pass P0{
         SetRasterizerState(CullBack);
         SetVertexShader(CompileShader(vs_5_0, VS()));
-        SetPixelShader(CompileShader(ps_5_0, PS_HILIGHT()));
+        SetPixelShader(CompileShader(ps_5_0, PS_CURVATURE()));
     }
 }technique11 Toon{
     pass P0{
