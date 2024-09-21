@@ -159,8 +159,8 @@ float4 PS_DEF(VS_TO_PS In) : SV_Target{
 }
 
 float4 PS_CURVATURE(VS_TO_PS In) : SV_Target{
-    float3 dx = ddx(In.Normal);
-    float3 dy = ddx(In.Normal);
+    float3 dx = ddx_fine(In.Normal);
+    float3 dy = ddy_fine(In.Normal);
     float3 xneg = In.Normal - dx;
     float3 xpos = In.Normal + dx;
     float3 yneg = In.Normal - dy;
