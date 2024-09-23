@@ -1,0 +1,433 @@
+//グローバル変数宣言
+global string $targetObj[]; clear $targetObj;//ペイント対象のオブジェクト
+global int $freeSlot = 0;
+global int $paintSlots = 0;
+global string $vtxName[];
+global vector $vtxNor[];
+global vector $vtxPos[];
+global vector $stroke[];
+global float $value[];
+global int $count = 0;
+global string $NH_win_normalPaintTool;
+global int $winTlc[];
+global float $digit = 0.01;
+
+global string $rdc_01;
+global string $rdb_01;
+global string $rdb_02;
+global string $rdb_03;
+global string $rdb_04;
+
+global string $rdc_02;
+global string $rdb_05;
+global string $rdb_06;
+global string $rdb_07;
+
+global string $flg_01;
+global string $fsg_01;
+
+//↓シェルフ登録（MEL）
+//ScriptPaintTool; artUserPaintCtx -e -tsc "NH_vertexNormalPaint" `currentCtx`;NH_normalPaintTool;
+
+global proc NH_normalPaintTool(){
+    global string $NH_win_normalPaintTool;
+    global int $winTlc[];
+    global float $digit;
+    
+    global string $rdc_01;
+    global string $rdb_01;
+    global string $rdb_02;
+    global string $rdb_03;
+    global string $rdb_04;
+    
+    global string $rdc_01;
+    global string $rdb_05;
+    global string $rdb_06;
+    global string $rdb_07;
+    
+    global string $flg_01;
+    global string $fsg_01;
+   
+    if(`window -ex $NH_win_normalPaintTool`){
+        $winTlc = `window -q -tlc $NH_win_normalPaintTool`;
+        deleteUI $NH_win_normalPaintTool;
+    }
+    $NH_win_normalPaintTool = `window -t "NH頂点法線ペイントツール" -tlc $winTlc[0] $winTlc[1]`;
+    frameLayout -l "各種追加機能";
+        columnLayout;
+            rowLayout -nc 3;
+                button -l "頂点法線表示" -c "ToggleDispNormal()" -w 80;
+                button -l "ロック解除" -c "UnfreezeNomal()" -w 60;
+                $fsg_01 = `floatSliderGrp -l "法線サイズ" -min 0.1 -max 10.0 -f true -cc "ChangeNormalSize()" - cw3 55 35 100`;
+            setParent..;
+            rowLayout -nc 4 ;
+                text -l "正中線しきい値" -w 80;
+                $rdc_02 = `radioCollection`;
+                $rdb_05 = `radioButton -label "0.1" -cc "$digit=0.1;print\"DIGITを0.1に設定\\n\";"`;
+                $rdb_06 = `radioButton -label "0.01" -cc "$digit=0.01;print\"DIGITを0.01に設定\\n\";"`;
+                $rdb_07 = `radioButton -label "0.001" -cc "$digit=0.001;print\"DIGITを0.001に設定\\n\";"`;
+                radioCollection -edit -select $rdb_06 $rdc_02;
+            setParent..;   
+            rowLayout -nc 3;
+                button -l "選択項目のハイライト切替" -c "ToggleSelHilight()" -w 135;
+                button -l "再起動" -c "ScriptPaintTool; artUserPaintCtx -e -tsc \"NH_vertexNormalPaint\" `currentCtx`;NH_normalPaintTool;" -w 50;
+                text -l "※連打するとツールが落ちます…";
+            setParent..;      
+        setParent..;
+    setParent..;
+    frameLayout -l "ペイントモード切替";
+        columnLayout;
+            rowLayout -nc 4;
+                $rdc_01 = `radioCollection`;
+                $rdb_01 = `radioButton -label "スムース" -cc "Updata(0)"`;
+                $rdb_02 = `radioButton -label "方向指定" -cc "Updata(1)"`;
+                $rdb_03 = `radioButton -label "ストローク方向" -cc "Updata(2)"`;
+                $rdb_04 = `radioButton -label "ロック解除" -cc "Updata(3)"`;
+                radioCollection -edit -select $rdb_01 $rdc_01;
+            setParent ..;
+            $flg_01 = `floatFieldGrp -nf 3 -l "法線方向(xyz)" -cw4 75 50 50 50 -en1 0 -en2 0 -en3 0`;
+        setParent ..;
+    setParent..;
+    NormalSizeInit();
+    showWindow $NH_win_normalPaintTool;
+}
+
+global proc ToggleSelHilight(){
+    string $panel = `getPanel -withFocus`;
+    if(`getPanel -typeOf $panel` == "modelPanel"){
+        modelEditor -e -sel (!`modelEditor -q -sel $panel`) $panel;
+    }
+}
+
+global proc NormalSizeInit(){
+    global string $fsg_01;
+    string $sel[] = `ls -sl -fl`;
+    float $val = `getAttr ($sel[0] + ".normalSize")`;
+    floatSliderGrp -e -v $val $fsg_01;    
+}
+
+global proc UnfreezeNomal(){
+    global string $targetObj[];
+    string $selObj[] = `ls -sl -fl`;
+    if(size($targetObj)==0){
+        polyNormalPerVertex -ufn true $selObj[0];
+    }else{
+        polyNormalPerVertex -ufn true $targetObj[0];
+    }
+    print "頂点法線のロック解除\n";
+}
+
+global proc ChangeNormalSize(){
+    global string $fsg_01;
+    global string $targetObj[];
+    string $target;
+    if($targetObj[0]==""){
+        string $temp[] = `ls -sl -fl`;
+        string $parent[] = `listRelatives -p $temp[0]`;
+        $target = $parent[0];
+    }else{
+        $target = $targetObj[0];
+    }
+    float $val = `floatSliderGrp -q -v $fsg_01`;
+    setAttr ($target + ".normalSize") $val;
+    print ("頂点法線サイズを" + $val + "に設定\n");
+}
+
+global proc ToggleDispNormal(){
+    global string $targetObj[];
+    string $target;
+    if($targetObj[0]==""){
+        string $temp[] = `ls -sl -fl`;
+        string $parent[] = `listRelatives -p $temp[0]`;
+        $target = $parent[0];
+    }else{
+        $target = $targetObj[0];
+    }
+    if(`getAttr ($target + ".displayNormal")`){
+        setAttr ($target + ".displayNormal") 0;
+        print "頂点法線表示ON\n";
+    }else{
+        setAttr ($target + ".displayNormal") 1;
+        print "頂点法線表示OFF\n";
+    }
+}
+
+global proc Updata(int $mode){
+    global string $rdc_01;
+    global string $flg_01;
+    global string $rdb_01;
+    global string $rdb_02;
+    global string $rdb_03;
+    global string $rdb_04;
+    if(`floatFieldGrp -q -ex $flg_01`==true){
+        if($mode==0){
+            floatFieldGrp -e -en1 0 -en2 0 -en3 0 $flg_01;
+            print "ペイントモードをスムースに変更\n";
+        }else if($mode==1){
+            floatFieldGrp -e -en1 1 -en2 1 -en3 1 $flg_01;
+            print "ペイントモードを指定法線に変更\n";
+        }else if($mode==2){
+            floatFieldGrp -e -en1 0 -en2 0 -en3 0 $flg_01;
+            print "ペイントモードをストローク方向に変更\n";
+        }else if($mode==3){
+            floatFieldGrp -e -en1 0 -en2 0 -en3 0 $flg_01;
+            print "ペイントモードをロック解除に変更\n";
+        }
+    }
+    
+}
+
+//頂点法線ペイントツールの各プロシージャの定義関数
+global proc NH_vertexNormalPaint(string $context){
+    artUserPaintCtx -e
+        -tsc ""
+        //各ストロークの最初にコールされる MEL スクリプト/プロシージャの名前を指定
+        -ic "NH_init_vertexNormalPaint"
+        //各ストロークの最後にコールされる MEL スクリプト/プロシージャの名前を指定
+        -fc "NH_finish_vertexNormalPaint"
+        //サーフェス上の値が変更されるたびにコールされる MEL スクリプト/プロシージャの名前を指定
+        -svc "NH_set_vertexNormalPaint_Value"
+        //スクリプト可能なペイント ツールによってサーフェス上の値が必要とされるたびにコールされる MEL スクリプト/プロシージャの名前を指定
+        -gvc ""
+        -gsc ""
+        -cc ""
+        -tcc ""
+        -gac ""
+    $context;
+   
+}
+
+//各ストロークの最初にコールされる関数
+global proc string NH_init_vertexNormalPaint(string $name){
+    global string $targetObj[];
+    global int $freeSlot; 
+    global int $paintSlots;
+    
+    int $slot;
+    //現在のストロークIDを調べる
+    for($slot=$freeSlot; $slot<$paintSlots; $slot++){
+        if($targetObj[$slot] == ""){
+            break;
+        }
+    }
+    if($slot == $paintSlots){
+        $paintSlots++;
+        $freeSlot = $paintSlots;
+    }
+    //ペイント対象のオブジェクト名を取得
+    if(`nodeType $name` == "mesh"){
+        string $parent[] = `listRelatives -p $name`;
+        $targetObj[$slot] = $parent[0];
+    }
+    //フラグを返す
+    string $flag = "-id " + $slot + " -n local -dt worldV";
+    return $flag;
+   
+}
+
+//各ストロークの最後にコールされる関数
+global proc NH_finish_vertexNormalPaint(int $slot){
+    //グローバル変数
+    global string $vtxName[];
+    global vector $vtxNor[];
+    global vector $vtxPos[];
+    global vector $stroke[];
+    global float $value[];
+    global int $freeSlot;
+    global int $count;
+    global float $digit;
+    
+    global string $rdc_01;
+    global string $flg_01;
+    global string $rdb_01;
+    global string $rdb_02;
+    global string $rdb_03;
+    global string $rdb_04;
+    
+    //モードを調べる
+    string $mode = `radioCollection -q -select $rdc_01`;
+    string $c_rdb_01;
+    string $c_rdb_02;
+    string $c_rdb_03;
+    string $c_rdb_04;
+    string $temp[];
+    tokenize $rdb_01 "|" $temp;
+    $c_rdb_01 = $temp[size($temp)-1];
+    clear $temp;
+    tokenize $rdb_02 "|" $temp;
+    $c_rdb_02 = $temp[size($temp)-1];
+    clear $temp;
+    tokenize $rdb_03 "|" $temp;
+    $c_rdb_03 = $temp[size($temp)-1];
+    clear $temp;
+    tokenize $rdb_04 "|" $temp;
+    $c_rdb_04 = $temp[size($temp)-1];
+    //「スムース」モードの場合
+    if($mode==$c_rdb_01){
+        //1ストロークの平均頂点法線を計算する
+        vector $avgNor = <<0.0, 0.0, 0.0>>;
+        for($i=0; $i<$count; $i++){
+            vector $posVec = $vtxPos[$i];
+            float $roundPosX = floor($posVec.x / $digit + 0.5) * $digit;
+            vector $vec = $vtxNor[$i];
+            if($roundPosX > 0){
+                float $vx = $avgNor.x + $vec.x;
+                float $vy = $avgNor.y + $vec.y;
+                float $vz = $avgNor.z + $vec.z;
+                $avgNor = <<$vx, $vy, $vz>>;              
+            }else if($roundPosX == 0){
+                float $vx = 0.0;
+                float $vy = $avgNor.y + $vec.y;
+                float $vz = $avgNor.z + $vec.z;
+                $avgNor = <<$vx, $vy, $vz>>;         
+            }else if($roundPosX < 0){
+                float $vx = $avgNor.x + -1.0 * $vec.x;
+                float $vy = $avgNor.y + $vec.y;
+                float $vz = $avgNor.z + $vec.z;
+                $avgNor = <<$vx, $vy, $vz>>;
+            }  
+        }
+        float $dx = $avgNor.x / ($count + 1);
+        float $dy = $avgNor.y / ($count + 1);
+        float $dz = $avgNor.z / ($count + 1);
+        $avgNor = <<$dx, $dy, $dz>>;
+        $avgNor = unit($avgNor);
+        //各頂点にウェイト付けした頂点法線を入力する
+        for($i=0; $i<$count; $i++){
+            vector $posVec = $vtxPos[$i];
+            float $roundPosX = floor($posVec.x / $digit + 0.5) * $digit;
+            float $wx;
+            float $wy;
+            float $wz;
+            vector $curNor = $vtxNor[$i];
+            if($roundPosX >= 0){
+                $wx = (1.0 - $value[$i]) * $curNor.x + $value[$i] * $avgNor.x;
+                $wy = (1.0 - $value[$i]) * $curNor.y + $value[$i] * $avgNor.y;
+                $wz = (1.0 - $value[$i]) * $curNor.z + $value[$i] * $avgNor.z;
+            }else if($roundPosX == 0){
+                $wx = (1.0 - $value[$i]) * $curNor.x + 0.0;
+                $wy = (1.0 - $value[$i]) * $curNor.y + $value[$i] * $avgNor.y;
+                $wz = (1.0 - $value[$i]) * $curNor.z + $value[$i] * $avgNor.z;
+            }else if($roundPosX < 0){
+                $wx = (1.0 - $value[$i]) * $curNor.x + $value[$i] * -1.0 * $avgNor.x;
+                $wy = (1.0 - $value[$i]) * $curNor.y + $value[$i] * $avgNor.y;
+                $wz = (1.0 - $value[$i]) * $curNor.z + $value[$i] * $avgNor.z;
+            }
+            vector $tagNor = <<$wx, $wy, $wz>>;
+            $tagNor = unit($tagNor);
+            $wx = $tagNor.x;
+            $wy = $tagNor.y;
+            $wz = $tagNor.z;
+            polyNormalPerVertex -xyz $wx $wy $wz $vtxName[$i];
+        }
+    //指定した法線を叩き込む
+    }else if($mode==$c_rdb_02){
+        float $tx = `floatFieldGrp -q -v1 $flg_01`;
+        float $ty = `floatFieldGrp -q -v2 $flg_01`;
+        float $tz = `floatFieldGrp -q -v3 $flg_01`;
+        vector $srcVec;
+        $srcVec = <<$tx, $ty, $tz>>;
+        $srcVec = unit($srcVec);
+        vector $negSrcVec = <<-1*$tx, $ty, $tz>>;
+        $negSrcVec = unit($negSrcVec);
+        vector $zeroSrcVec = <<0, $ty, $tz>>;
+        $zeroSrcVec = unit($zeroSrcVec);
+        for($i=0; $i<$count; $i++){
+            vector $curNor = $vtxNor[$i];
+            vector $posVec = $vtxPos[$i];
+            float $wx;
+            float $wy;
+            float $wz;
+            float $roundPosX = floor($posVec.x / $digit + 0.5) * $digit;
+            if($roundPosX<0){
+                $wx = (1.0 - $value[$i]) * $curNor.x + $value[$i] * $negSrcVec.x;
+                $wy = (1.0 - $value[$i]) * $curNor.y + $value[$i] * $negSrcVec.y;
+                $wz = (1.0 - $value[$i]) * $curNor.z + $value[$i] * $negSrcVec.z;
+            }else if($roundPosX==0){
+                $wx = (1.0 - $value[$i]) * $curNor.x + 0.0;
+                $wy = (1.0 - $value[$i]) * $curNor.y + $value[$i] * $zeroSrcVec.y;
+                $wz = (1.0 - $value[$i]) * $curNor.z + $value[$i] * $zeroSrcVec.z;
+            }else if($roundPosX>0){
+                $wx = (1.0 - $value[$i]) * $curNor.x + $value[$i] * $srcVec.x;
+                $wy = (1.0 - $value[$i]) * $curNor.y + $value[$i] * $srcVec.y;
+                $wz = (1.0 - $value[$i]) * $curNor.z + $value[$i] * $srcVec.z;
+            }
+            vector $tagNor = <<$wx, $wy, $wz>>;
+            $tagNor = unit($tagNor);
+            $wx = $tagNor.x;
+            $wy = $tagNor.y;
+            $wz = $tagNor.z;
+            polyNormalPerVertex -xyz $wx $wy $wz $vtxName[$i];
+        }
+    //ペンストローク方向を反映する   
+    }else if($mode==$c_rdb_03){
+        for($i=0; $i<$count; $i++){
+            vector $curNor = $vtxNor[$i];
+            vector $strDir = $stroke[$i];
+            vector $posVec = $vtxPos[$i];
+            float $roundPosX = floor($posVec.x / $digit + 0.5) * $digit;
+            float $wx;
+            float $wy;
+            float $wz;
+            if($roundPosX>0){
+                $wx = (1.0 - $value[$i]) * $curNor.x + $value[$i] * $strDir.x;
+                $wy = (1.0 - $value[$i]) * $curNor.y + $value[$i] * $strDir.y;
+                $wz = (1.0 - $value[$i]) * $curNor.z + $value[$i] * $strDir.z;
+            }else if($roundPosX==0){
+                $wx = (1.0 - $value[$i]) * $curNor.y + 0.0;
+                $wy = (1.0 - $value[$i]) * $curNor.y + $value[$i] * $strDir.y;
+                $wz = (1.0 - $value[$i]) * $curNor.z + $value[$i] * $strDir.z;
+            }else if($roundPosX<0){
+                $wx = (1.0 - $value[$i]) * $curNor.x + $value[$i] * $strDir.x;
+                $wy = (1.0 - $value[$i]) * $curNor.y + $value[$i] * $strDir.y;
+                $wz = (1.0 - $value[$i]) * $curNor.z + $value[$i] * $strDir.z;
+            }
+            vector $tagNor = <<$wx, $wy, $wz>>;
+            $tagNor = unit($tagNor);
+            $wx = $tagNor.x;
+            $wy = $tagNor.y;
+            $wz = $tagNor.z;
+            polyNormalPerVertex -xyz $wx $wy $wz $vtxName[$i];
+        }
+    }else if($mode==$c_rdb_04){
+        for($i=0; $i<$count; $i++){
+            polyNormalPerVertex -ufn true $vtxName[$i];
+        }
+    }
+    
+    
+    //一度新しいストローク用に配列をクリアする
+    clear $vtxName;
+    clear $vtxNor;
+    clear $value;
+    $count = 0;
+    //スロットを更新する
+    $targetObj[$slot] = "";
+    if($slot<$freeSlot){
+        $slot = $freeSlot;
+    }
+}
+
+//サーフェス上の値が変更されるたびにコールされる関数
+global proc NH_set_vertexNormalPaint_Value (int $slot, int $index, float $val, float $nx, float $ny, float $nz, float $px, float $py, float $pz){
+    global string $targetObj[];
+    global string $vtxName[];
+    global vector $vtxNor[];
+    global vector $vtxPos[];
+    global vector $stroke[];
+    global float $value[];
+    global int $count;
+    global int $paintSlots;
+    global int $freeSlot;
+    global int $preSlot;
+    //頂点番号・頂点法線を配列にためていく
+    $vtxName[$count] = $targetObj[$slot] + ".vtx[" + $index + "]";
+    float $ary[] = `polyNormalPerVertex -q -xyz $vtxName[$count]`;
+    $vtxNor[$count] = <<$ary[0], $ary[1], $ary[2]>>;
+    float $ary2[] = `pointPosition -w $vtxName[$count]`;
+    $vtxPos[$count] = <<$ary2[0], $ary2[1], $ary2[2]>>;
+    $stroke[$count] = <<$px, $py, $pz>>;
+    $stroke[$count] = unit($stroke[$count]);
+    $value[$count] = $val;
+    $count++;
+}
