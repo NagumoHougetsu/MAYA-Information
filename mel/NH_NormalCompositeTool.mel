@@ -1,0 +1,372 @@
+global string $Win_NH_NormalComposite;
+global int $winTlc[];
+global string $r_txf;
+global string $g_txf;
+global string $b_txf;
+global string $rdc_01;
+global string $rdc_01_b01;
+global string $rdc_01_b02;
+global string $rdc_02;
+global string $rdc_02_b01;
+global string $rdc_02_b02;
+global string $rdc_03_b03;
+global string $fsg_01;
+
+global proc NH_NormalCompositeTool(){
+    global string $Win_NH_NormalComposite;
+    global int $winTlc[];
+    global string $r_txf;
+    global string $g_txf;
+    global string $b_txf;
+    global string $rdc_01;
+    global string $rdc_01_b01;
+    global string $rdc_01_b02;
+    global string $rdc_02;
+    global string $rdc_02_b01;
+    global string $rdc_02_b02;
+    global string $rdc_03;
+    global string $rdc_03_b01;
+    global string $rdc_03_b02;
+    global string $rdc_03_b03;
+    global string $fsg_01;
+    
+    if(`window -q -ex $Win_NH_NormalComposite`){
+        $winTlc = `window -q -tlc $Win_NH_NormalComposite`;
+        deleteUI $Win_NH_NormalComposite;
+    }
+    $Win_NH_NormalComposite = `window -t "頂点法線合成ツール" -tlc $winTlc[0] $winTlc[1]`;
+    columnLayout;
+        frameLayout -l "ソースメッシュ登録" -w 325 -cll true -mh 10 -mw 10;
+            rowLayout -nc 4;
+                iconTextButton -bgc 1.0 0.0 0.0 -w 25 -h 25;
+                $r_txf = `textField -tx "NONE" -en false -ed false -w 165 -h 25`;
+                button -l "選択" -w 50 -c "ApplyObject(0)";
+                button -l "解除" -w 50 -c "CancelObject(0)";
+            setParent..;
+            rowLayout -nc 4;
+                iconTextButton -bgc 0.0 1.0 0.0 -w 25 -h 25;
+                $g_txf = `textField -tx "NONE" -en false -ed false -w 165 -h 25`;
+                button -l "選択" -w 50 -c "ApplyObject(1)";
+                button -l "解除" -w 50 -c "CancelObject(1)";
+            setParent..;
+            rowLayout -nc 4;
+                iconTextButton -bgc 0.0 0.0 1.0 -w 25 -h 25;
+                $b_txf = `textField -tx "NONE" -en false -ed false -w 165 -h 25`;
+                button -l "選択" -w 50 -c "ApplyObject(2)";
+                button -l "解除" -w 50 -c "CancelObject(2)";
+            setParent..;
+        setParent..;
+        frameLayout -l "合成転写" -w 325 -cll true -mh 10 -mw 10;
+            rowLayout -nc 2;
+                $rdc_01 = `radioCollection`;
+                $rdc_01_b01 = `radioButton -l "法線方向に沿った最近接"`;
+                $rdc_01_b02 = `radioButton -l "ポイント最近接"`;
+                radioCollection -edit -select $rdc_01_b02 $rdc_01;
+            setParent..;
+            rowLayout -nc 2;
+                button -l "実行" -w 150 -c "BakeNormal()";
+                button -l "閉じる" -w 150;
+            setParent..;
+        setParent..;    
+        frameLayout -l "表示切替" -w 325 -cll true -mh 10 -mw 10;
+            rowLayout -nc 3;
+                button -l "頂点法線表示" -c "ToggleDispNormal()" -w 80;
+                button -l "ロック解除" -c "UnfreezeNomal()" -w 60;
+                $fsg_01 = `floatSliderGrp -l "法線サイズ" -min 0.1 -max 10.0 -f true -cc "ChangeNormalSize()" - cw3 55 35 100`;
+            setParent..;
+        setParent..;
+        frameLayout -l "編集" -w 325 -cll true -mh 10 -mw 10; 
+            rowLayout -nc 4;
+                text -l "左右法典方向" -w 100;
+                $rdc_02 = `radioCollection`;
+                $rdc_02_b01 = `radioButton -l "-x" -w 50`;
+                $rdc_02_b02 = `radioButton -l "+x" -w 50`;
+                radioCollection -edit -select $rdc_02_b01 $rdc_02;
+                button -l "左右反転" -c "FlipNormal()" -w 80;
+            setParent..;
+            rowLayout -nc 4;
+                text -l "精度" -w 60;
+                $rdc_03 = `radioCollection`;
+                $rdc_03_b01 = `radioButton -l "0.1" -w 60`;
+                $rdc_03_b02 = `radioButton -l "0.01" -w 60`;
+                $rdc_03_b03 = `radioButton -l "0.001" -w 60`;
+                radioCollection -edit -select $rdc_03_b02 $rdc_03;
+            setParent..;
+        setParent..;                  
+    setParent..;
+   
+    showWindow $Win_NH_NormalComposite;
+}
+global proc FlipNormal(){
+    global string $rdc_02;
+    global string $rdc_02_b01;
+    global string $rdc_02_b02;
+    global string $rdc_03;
+    global string $rdc_03_b01;
+    global string $rdc_03_b02;
+    global string $rdc_03_b03;
+    
+    string $st = `radioCollection -q -select $rdc_02`;
+    
+    string $temp[];
+    tokenize $rdc_02_b01 "|" $temp;
+    string $c_rdc_02_b01 = $temp[size($temp)-1];
+    clear $temp;
+    
+    tokenize $rdc_02_b02 "|" $temp;
+    string $c_rdc_02_b02 = $temp[size($temp)-1];
+    clear $temp;
+    
+    int $mode = 0;
+    if($st==$c_rdc_02_b01){
+        $mode = 0;
+    }else if($st==$c_rdc_02_b02){
+        $mode = 1;
+    }
+    
+    $st = `radioCollection -q -select $rdc_03`;
+    
+    tokenize $rdc_03_b01 "|" $temp;
+    string $c_rdc_03_b01 = $temp[size($temp)-1];
+    clear $temp;
+    
+    tokenize $rdc_03_b02 "|" $temp;
+    string $c_rdc_03_b02 = $temp[size($temp)-1];
+    clear $temp;
+    
+    tokenize $rdc_03_b03 "|" $temp;
+    string $c_rdc_03_b03 = $temp[size($temp)-1];
+    clear $temp;
+    
+    float $digit;
+    if($st==$c_rdc_03_b01){
+        $digit = 0.1;
+    }else if($st==$c_rdc_03_b02){
+        $digit = 0.01;
+    }else if($st==$c_rdc_03_b03){
+        $digit = 0.001;
+    }
+    
+    string $targetObj[] = `ls -sl -fl`;
+    string $temp2[] = `polyListComponentConversion -tvf $targetObj[0]`;
+    string $vtxName[] = `filterExpand -sm 70 $temp2`;
+    
+    vector $vtxPos[];
+    for($i=0; $i<size($vtxName); $i++){
+        float $val[] = `xform -q -ws -t $vtxName[$i]`;
+        $val[0] = floor($val[0] / $digit + 0.5) * $digit;
+        $val[1] = floor($val[1] / $digit + 0.5) * $digit;
+        $val[2] = floor($val[2] / $digit + 0.5) * $digit;
+        $vtxPos[$i] = <<$val[0], $val[1], $val[2]>>;
+    }
+    
+    vector $vtxNor[];
+    for($i=0; $i<size($vtxName); $i++){
+        float $val[] = `polyNormalPerVertex -q -xyz $vtxName[$i]`;
+        $vtxNor[$i] = <<$val[0], $val[1], $val[2]>>;
+    }
+    
+    if($mode==0){
+        for($i=0; $i<size($vtxName); $i++){
+            vector $pos = $vtxPos[$i];
+            float $xpos = $pos.x;
+            float $ypos = $pos.y;
+            float $zpos = $pos.z;
+            if($xpos > 0){
+                $pos_2 = <<-1*$xpos, $ypos, $zpos>>;
+                for($j=0; $j<size($vtxName); $j++){
+                    vector $pos_3 = $vtxPos[$j];
+                    if($pos_2.x==$pos_3.x && $pos_2.y==$pos_3.y && $pos_2.z==$pos_3.z){
+                        vector $nor = $vtxNor[$i];
+                        float $xnor = -1 * $nor.x;
+                        float $ynor = $nor.y;
+                        float $znor = $nor.z;
+                 
+                        polyNormalPerVertex -xyz $xnor $ynor $znor $vtxName[$j];
+                    }
+                }
+            }
+        }
+    }else if($mode==1){
+        for($i=0; $i<size($vtxName); $i++){
+            vector $pos = $vtxPos[$i];
+            float $xpos = $pos.x;
+            float $ypos = $pos.y;
+            float $zpos = $pos.z;
+            if($xpos < 0){
+                $pos_2 = <<-1*$xpos, $ypos, $zpos>>;
+                for($j=0; $j<size($vtxName); $j++){
+                    vector $pos_3 = $vtxPos[$j];
+                    if($pos_2.x==$pos_3.x && $pos_2.y==$pos_3.y && $pos_2.z==$pos_3.z){
+                        vector $nor = $vtxNor[$i];
+                        float $xnor = -1 * $nor.x;
+                        float $ynor = $nor.y;
+                        float $znor = $nor.z;
+                 
+                        polyNormalPerVertex -xyz $xnor $ynor $znor $vtxName[$j];
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
+global proc ChangeNormalSize(){
+    global string $fsg_01;
+    string $target;
+    string $temp[] = `ls -sl -fl`;
+    string $parent[] = `listRelatives -p $temp[0]`;
+    $target = $parent[0];
+    float $val = `floatSliderGrp -q -v $fsg_01`;
+    setAttr ($target + ".normalSize") $val;
+    print ("頂点法線サイズを" + $val + "に設定\n");
+}
+
+
+global proc UnfreezeNomal(){
+    string $selObj[] = `ls -sl -fl`;
+    polyNormalPerVertex -ufn true $selObj[0];
+    print "頂点法線のロック解除\n";
+}
+
+
+global proc ToggleDispNormal(){
+    string $target;
+    string $temp[] = `ls -sl -fl`;
+    string $parent[] = `listRelatives -p $temp[0]`;
+    $target = $parent[0];
+
+    if(`getAttr ($target + ".displayNormal")`){
+        setAttr ($target + ".displayNormal") 0;
+        print "頂点法線表示ON\n";
+    }else{
+        setAttr ($target + ".displayNormal") 1;
+        print "頂点法線表示OFF\n";
+    }
+}
+
+global proc CancelObject(int $channel){
+    global string $r_txf;
+    global string $g_txf;
+    global string $b_txf;
+    string $sl[] = `ls -sl -fl`;
+    if($channel==0){
+        textField -e -tx "NONE" -en false $r_txf;
+    }else if($channel==1){
+        textField -e -tx "NONE" -en false $g_txf;
+    }else if($channel==2){
+        textField -e -tx "NONE" -en false $b_txf;
+    }    
+}
+
+global proc ApplyObject(int $channel){
+    global string $r_txf;
+    global string $g_txf;
+    global string $b_txf;
+    string $sl[] = `ls -sl -fl`;
+    if($channel==0){
+        textField -e -tx $sl[0] -en true $r_txf;
+    }else if($channel==1){
+        textField -e -tx $sl[0] -en true $g_txf;
+    }else if($channel==2){
+        textField -e -tx $sl[0] -en true $b_txf;
+    }    
+}
+
+global proc BakeNormal(){
+    global string $rdc_01;
+    global string $rdc_01_b01;
+    global string $rdc_01_b02;
+    global string $r_txf;
+    global string $g_txf;
+    global string $b_txf;
+    
+    int $method = 3;
+    string $mode = `radioCollection -q -select $rdc_01`;
+    if($mode==$rdc_01_b01){
+        $method = 0;
+    }else if($mode==$rdc_01_b02){
+        $method = 3;
+    }
+    
+    string $rObj = `textField -q -tx $r_txf`;
+    string $gObj = `textField -q -tx $g_txf`;
+    string $bObj = `textField -q -tx $b_txf`;
+    
+    string $targetObj[] = `ls -sl -fl`;
+    string $temp[] = `polyListComponentConversion -tvf $targetObj[0]`;
+    string $vtxName[] = `filterExpand -sm 70 $temp`;
+    
+    vector $vtxNor[];
+    for($i=0; $i<size($vtxName); $i++){
+        float $val[] = `polyNormalPerVertex -q -xyz $vtxName[$i]`;
+        $vtxNor[$i] = <<$val[0], $val[1], $val[2]>>;
+    }
+    vector $rVtxNor[];
+    vector $gVtxNor[];
+    vector $bVtxNor[];
+    
+    vector $vtxColor[];
+    for($i=0; $i<size($vtxName); $i++){
+        float $val[] = `polyColorPerVertex -q -rgb $vtxName[$i]`;
+        $vtxColor[$i] = <<$val[0], $val[1], $val[2]>>;
+    }
+    
+    if($rObj!="NONE"){
+        transferAttributes -pos 0 -nml 1 -uvs 0 -col 0 -spa 0 -sm $method -fuv 0 -clb 0 $rObj $targetObj[0];
+        for($i=0; $i<size($vtxName); $i++){
+            float $val[] = `polyNormalPerVertex -q -xyz $vtxName[$i]`;
+            $rVtxNor[$i] = <<$val[0], $val[1], $val[2]>>;
+        }
+        delete -ch $targetObj[0];
+        delete -ch $rObj;
+    }else{
+        $rVtxNor = $vtxNor;
+    }
+    if($gObj!="NONE"){
+        transferAttributes -pos 0 -nml 1 -uvs 0 -col 0 -spa 0 -sm $method -fuv 0 -clb 0 $gObj $targetObj[0];
+        for($i=0; $i<size($vtxName); $i++){
+            float $val[] = `polyNormalPerVertex -q -xyz $vtxName[$i]`;
+            $gVtxNor[$i] = <<$val[0], $val[1], $val[2]>>;
+        }
+        delete -ch $targetObj[0];
+        delete -ch $gObj;
+    }else{
+        $gVtxNor = $vtxNor;
+    }
+    if($bObj!="NONE"){
+        transferAttributes -pos 0 -nml 1 -uvs 0 -col 0 -spa 0 -sm $method -fuv 0 -clb 0 $bObj $targetObj[0];
+        for($i=0; $i<size($vtxName); $i++){
+            float $val[] = `polyNormalPerVertex -q -xyz $vtxName[$i]`;
+            $bVtxNor[$i] = <<$val[0], $val[1], $val[2]>>;
+        }
+        delete -ch $targetObj[0];
+        delete -ch $bObj;
+    }else{
+        $bVtxNor = $vtxNor;
+    }
+    for($i=0; $i<size($vtxName); $i++){
+        vector $col = $vtxColor[$i]; 
+        vector $rNor = $rVtxNor[$i];
+        vector $gNor = $gVtxNor[$i];
+        vector $bNor = $bVtxNor[$i];
+        float $r = $rNor.x * $col.x + $gNor.x * $col.y + $bNor.x * $col.z;
+        float $g = $rNor.y * $col.x + $gNor.y * $col.y + $bNor.y * $col.z;
+        float $b = $rNor.z * $col.x + $gNor.z * $col.y + $bNor.z * $col.z;
+        vector $comp = <<$r, $g, $b>>;
+        //$comp = unit($comp);
+        $r = $comp.x;
+        $g = $comp.y;
+        $b = $comp.z;
+        polyNormalPerVertex -xyz $r $g $b $vtxName[$i];
+    }
+    ToggleDisplayColorsAttr $targetObj[0];
+}
+
+
+
+
+
+
