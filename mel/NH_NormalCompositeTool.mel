@@ -37,23 +37,26 @@ global proc NH_NormalCompositeTool(){
     $Win_NH_NormalComposite = `window -t "頂点法線合成ツール" -tlc $winTlc[0] $winTlc[1]`;
     columnLayout;
         frameLayout -l "ソースメッシュ登録" -w 325 -cll true -mh 10 -mw 10;
-            rowLayout -nc 4;
+            rowLayout -nc 5;
                 iconTextButton -bgc 1.0 0.0 0.0 -w 25 -h 25;
-                $r_txf = `textField -tx "NONE" -en false -ed false -w 165 -h 25`;
-                button -l "選択" -w 50 -c "ApplyObject(0)";
-                button -l "解除" -w 50 -c "CancelObject(0)";
+                $r_txf = `textField -tx "NONE" -en false -ed false -w 150 -h 25`;
+                button -l "設定" -w 40 -c "ApplyObject(0)";
+                button -l "解除" -w 40 -c "CancelObject(0)";
+                button -l "選択" -w 40 -c "SelectObject(0)";
             setParent..;
-            rowLayout -nc 4;
+            rowLayout -nc 5;
                 iconTextButton -bgc 0.0 1.0 0.0 -w 25 -h 25;
-                $g_txf = `textField -tx "NONE" -en false -ed false -w 165 -h 25`;
-                button -l "選択" -w 50 -c "ApplyObject(1)";
-                button -l "解除" -w 50 -c "CancelObject(1)";
+                $g_txf = `textField -tx "NONE" -en false -ed false -w 150 -h 25`;
+                button -l "設定" -w 40 -c "ApplyObject(1)";
+                button -l "解除" -w 40 -c "CancelObject(1)";
+                button -l "選択" -w 40 -c "SelectObject(1)";
             setParent..;
-            rowLayout -nc 4;
+            rowLayout -nc 5;
                 iconTextButton -bgc 0.0 0.0 1.0 -w 25 -h 25;
-                $b_txf = `textField -tx "NONE" -en false -ed false -w 165 -h 25`;
-                button -l "選択" -w 50 -c "ApplyObject(2)";
-                button -l "解除" -w 50 -c "CancelObject(2)";
+                $b_txf = `textField -tx "NONE" -en false -ed false -w 150 -h 25`;
+                button -l "設定" -w 40 -c "ApplyObject(2)";
+                button -l "解除" -w 40 -c "CancelObject(2)";
+                button -l "選択" -w 40 -c "SelectObject(2)";
             setParent..;
         setParent..;
         frameLayout -l "合成転写" -w 325 -cll true -mh 10 -mw 10;
@@ -64,38 +67,65 @@ global proc NH_NormalCompositeTool(){
                 radioCollection -edit -select $rdc_01_b02 $rdc_01;
             setParent..;
             rowLayout -nc 2;
-                button -l "実行" -w 150 -c "BakeNormal()";
-                button -l "閉じる" -w 150;
+                button -l "実行" -w 80 -c "BakeNormal()";
+                button -l "閉じる" -w 80 -c "deleteUI $Win_NH_NormalComposite;";
             setParent..;
         setParent..;    
         frameLayout -l "表示切替" -w 325 -cll true -mh 10 -mw 10;
             rowLayout -nc 3;
-                button -l "頂点法線表示" -c "ToggleDispNormal()" -w 80;
-                button -l "ロック解除" -c "UnfreezeNomal()" -w 60;
-                $fsg_01 = `floatSliderGrp -l "法線サイズ" -min 0.1 -max 10.0 -f true -cc "ChangeNormalSize()" - cw3 55 35 100`;
+                button -l "頂点法線表示" -c "ToggleDispNormal()" -w 100;
+                button -l "ロック解除" -c "UnfreezeNomal()" -w 80;
+            setParent..;
+            rowLayout -nc 1;
+                $fsg_01 = `floatSliderGrp -l "法線サイズ  " -min 0.1 -max 10.0 -f true -cc "ChangeNormalSize()" - cw3 60 60 160`;
             setParent..;
         setParent..;
         frameLayout -l "編集" -w 325 -cll true -mh 10 -mw 10; 
             rowLayout -nc 4;
                 text -l "左右法典方向" -w 100;
                 $rdc_02 = `radioCollection`;
-                $rdc_02_b01 = `radioButton -l "-x" -w 50`;
-                $rdc_02_b02 = `radioButton -l "+x" -w 50`;
+                $rdc_02_b01 = `radioButton -l "-x" -w 40`;
+                $rdc_02_b02 = `radioButton -l "+x" -w 40`;
                 radioCollection -edit -select $rdc_02_b01 $rdc_02;
                 button -l "左右反転" -c "FlipNormal()" -w 80;
             setParent..;
             rowLayout -nc 4;
                 text -l "精度" -w 60;
                 $rdc_03 = `radioCollection`;
-                $rdc_03_b01 = `radioButton -l "0.1" -w 60`;
-                $rdc_03_b02 = `radioButton -l "0.01" -w 60`;
-                $rdc_03_b03 = `radioButton -l "0.001" -w 60`;
+                $rdc_03_b01 = `radioButton -l "0.1" -w 50`;
+                $rdc_03_b02 = `radioButton -l "0.01" -w 50`;
+                $rdc_03_b03 = `radioButton -l "0.001" -w 50`;
                 radioCollection -edit -select $rdc_03_b02 $rdc_03;
             setParent..;
         setParent..;                  
     setParent..;
    
     showWindow $Win_NH_NormalComposite;
+}
+
+global proc SelectObject(int $channel){
+    global string $r_txf;
+    global string $g_txf;
+    global string $b_txf;
+    if($channel==0){
+        string $st = `textField -q -tx $r_txf`;
+        if($st!="NONE"){
+            select -r $st;
+            print $st;
+        }
+    }else if($channel==1){
+        string $st = `textField -q -tx $g_txf`;
+        if($st!="NONE"){
+            select -r $st;
+            print $st;
+        }
+    }else if($channel==2){
+        string $st = `textField -q -tx $b_txf`;
+        if($st!="NONE"){
+            select -r $st;
+            print $st;
+        }
+    }    
 }
 global proc FlipNormal(){
     global string $rdc_02;
