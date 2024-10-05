@@ -223,13 +223,16 @@ float3 CulcShade(VS_TO_PS In){
     }
     float N;
     if(gUseSdf == true){
-        float3 fDir = float3(0.0f, 0.0f, gLight1Dir.z);
-        float3 rDir = float3(gLight1Dir.x, 0.0f, 0.0f);
+        float3 fDir = float3(0.0f, 0.0f, gLight1Dir.z);//顔の向き
+        float3 rDir = float3(gLight1Dir.x, 0.0f, 0.0f);//顔の右方向の向き
+        //前方向と右方向それぞれとライトの内積を計算
         float dotF = dot(-gLight0Dir, -fDir) * 0.5f + 0.5f;
         float dotR = dot(-gLight0Dir, rDir);
+        //マスク読み込み
         float sdfMask = gSdfTexture.Sample(gWrapSampler, In.UV).r;
         float sdfMask_flip = gSdfTexture.Sample(gWrapSampler, float2(1.0f - In.UV.x, In.UV.y)).r;
-        N = lerp(sdfMask, sdfMask_flip, step(0.0f, dotR));
+        //マスクを反転したものを作る
+        N = lerp(sdfMask_flip, sdfMask, step(dotR, 0.0f));
         N = step(dotF, N);
     }else if(gUseSdf == false){
         N = dot(In.Normal.xyz, -lightDir);
