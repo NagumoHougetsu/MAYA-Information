@@ -170,6 +170,30 @@ uniform Texture2D gSdfTexture <
     string ResourceType = "2D";
 >;
 
+uniform float gSdfThreshold <
+    string UIGroup = "SDF Shadow";
+    int UIOrder = 502;
+    string UIName = "SDF Threshold";
+    float UIMin = -1.0f;
+    float UIMax = 1.0f;
+> = 0.0f;
+
+uniform float gSdfFeather <
+    string UIGroup = "SDF Shadow";
+    int UIOrder = 503;
+    string UIName = "SDF Feather";
+    float UIMin = 0.0f;
+    float UIMax = 0.1f;
+> = 0.0f;
+
+uniform float gSdfFlipFeather <
+    string UIGroup = "SDF Shadow";
+    int UIOrder = 504;
+    string UIName = "SDF Flip Feather";
+    float UIMin = 0.0f;
+    float UIMax = 0.1f;
+> = 0.0f;
+
 struct VS_INPUT{
     float4 Position :   POSITION;
     float4 Normal   :   NORMAL;
@@ -211,6 +235,7 @@ float3 CulcSrgb(float3 linearColor){
     return float3(r, g, b);
 }
 
+
 //トゥーンシェーディングを計算する関数
 float3 CulcShade(VS_TO_PS In){
     float3 OutColor;
@@ -226,14 +251,16 @@ float3 CulcShade(VS_TO_PS In){
         float3 fDir = float3(0.0f, 0.0f, gLight1Dir.z);//顔の向き
         float3 rDir = float3(gLight1Dir.x, 0.0f, 0.0f);//顔の右方向の向き
         //前方向と右方向それぞれとライトの内積を計算
-        float dotF = dot(-gLight0Dir, -fDir) * 0.5f + 0.5f;
-        float dotR = dot(-gLight0Dir, rDir);
+        float dotF = dot(gLight0Dir, fDir) * 0.5f + 0.5f;//ライトと顔が相対しているときは1.0、角度がつくにつれて0.0に向かう
+        float dotR = dot(-gLight0Dir, rDir);//ライトと顔が相対しているとき0.0、右90度で照らしていると1.0、左90度で照らしていると-1.0
         //マスク読み込み
         float sdfMask = gSdfTexture.Sample(gWrapSampler, In.UV).r;
-        float sdfMask_flip = gSdfTexture.Sample(gWrapSampler, float2(1.0f - In.UV.x, In.UV.y)).r;
         //マスクを反転したものを作る
-        N = lerp(sdfMask_flip, sdfMask, step(dotR, 0.0f));
-        N = step(dotF, N);
+        float sdfMask_flip = gSdfTexture.Sample(gWrapSampler, float2(1.0f - In.UV.x, In.UV.y)).r;
+        //右から照らしているときは通常のマスク、左から照らしているときは反転したマスクとして合成する
+        N = lerp(sdfMask_flip, sdfMask, smoothstep(0.5f - gSdfFlipFeather * 0.5f, 0.5f + gSdfFlipFeather * 0.5f, 1.0f - (dotR * 0.5f + 0.5f)));
+        N = smoothstep((gSdfThreshold * 0.5f + 0.5f) - gSdfFeather, (gSdfThreshold * 0.5f + 0.5f) + gSdfFeather, (N - dotF) + 1.0);
+        
     }else if(gUseSdf == false){
         N = dot(In.Normal.xyz, -lightDir);
         N = smoothstep(gToonThreshold - gToonFeather, gToonThreshold + gToonFeather, N);
