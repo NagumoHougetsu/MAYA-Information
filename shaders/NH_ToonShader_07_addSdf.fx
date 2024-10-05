@@ -259,7 +259,7 @@ float3 CulcShade(VS_TO_PS In){
         float sdfMask_flip = gSdfTexture.Sample(gWrapSampler, float2(1.0f - In.UV.x, In.UV.y)).r;
         //右から照らしているときは通常のマスク、左から照らしているときは反転したマスクとして合成する
         N = lerp(sdfMask_flip, sdfMask, smoothstep(0.5f - gSdfFlipFeather * 0.5f, 0.5f + gSdfFlipFeather * 0.5f, 1.0f - (dotR * 0.5f + 0.5f)));
-        N = smoothstep((gSdfThreshold * 0.5f + 0.5f) - gSdfFeather, (gSdfThreshold * 0.5f + 0.5f) + gSdfFeather, (N - dotF) + 1.0);
+        N = smoothstep((gSdfThreshold * 0.5f + 1.0f) - gSdfFeather, (gSdfThreshold * 0.5f + 1.0f) + gSdfFeather, (N - dotF) + 1.0);
         
     }else if(gUseSdf == false){
         N = dot(In.Normal.xyz, -lightDir);
