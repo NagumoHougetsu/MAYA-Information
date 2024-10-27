@@ -11,7 +11,12 @@ MAYAまにあっく講座で紹介しているシェーダーを公開してい�
 - NH_ToonShader_02.fx : [MAYAまにあっく講座「DX11シェ―ダーを作ろう」第8回『二値のトゥーンシェード』](https://youtu.be/u982WfSel7g)  
 - NH_ToonShader_03.fx : [MAYAまにあっく講座「DX11シェ―ダーを作ろう」第9回『トゥーンのぼかし』](https://youtu.be/u982WfSel7g)  
 - NH_ToonShader_04.fx : [MAYAまにあっく講座「DX11シェ―ダーを作ろう」第10回『テクスチャの読み込み』](https://youtu.be/u982WfSel7g)  
-- NH_ToonShader_05.fx : [MAYAまにあっく講座「DX11シェ―ダーを作ろう」第11回『アウトラインの描画』](https://youtu.be/u982WfSel7g)  
+- NH_ToonShader_05.fx : [MAYAまにあっく講座「DX11シェ―ダーを作ろう」第11回『アウトラインの描画』](https://youtu.be/u982WfSel7g)
+- NH_ToonShader_06.fx : [MAYAまにあっく講座「DX11シェ―ダーを作ろう」第12回『アウトラインの「カラーテクスチャ」「入り抜き用マスクテクスチャ」「色トレス機能」』](https://youtu.be/31wvQq-gcc8)
+- NH_ToonShader_07.fx : [MAYAまにあっく講座「DX11シェ―ダーを作ろう」第13回『ガンマ補正とアウトラインマスクの最適化』](https://youtu.be/fE9gLSWh5h8)
+- NH_ToonShader_07_addSdf.fx : [MAYAまにあっく講座「DX11シェ―ダーを作ろう」第13回_EXTRA『SDFシャドウマップを導入(拡張)してみた』](https://youtu.be/GcsOKkWFYJI)
+- NH_ToonShader_08.fx : [MAYAまにあっく講座「DX11シェ―ダーを作ろう」第14回『リムライトの実装』](https://youtu.be/FXX7JCbiRFU)
+- NH_ToonShader_09.fx : [MAYAまにあっく講座「DX11シェ―ダーを作ろう」第14回『リムライトの拡張』]()
 ## JavaScriptフォルダで紹介しているjsxファイルについて  
 以下のNoteの記事で解説しています(/・ω・)/
 - NH_copyPasteLayerEffect.jsx：[Photoshopでレイヤー効果を一括コピペ](https://note.com/n_hougetsu/n/n390ba7cc78f9)
