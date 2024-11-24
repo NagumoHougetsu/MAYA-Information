@@ -17,7 +17,7 @@ MAYAまにあっく講座で紹介しているシェーダーを公開してい�
 - NH_ToonShader_07_addSdf.fx : [MAYAまにあっく講座「DX11シェ―ダーを作ろう」第13回_EXTRA『SDFシャドウマップを導入(拡張)してみた』](https://youtu.be/GcsOKkWFYJI)
 - NH_ToonShader_08.fx : [MAYAまにあっく講座「DX11シェ―ダーを作ろう」第14回『リムライトの実装』](https://youtu.be/FXX7JCbiRFU)
 - NH_ToonShader_09.fx : [MAYAまにあっく講座「DX11シェ―ダーを作ろう」第15回『リムライトの拡張』](https://youtu.be/1LoGcVsjlcw)
-- NH_ToonShader_10.fx : [MAYAまにあっく講座「DX11シェ―ダーを作ろう」第16回『リムライトとアウトラインの更なる拡張』]([https://youtu.be/1LoGcVsjlcw](https://youtu.be/HpDGCFWGQjQ)
+- NH_ToonShader_10.fx : [MAYAまにあっく講座「DX11シェ―ダーを作ろう」第16回『リムライトとアウトラインの更なる拡張』][https://youtu.be/1LoGcVsjlcw](https://youtu.be/HpDGCFWGQjQ)
 - NH_ToonShader_11.fx : [MAYAまにあっく講座「DX11シェ―ダーを作ろう」第16回『ノーマルマップの実装』]()
 ## JavaScriptフォルダで紹介しているjsxファイルについて  
 以下のNoteの記事で解説しています(/・ω・)/
